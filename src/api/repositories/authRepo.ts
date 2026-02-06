@@ -1,11 +1,30 @@
-import { API_BASE_URL } from '../config';
-import { authFetch, toApiError, ApiError } from '../http';
+import { 
+  Client, 
+  LoginRequestDto, 
+  ChangePasswordDto,
+  UserDto,
+  UserRole 
+} from '@/api/generated/apiClient';
+import { createClient } from './_repoBase';
 import type { User } from '@/state/authStore';
 
-// TODO: Once NSwag is generated, switch to AuthClient:
-// import { AuthClient } from '@/api/generated/apiClient';
-// import { createClient } from './_repoBase';
-// const client = createClient(AuthClient);
+// Create configured client instance
+const client = createClient(Client);
+
+/**
+ * Map API UserDto to app User type
+ */
+function mapUser(dto: UserDto | undefined): User {
+  if (!dto) {
+    throw new Error('User data is missing');
+  }
+  return {
+    id: dto.id ?? '',
+    email: dto.email ?? '',
+    name: dto.email ?? '', // API doesn't have name, use email
+    role: dto.role !== undefined ? UserRole[dto.role] : 'User',
+  };
+}
 
 export interface LoginRequest {
   email: string;
@@ -18,62 +37,63 @@ export interface LoginResponse {
 }
 
 /**
- * Authentication repository
- * 
- * Currently uses plain fetch so the app runs before NSwag generation.
- * Once the API client is generated, switch to the NSwag client.
+ * Authentication repository using NSwag-generated client
  */
 export const authRepo = {
   /**
    * Login with email and password
+   * Note: Login API only returns token+role, so we fetch user profile after
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await authFetch(`${API_BASE_URL}/api/v1/auth/login`, {
-      method: 'POST',
-      body: JSON.stringify(credentials),
+    const request = new LoginRequestDto({
+      email: credentials.email,
+      password: credentials.password,
     });
 
-    if (!response.ok) {
-      let error: ApiError;
-      try {
-        const body = await response.json();
-        error = {
-          status: response.status,
-          message: body.message || 'Login failed',
-          details: body.errors,
-        };
-      } catch {
-        error = toApiError(response, 'Login failed');
-      }
-      throw error;
+    const response = await client.login(request);
+    const data = response.data;
+
+    if (!data?.accessToken) {
+      throw new Error(response.message || 'Login failed');
     }
 
-    return response.json();
+    // Return token with minimal user info from login response
+    // Full user profile can be fetched via me() if needed
+    return {
+      token: data.accessToken,
+      user: {
+        id: '',
+        email: credentials.email,
+        name: credentials.email,
+        role: data.role ?? 'User',
+      },
+    };
   },
 
   /**
    * Get current user profile
    */
   async me(): Promise<User> {
-    const response = await authFetch(`${API_BASE_URL}/api/v1/auth/me`);
-
-    if (!response.ok) {
-      throw toApiError(response, 'Failed to fetch user profile');
-    }
-
-    return response.json();
+    const response = await client.me();
+    return mapUser(response.data);
   },
 
   /**
-   * Logout (invalidate token on server if needed)
+   * Change password
+   */
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const request = new ChangePasswordDto({
+      currentPassword,
+      newPassword,
+    });
+    await client.changePassword(request);
+  },
+
+  /**
+   * Logout (client-side only - clear local state)
    */
   async logout(): Promise<void> {
-    try {
-      await authFetch(`${API_BASE_URL}/api/v1/auth/logout`, {
-        method: 'POST',
-      });
-    } catch {
-      // Ignore errors - we'll clear local state regardless
-    }
+    // No server-side logout endpoint needed
+    // Local state clearing is handled by authStore
   },
 };
