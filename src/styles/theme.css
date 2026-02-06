@@ -1,0 +1,26 @@
+/* Theme CSS Variables
+ * These are the configurable theme colors.
+ * Values are loaded from localStorage via themeStore.
+ */
+
+:root {
+  /* Configurable theme colors (set via JS) */
+  --c-primary: #0d6efd;
+  --c-secondary: #6c757d;
+  --c-accent: #0dcaf0;
+
+  /* Derived/neutral colors */
+  --c-bg: #f8f9fa;
+  --c-card: #ffffff;
+  --c-text: #212529;
+  --c-muted: #6c757d;
+  --c-border: #dee2e6;
+  --c-danger: #dc3545;
+  --c-success: #198754;
+  --c-warning: #ffc107;
+
+  /* Computed hover states */
+  --c-primary-hover: color-mix(in srgb, var(--c-primary) 85%, black);
+  --c-accent-hover: color-mix(in srgb, var(--c-accent) 85%, black);
+  --c-danger-hover: color-mix(in srgb, var(--c-danger) 85%, black);
+}
