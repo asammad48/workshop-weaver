@@ -6,6 +6,7 @@ import {
   UserRole 
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
+import { normalizeError, toUserMessage, ApiError } from './_errors';
 import type { User } from '@/state/authStore';
 
 // Create configured client instance
@@ -21,7 +22,7 @@ function mapUser(dto: UserDto | undefined): User {
   return {
     id: dto.id ?? '',
     email: dto.email ?? '',
-    name: dto.email ?? '', // API doesn't have name, use email
+    name: dto.email ?? '',
     role: dto.role !== undefined ? UserRole[dto.role] : 'User',
   };
 }
@@ -38,62 +39,97 @@ export interface LoginResponse {
 
 /**
  * Authentication repository using NSwag-generated client
+ * All errors are normalized to ApiError for consistent UI handling
  */
 export const authRepo = {
   /**
    * Login with email and password
-   * Note: Login API only returns token+role, so we fetch user profile after
+   * @throws {ApiError} Normalized error with user-friendly message
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const request = new LoginRequestDto({
-      email: credentials.email,
-      password: credentials.password,
-    });
-
-    const response = await client.login(request);
-    const data = response.data;
-
-    if (!data?.accessToken) {
-      throw new Error(response.message || 'Login failed');
-    }
-
-    // Return token with minimal user info from login response
-    // Full user profile can be fetched via me() if needed
-    return {
-      token: data.accessToken,
-      user: {
-        id: '',
+    try {
+      const request = new LoginRequestDto({
         email: credentials.email,
-        name: credentials.email,
-        role: data.role ?? 'User',
-      },
-    };
+        password: credentials.password,
+      });
+
+      const response = await client.login(request);
+      const data = response.data;
+
+      if (!response.success || !data?.accessToken) {
+        throw {
+          status: 400,
+          message: response.message || 'Login failed',
+        } as ApiError;
+      }
+
+      return {
+        token: data.accessToken,
+        user: {
+          id: '',
+          email: credentials.email,
+          name: credentials.email,
+          role: data.role ?? 'User',
+        },
+      };
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
   /**
    * Get current user profile
+   * @throws {ApiError} Normalized error
    */
   async me(): Promise<User> {
-    const response = await client.me();
-    return mapUser(response.data);
+    try {
+      const response = await client.me();
+      
+      if (!response.success || !response.data) {
+        throw {
+          status: 400,
+          message: response.message || 'Failed to fetch profile',
+        } as ApiError;
+      }
+      
+      return mapUser(response.data);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
   /**
    * Change password
+   * @throws {ApiError} Normalized error
    */
   async changePassword(currentPassword: string, newPassword: string): Promise<void> {
-    const request = new ChangePasswordDto({
-      currentPassword,
-      newPassword,
-    });
-    await client.changePassword(request);
+    try {
+      const request = new ChangePasswordDto({
+        currentPassword,
+        newPassword,
+      });
+      
+      const response = await client.changePassword(request);
+      
+      if (!response.success) {
+        throw {
+          status: 400,
+          message: response.message || 'Failed to change password',
+        } as ApiError;
+      }
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
   /**
-   * Logout (client-side only - clear local state)
+   * Logout (client-side only)
    */
   async logout(): Promise<void> {
-    // No server-side logout endpoint needed
+    // No server-side logout needed
     // Local state clearing is handled by authStore
   },
 };
+
+// Re-export error utilities for consumers
+export { toUserMessage, normalizeError, type ApiError } from './_errors';

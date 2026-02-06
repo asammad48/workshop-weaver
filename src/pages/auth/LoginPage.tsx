@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/components/ui/Toast';
 import { useAuthStore } from '@/state/authStore';
-import { authRepo } from '@/api/repositories/authRepo';
+import { authRepo, toUserMessage } from '@/api/repositories/authRepo';
 import '@/styles/global.css';
 
 // Demo user for offline/testing mode
@@ -47,7 +47,7 @@ export default function LoginPage() {
         return;
       }
       
-      const message = (err as { message?: string })?.message || 'Login failed';
+      const message = toUserMessage(err);
       setError(message);
       toast.error(message);
     } finally {
