@@ -9,31 +9,31 @@ import { getBaseUrl, getFetch } from '../clientFactory';
 
 export interface ClientConfig {
   baseUrl: string;
-  fetch: typeof fetch;
+  http: { fetch: typeof fetch };
+}
+
+/**
+ * Get configuration for NSwag client instantiation
+ */
+export function getClientConfig(): ClientConfig {
+  return {
+    baseUrl: getBaseUrl(),
+    http: { fetch: getFetch() },
+  };
 }
 
 /**
  * Create a configured instance of an NSwag-generated client
  * 
  * @example
- * // After NSwag generates the client:
- * import { AuthClient } from '@/api/generated/apiClient';
+ * import { Client } from '@/api/generated/apiClient';
  * 
- * const authClient = createClient(AuthClient);
- * const result = await authClient.login(credentials);
+ * const client = createClient(Client);
+ * const result = await client.login({ email, password });
  */
 export function createClient<T>(
-  ClientClass: new (baseUrl: string, http?: { fetch: typeof fetch }) => T
+  ClientClass: new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => T
 ): T {
-  return new ClientClass(getBaseUrl(), { fetch: getFetch() });
-}
-
-/**
- * Get configuration for manual client instantiation
- */
-export function getClientConfig(): ClientConfig {
-  return {
-    baseUrl: getBaseUrl(),
-    fetch: getFetch(),
-  };
+  const config = getClientConfig();
+  return new ClientClass(config.baseUrl, config.http);
 }
