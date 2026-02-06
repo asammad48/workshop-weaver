@@ -28,7 +28,7 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-type UserRole = 'HQ_ADMIN' | 'MANAGER' | 'STORE' | 'CASHIER' | 'TECH';
+type UserRole = 'HQ_ADMIN' | 'BRANCH_MANAGER' | 'STOREKEEPER' | 'CASHIER' | 'TECHNICIAN' | 'RECEPTIONIST';
 
 // Full navigation structure
 const allNavGroups: NavGroup[] = [
@@ -88,34 +88,37 @@ const roleAccess: Record<UserRole, { groups: string[]; readOnlyGroups?: string[]
   HQ_ADMIN: {
     groups: ['Main', 'Operations', 'Inventory', 'Finance', 'Reports', 'Admin', 'Profile'],
   },
-  MANAGER: {
+  BRANCH_MANAGER: {
     groups: ['Main', 'Operations', 'Finance', 'Reports', 'Profile'],
   },
-  STORE: {
+  STOREKEEPER: {
     groups: ['Main', 'Inventory', 'Reports', 'Profile'],
     readOnlyGroups: ['Reports'],
   },
   CASHIER: {
-    groups: ['Main', 'Profile'],
-    readOnlyGroups: ['Finance', 'Reports'],
+    groups: ['Main', 'Finance', 'Profile'],
+    readOnlyGroups: ['Reports'],
   },
-  TECH: {
+  TECHNICIAN: {
     groups: ['Main', 'Profile'],
+  },
+  RECEPTIONIST: {
+    groups: ['Main', 'Operations', 'Profile'],
   },
 };
 
 // Special item access for roles that need partial group access
 const roleSpecialItems: Partial<Record<UserRole, string[]>> = {
-  CASHIER: ['/jobcards', '/finance', '/reports'],
-  TECH: ['/jobcards'],
+  CASHIER: ['/jobcards', '/reports'],
+  TECHNICIAN: ['/jobcards'],
 };
 
 /**
  * Get navigation items filtered by user role
  */
 export function getNav(userRole: string | undefined): NavGroup[] {
-  const role = (userRole?.toUpperCase() as UserRole) || 'TECH';
-  const access = roleAccess[role] || roleAccess.TECH;
+  const role = (userRole?.toUpperCase() as UserRole) || 'TECHNICIAN';
+  const access = roleAccess[role] || roleAccess.TECHNICIAN;
   const specialItems = roleSpecialItems[role] || [];
 
   const result: NavGroup[] = [];
