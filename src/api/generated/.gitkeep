@@ -1,0 +1,2 @@
+# This directory will contain NSwag-generated API client
+# Run `npm run api:gen` to generate the client from OpenAPI spec
