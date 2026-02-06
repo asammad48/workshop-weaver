@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/Button';
 import { toast } from '@/components/ui/Toast';
 import { confirm } from '@/components/ui/ConfirmDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { AppLayout } from '@/components/layout/AppLayout';
 import '@/styles/global.css';
 
 export default function DashboardPage() {
@@ -34,39 +33,37 @@ export default function DashboardPage() {
   };
 
   return (
-    <AppLayout>
-      <div className="stack">
-        <Card>
-          <CardHeader>
-            <h2 style={{ margin: 0 }}>Dashboard</h2>
-          </CardHeader>
-          <CardBody>
-            <div className="stack">
-              <p>
-                Welcome, <strong>{user?.email || 'User'}</strong>!
-              </p>
-              <p className="muted">
-                This is your Workshop Management dashboard. Start building your
-                features in the <code>src/features/</code> directory.
-              </p>
-            </div>
-          </CardBody>
-        </Card>
+    <div className="stack">
+      <Card>
+        <CardHeader>
+          <h2 style={{ margin: 0 }}>Dashboard</h2>
+        </CardHeader>
+        <CardBody>
+          <div className="stack">
+            <p>
+              Welcome, <strong>{user?.email || 'User'}</strong>!
+            </p>
+            <p className="muted">
+              This is your Workshop Management dashboard. Start building your
+              features in the <code>src/features/</code> directory.
+            </p>
+          </div>
+        </CardBody>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <h3 style={{ margin: 0 }}>Test UI Components</h3>
-          </CardHeader>
-          <CardBody>
-            <div className="row">
-              <Button onClick={handleToastTest}>Test Toasts</Button>
-              <Button variant="danger" onClick={handleLogout}>
-                Logout
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    </AppLayout>
+      <Card>
+        <CardHeader>
+          <h3 style={{ margin: 0 }}>Test UI Components</h3>
+        </CardHeader>
+        <CardBody>
+          <div className="row">
+            <Button onClick={handleToastTest}>Test Toasts</Button>
+            <Button variant="danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+    </div>
   );
 }

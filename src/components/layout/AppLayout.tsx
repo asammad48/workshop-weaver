@@ -1,10 +1,11 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LogOut, User as UserIcon } from 'lucide-react';
 import { getNav } from '@/app/nav';
 import { useAuthStore } from '@/state/authStore';
 import { confirm } from '@/components/ui/ConfirmDialog';
 import { toast } from '@/components/ui/Toast';
+import { Button } from '@/components/ui/Button';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -13,7 +14,7 @@ interface AppLayoutProps {
 const SIDEBAR_KEY = 'ui.sidebarCollapsed';
 
 /**
- * Application layout with collapsible sidebar navigation
+ * Application layout with collapsible sidebar navigation and topbar
  */
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
@@ -51,7 +52,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: 'var(--c-bg)' }}>
       {/* Sidebar */}
       <aside
         style={{
@@ -62,31 +63,20 @@ export function AppLayout({ children }: AppLayoutProps) {
           flexDirection: 'column',
           transition: 'width 0.2s ease',
           overflow: 'hidden',
+          zIndex: 50,
         }}
       >
-        {/* Logo/Header */}
+        {/* Sidebar Toggle / Header */}
         <div
           style={{
             padding: '16px',
             borderBottom: '1px solid var(--c-border)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'space-between',
-            minHeight: '56px',
+            justifyContent: collapsed ? 'center' : 'flex-end',
+            minHeight: '64px',
           }}
         >
-          {!collapsed && (
-            <span
-              style={{
-                fontWeight: 600,
-                fontSize: '14px',
-                color: 'var(--c-text)',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Workshop
-            </span>
-          )}
           <button
             onClick={() => setCollapsed(!collapsed)}
             style={{
@@ -152,17 +142,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                     {!collapsed && (
                       <span style={{ whiteSpace: 'nowrap' }}>
                         {item.label}
-                        {item.readOnly && (
-                          <span
-                            style={{
-                              fontSize: '10px',
-                              color: 'var(--c-muted)',
-                              marginLeft: '4px',
-                            }}
-                          >
-                            (view)
-                          </span>
-                        )}
                       </span>
                     )}
                   </Link>
@@ -171,65 +150,61 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
           ))}
         </nav>
-
-        {/* User section */}
-        <div
-          style={{
-            padding: '12px 8px',
-            borderTop: '1px solid var(--c-border)',
-          }}
-        >
-          {!collapsed && user && (
-            <div
-              style={{
-                padding: '8px 12px',
-                marginBottom: '8px',
-                fontSize: '12px',
-                color: 'var(--c-muted)',
-              }}
-            >
-              <div style={{ color: 'var(--c-text)', fontWeight: 500 }}>
-                {user.email}
-              </div>
-              <div style={{ fontSize: '11px', textTransform: 'uppercase' }}>
-                {user.role || 'User'}
-              </div>
-            </div>
-          )}
-          <button
-            onClick={handleLogout}
-            title={collapsed ? 'Logout' : undefined}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              width: '100%',
-              padding: collapsed ? '10px' : '10px 12px',
-              borderRadius: '6px',
-              border: 'none',
-              backgroundColor: 'transparent',
-              color: 'var(--c-danger, #dc2626)',
-              cursor: 'pointer',
-              fontSize: '13px',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-            }}
-          >
-            <LogOut size={18} />
-            {!collapsed && <span>Logout</span>}
-          </button>
-        </div>
       </aside>
 
-      {/* Main content */}
-      <main
-        style={{
-          flex: 1,
-          backgroundColor: 'var(--c-bg)',
-          overflow: 'auto',
-        }}
-      >
-        <div style={{ padding: '24px' }}>{children}</div>
-      </main>
+      {/* Main Container */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        {/* Topbar */}
+        <header
+          style={{
+            height: '64px',
+            backgroundColor: 'var(--c-card)',
+            borderBottom: '1px solid var(--c-border)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 24px',
+            zIndex: 40,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--c-text)' }}>Workshop Management</span>
+            {user?.branchId && (
+              <span
+                style={{
+                  backgroundColor: 'var(--c-primary-soft)',
+                  color: 'var(--c-primary)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Branch: {user.branchId}
+              </span>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--c-muted)', fontSize: '13px' }}>
+              <UserIcon size={16} />
+              <span>{user?.email}</span>
+            </div>
+            <Button variant="ghost" size="sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-danger)' }}>
+              <LogOut size={16} />
+              <span>Logout</span>
+            </Button>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main style={{ flex: 1, overflow: 'auto' }}>
+          <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

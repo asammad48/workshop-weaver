@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/state/authStore';
+import { AppLayout } from '@/components/layout/AppLayout';
 
 /**
  * Route guard that redirects to login if no token exists
@@ -13,5 +14,9 @@ export function ProtectedRoute() {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Outlet />;
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  );
 }
