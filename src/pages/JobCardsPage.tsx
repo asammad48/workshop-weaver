@@ -1,5 +1,15 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { 
+  Plus, 
+  Search, 
+  Eye, 
+  LogIn, 
+  LogOut,
+  Wrench,
+  ChevronLeft,
+  ChevronRight
+} from 'lucide-react';
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { getCustomersOnce } from "@/api/lookups/customersLookup";
 import { getVehiclesOnce } from "@/api/lookups/vehiclesLookup";
@@ -16,20 +26,25 @@ const JobCardsPage = () => {
   const { user } = useAuth();
   const openModal = useUIStore((s) => s.openModal);
   const closeModal = useUIStore((s) => s.closeModal);
-  const [page, setPage] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
   const [search, setSearch] = useState("");
+  const pageSize = 10;
 
-  const [formData, setFormData] = useState({
+  const [formData] = useState({
     customerId: "",
     vehicleId: "",
     mileage: undefined as number | undefined,
     notes: "",
   });
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["jobCards", page, search],
-    queryFn: () => jobCardsRepo.list(page, 10, search),
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ["jobCards", { pageNumber, pageSize, search }],
+    queryFn: () => jobCardsRepo.list(pageNumber, pageSize, search),
   });
+
+  const items = data?.data?.items ?? [];
+  const totalItems = data?.data?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   const { data: customers } = useQuery({
     queryKey: ["customersLookup"],
@@ -43,13 +58,17 @@ const JobCardsPage = () => {
 
   const createMutation = useMutation({
     mutationFn: jobCardsRepo.create,
-    onSuccess: () => {
-      toast.success("Job card created successfully");
-      closeModal();
-      refetch();
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success("Job card created successfully");
+        closeModal();
+        refetch();
+      } else {
+        toast.error(res.message || "Failed to create job card");
+      }
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to create job card");
+      toast.error(error.message || "An error occurred");
     },
   });
 
@@ -99,17 +118,57 @@ const JobCardsPage = () => {
     }
   };
 
+  const handleView = (item: any) => {
+    openModal(
+      `Job Card: ${item.plate}`,
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={closeModal}>Close</Button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div><strong>Customer:</strong> {item.customerName}</div>
+          <div><strong>Vehicle:</strong> {item.plate}</div>
+          <div><strong>Status:</strong> {item.status}</div>
+          <div><strong>Mileage:</strong> {item.mileage}</div>
+          <div><strong>Entry At:</strong> {item.entryAt ? new Date(item.entryAt).toLocaleString() : "-"}</div>
+          <div><strong>Exit At:</strong> {item.exitAt ? new Date(item.exitAt).toLocaleString() : "-"}</div>
+          {item.notes && <div><strong>Notes:</strong> {item.notes}</div>}
+        </div>
+      </ModalContent>
+    );
+  };
+
   const canManage = user?.role === "HQ_ADMIN" || user?.role === "MANAGER";
 
   const renderCreateForm = () => (
-    <ModalContent>
-      <form onSubmit={handleCreate} className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Customer</label>
+    <ModalContent
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+          <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+          <Button onClick={handleCreate} disabled={createMutation.isPending}>
+            {createMutation.isPending ? "Creating..." : "Create"}
+          </Button>
+        </div>
+      }
+    >
+      <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Customer *</label>
           <select
-            className="w-full p-2 border rounded"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--c-border)',
+              backgroundColor: 'var(--c-bg)',
+              color: 'var(--c-text)',
+              outline: 'none'
+            }}
             value={formData.customerId}
-            onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
+            onChange={(e) => formData.customerId = e.target.value}
             required
           >
             <option value="">Select Customer</option>
@@ -118,12 +177,20 @@ const JobCardsPage = () => {
             ))}
           </select>
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Vehicle</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Vehicle *</label>
           <select
-            className="w-full p-2 border rounded"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--c-border)',
+              backgroundColor: 'var(--c-bg)',
+              color: 'var(--c-text)',
+              outline: 'none'
+            }}
             value={formData.vehicleId}
-            onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
+            onChange={(e) => formData.vehicleId = e.target.value}
             required
           >
             <option value="">Select Vehicle</option>
@@ -132,94 +199,151 @@ const JobCardsPage = () => {
             ))}
           </select>
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Mileage</label>
-          <Input
-            type="number"
-            value={formData.mileage || ""}
-            onChange={(e) => setFormData({ ...formData, mileage: parseInt(e.target.value) || undefined })}
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Notes</label>
+        <Input
+          label="Mileage"
+          type="number"
+          placeholder="Enter current mileage"
+          onChange={(e) => formData.mileage = parseInt(e.target.value) || undefined}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Notes</label>
           <textarea
-            className="w-full p-2 border rounded"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--c-border)',
+              backgroundColor: 'var(--c-bg)',
+              color: 'var(--c-text)',
+              outline: 'none',
+              resize: 'vertical'
+            }}
             rows={3}
-            value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            placeholder="Initial report or notes"
+            onChange={(e) => formData.notes = e.target.value}
           />
-        </div>
-        <div className="flex justify-end space-x-2">
-          <Button type="button" variant="secondary" onClick={closeModal}>Cancel</Button>
-          <Button type="submit" disabled={createMutation.isPending}>
-            {createMutation.isPending ? "Creating..." : "Create"}
-          </Button>
         </div>
       </form>
     </ModalContent>
   );
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Job Cards</h1>
+    <div style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
+            Job Cards
+          </h1>
+          <p style={{ color: 'var(--c-muted)', marginTop: '4px' }}>Manage vehicle entry and exit</p>
+        </div>
         <Button onClick={() => openModal("Create Job Card", renderCreateForm())}>
+          <Plus size={18} style={{ marginRight: '8px' }} />
           Create Job Card
         </Button>
       </div>
 
-      <Card className="p-4">
-        <Input
-          placeholder="Search plate or customer..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm mb-4"
-        />
+      <Card>
+        <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)', display: 'flex', gap: '16px' }}>
+          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+            <Search 
+              size={18} 
+              style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} 
+            />
+            <input
+              type="text"
+              placeholder="Search plate or customer..."
+              style={{
+                width: '100%',
+                padding: '8px 12px 8px 40px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-bg)',
+                color: 'var(--c-text)',
+                outline: 'none'
+              }}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPageNumber(1);
+              }}
+            />
+          </div>
+        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr className="border-b">
-                <th className="p-2">Plate</th>
-                <th className="p-2">Customer</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Entry At</th>
-                <th className="p-2">Exit At</th>
-                <th className="p-2">Mileage</th>
-                <th className="p-2 text-right">Actions</th>
+              <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Plate</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Customer</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Status</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Entry At</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Exit At</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Mileage</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="p-4 text-center">Loading...</td></tr>
+                <tr>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                    Loading job cards...
+                  </td>
+                </tr>
               ) : isError ? (
-                <tr><td colSpan={7} className="p-4 text-center text-red-500">Error loading data</td></tr>
-              ) : data?.data?.items?.length === 0 ? (
-                <tr><td colSpan={7} className="p-4 text-center">No job cards found</td></tr>
+                <tr>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-danger)' }}>
+                    Error loading data: {(error as any)?.message || 'Unknown error'}
+                  </td>
+                </tr>
+              ) : items.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                    <Wrench size={48} style={{ marginBottom: '16px', opacity: 0.2, margin: '0 auto' }} />
+                    <p>No job cards found</p>
+                  </td>
+                </tr>
               ) : (
-                data?.data?.items?.map((item: any) => (
-                  <tr key={item.id} className="border-b hover:bg-muted/50">
-                    <td className="p-2">{item.plate}</td>
-                    <td className="p-2">{item.customerName}</td>
-                    <td className="p-2">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        item.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 
-                        item.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
+                items.map((item: any) => (
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.plate}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.customerName}</td>
+                    <td style={{ padding: '12px 16px' }}>
+                      <span style={{ 
+                        padding: '4px 8px', 
+                        borderRadius: '4px', 
+                        fontSize: '12px',
+                        backgroundColor: item.status === 'COMPLETED' ? 'rgba(34, 197, 94, 0.1)' : 
+                                       item.status === 'IN_PROGRESS' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                        color: item.status === 'COMPLETED' ? 'rgb(34, 197, 94)' : 
+                               item.status === 'IN_PROGRESS' ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                      }}>
                         {item.status}
                       </span>
                     </td>
-                    <td className="p-2">{item.entryAt ? new Date(item.entryAt).toLocaleString() : "-"}</td>
-                    <td className="p-2">{item.exitAt ? new Date(item.exitAt).toLocaleString() : "-"}</td>
-                    <td className="p-2">{item.mileage}</td>
-                    <td className="p-2 text-right space-x-2">
-                      <Button variant="ghost" size="sm" onClick={() => {}}>Open</Button>
-                      {canManage && !item.entryAt && (
-                        <Button size="sm" onClick={() => handleAction(item.id, "checkIn")}>Check-in</Button>
-                      )}
-                      {canManage && item.entryAt && !item.exitAt && (
-                        <Button size="sm" variant="secondary" onClick={() => handleAction(item.id, "checkOut")}>Check-out</Button>
-                      )}
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>
+                      {item.entryAt ? new Date(item.entryAt).toLocaleString() : "-"}
+                    </td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>
+                      {item.exitAt ? new Date(item.exitAt).toLocaleString() : "-"}
+                    </td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.mileage}</td>
+                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <Button variant="ghost" size="sm" title="View Details" onClick={() => handleView(item)}>
+                          <Eye size={16} />
+                        </Button>
+                        {canManage && !item.entryAt && (
+                          <Button variant="secondary" size="sm" title="Check-in" onClick={() => handleAction(item.id, "checkIn")}>
+                            <LogIn size={16} />
+                          </Button>
+                        )}
+                        {canManage && item.entryAt && !item.exitAt && (
+                          <Button variant="danger" size="sm" title="Check-out" onClick={() => handleAction(item.id, "checkOut")}>
+                            <LogOut size={16} />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -227,6 +351,35 @@ const JobCardsPage = () => {
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+              Showing {items.length} of {totalItems} job cards
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                disabled={pageNumber === 1}
+                onClick={() => setPageNumber(p => Math.max(1, p - 1))}
+              >
+                <ChevronLeft size={16} />
+              </Button>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontSize: '14px', color: 'var(--c-text)' }}>
+                Page {pageNumber} of {totalPages}
+              </div>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                disabled={pageNumber === totalPages}
+                onClick={() => setPageNumber(p => Math.min(totalPages, p + 1))}
+              >
+                <ChevronRight size={16} />
+              </Button>
+            </div>
+          </div>
+        )}
       </Card>
 
       <ModalHost />
