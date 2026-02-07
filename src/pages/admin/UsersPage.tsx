@@ -3,10 +3,8 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { userRepo } from '@/api/repositories/userRepo';
-import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto } from '@/api/generated/apiClient';
-import { useUIStore } from '@/state/uiStore';
-import { toast } from '@/components/ui/Toast';
-import { confirm } from '@/components/ui/ConfirmDialog';
+import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto, UserRole } from '@/api/generated/apiClient';
+import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
 import { 
   UserPlus, 
@@ -21,17 +19,31 @@ import {
   Loader2
 } from 'lucide-react';
 
+// Map roles to numeric values for NSwag enum
+const ROLE_MAP: Record<string, UserRole> = {
+  'User': UserRole._1,
+  'Admin': UserRole._2,
+  'HQ_ADMIN': UserRole._3,
+};
+
+// Inverse map for display
+const ROLE_DISPLAY: Record<number, string> = {
+  [UserRole._1]: 'User',
+  [UserRole._2]: 'Admin',
+  [UserRole._3]: 'HQ Admin',
+  [UserRole._4]: 'Technician',
+  [UserRole._5]: 'Service Advisor',
+  [UserRole._6]: 'Manager',
+};
+
 export default function UsersPage() {
   const [users, setUsers] = useState<UserDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const pageSize = 10;
-
-  const openModal = useUIStore((s) => s.openModal);
-  const closeModal = useUIStore((s) => s.closeModal);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -40,7 +52,7 @@ export default function UsersPage() {
       const response = await userRepo.list(page, pageSize, search);
       if (response.success && response.data?.items) {
         setUsers(response.data.items);
-        setTotalPages(response.data.totalPages || 1);
+        setTotalItems(response.data.totalCount || 0);
       } else {
         setError(response.message || 'Failed to load users');
       }
@@ -55,148 +67,152 @@ export default function UsersPage() {
     fetchUsers();
   }, [page, search]);
 
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+
   const handleCreateUser = () => {
-    let formData = { email: '', password: '', role: 'User' };
-    openModal({
-      title: 'Create User',
-      content: (
-        <ModalContent
-          footer={
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button onClick={async () => {
-                try {
-                  const res = await userRepo.create(new CreateUserDto(formData));
-                  if (res.success) {
-                    toast({ type: 'success', message: 'User created successfully' });
-                    closeModal();
-                    fetchUsers();
-                  } else {
-                    toast({ type: 'error', message: res.message || 'Failed to create user' });
-                  }
-                } catch (err: any) {
-                  toast({ type: 'error', message: err.message });
+    let email = '';
+    let password = '';
+    let roleStr = 'User';
+
+    openModal('Create User', (
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={async () => {
+              try {
+                const res = await userRepo.create(new CreateUserDto({
+                  email,
+                  password,
+                  role: ROLE_MAP[roleStr]
+                }));
+                if (res.success) {
+                  toast.success('User created successfully');
+                  closeModal();
+                  fetchUsers();
+                } else {
+                  toast.error(res.message || 'Failed to create user');
                 }
-              }}>Create</Button>
-            </div>
-          }
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Input label="Email" type="email" onChange={(e) => formData.email = e.target.value} />
-            <Input label="Password" type="password" onChange={(e) => formData.password = e.target.value} />
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Role</label>
-              <select 
-                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', background: 'var(--c-bg)' }}
-                onChange={(e) => formData.role = e.target.value}
-              >
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-                <option value="HQ_ADMIN">HQ Admin</option>
-              </select>
-            </div>
+              } catch (err: any) {
+                toast.error(err.message);
+              }
+            }}>Create</Button>
           </div>
-        </ModalContent>
-      )
-    });
-  };
-
-  const handleResetPassword = (user: UserDto) => {
-    let newPassword = '';
-    openModal({
-      title: `Reset Password for ${user.email}`,
-      content: (
-        <ModalContent
-          footer={
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button onClick={async () => {
-                try {
-                  const res = await userRepo.setPassword(user.id!, new ResetPasswordDto({ newPassword }));
-                  if (res.success) {
-                    toast({ type: 'success', message: 'Password reset successfully' });
-                    closeModal();
-                  } else {
-                    toast({ type: 'error', message: res.message || 'Failed to reset password' });
-                  }
-                } catch (err: any) {
-                  toast({ type: 'error', message: err.message });
-                }
-              }}>Reset</Button>
-            </div>
-          }
-        >
-          <Input label="New Password" type="password" onChange={(e) => newPassword = e.target.value} />
-        </ModalContent>
-      )
-    });
-  };
-
-  const handleUpdateRole = (user: UserDto) => {
-    let role = user.role || 'User';
-    openModal({
-      title: `Update Role for ${user.email}`,
-      content: (
-        <ModalContent
-          footer={
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button onClick={async () => {
-                try {
-                  const res = await userRepo.updateRole(user.id!, new UpdateRoleDto({ role }));
-                  if (res.success) {
-                    toast({ type: 'success', message: 'Role updated successfully' });
-                    closeModal();
-                    fetchUsers();
-                  } else {
-                    toast({ type: 'error', message: res.message || 'Failed to update role' });
-                  }
-                } catch (err: any) {
-                  toast({ type: 'error', message: err.message });
-                }
-              }}>Update</Button>
-            </div>
-          }
-        >
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Input label="Email" type="email" onChange={(e) => email = e.target.value} />
+          <Input label="Password" type="password" onChange={(e) => password = e.target.value} />
           <div>
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Role</label>
             <select 
-              defaultValue={role}
               style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', background: 'var(--c-bg)' }}
-              onChange={(e) => role = e.target.value}
+              onChange={(e) => roleStr = e.target.value}
             >
               <option value="User">User</option>
               <option value="Admin">Admin</option>
               <option value="HQ_ADMIN">HQ Admin</option>
             </select>
           </div>
-        </ModalContent>
-      )
-    });
+        </div>
+      </ModalContent>
+    ));
+  };
+
+  const handleResetPassword = (user: UserDto) => {
+    let newPassword = '';
+    openModal(`Reset Password for ${user.email}`, (
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={async () => {
+              try {
+                const res = await userRepo.setPassword(user.id!, new ResetPasswordDto({ newPassword }));
+                if (res.success) {
+                  toast.success('Password reset successfully');
+                  closeModal();
+                } else {
+                  toast.error(res.message || 'Failed to reset password');
+                }
+              } catch (err: any) {
+                toast.error(err.message);
+              }
+            }}>Reset</Button>
+          </div>
+        }
+      >
+        <Input label="New Password" type="password" onChange={(e) => newPassword = e.target.value} />
+      </ModalContent>
+    ));
+  };
+
+  const handleUpdateRole = (user: UserDto) => {
+    let currentRole = user.role ? ROLE_DISPLAY[user.role] : 'User';
+    let selectedRole = currentRole;
+
+    openModal(`Update Role for ${user.email}`, (
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={async () => {
+              try {
+                const res = await userRepo.updateRole(user.id!, new UpdateRoleDto({ 
+                  role: ROLE_MAP[selectedRole] 
+                }));
+                if (res.success) {
+                  toast.success('Role updated successfully');
+                  closeModal();
+                  fetchUsers();
+                } else {
+                  toast.error(res.message || 'Failed to update role');
+                }
+              } catch (err: any) {
+                toast.error(err.message);
+              }
+            }}>Update</Button>
+          </div>
+        }
+      >
+        <div>
+          <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>Role</label>
+          <select 
+            defaultValue={currentRole}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', background: 'var(--c-bg)' }}
+            onChange={(e) => selectedRole = e.target.value}
+          >
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+            <option value="HQ_ADMIN">HQ Admin</option>
+          </select>
+        </div>
+      </ModalContent>
+    ));
   };
 
   const handleToggleStatus = async (user: UserDto) => {
-    const isEnabled = !user.isDisabled;
-    const action = isEnabled ? 'disable' : 'enable';
+    const isCurrentlyActive = user.isActive;
+    const action = isCurrentlyActive ? 'disable' : 'enable';
     
     const confirmed = await confirm({
       title: `${action.charAt(0).toUpperCase() + action.slice(1)} User`,
       message: `Are you sure you want to ${action} ${user.email}?`,
       confirmText: action.charAt(0).toUpperCase() + action.slice(1),
-      danger: isEnabled
+      danger: isCurrentlyActive
     });
 
     if (confirmed) {
       try {
-        const res = isEnabled ? await userRepo.disable(user.id!) : await userRepo.enable(user.id!);
+        const res = isCurrentlyActive ? await userRepo.disable(user.id!) : await userRepo.enable(user.id!);
         if (res.success) {
-          toast({ type: 'success', message: `User ${action}d successfully` });
+          toast.success(`User ${action}d successfully`);
           fetchUsers();
         } else {
-          toast({ type: 'error', message: res.message || `Failed to ${action} user` });
+          toast.error(res.message || `Failed to ${action} user`);
         }
       } catch (err: any) {
-        toast({ type: 'error', message: err.message });
+        toast.error(err.message);
       }
     }
   };
@@ -261,19 +277,19 @@ export default function UsersPage() {
                     <td style={{ padding: '16px' }}>{user.email}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '12px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)' }}>
-                        {user.role}
+                        {user.role !== undefined ? ROLE_DISPLAY[user.role] : 'N/A'}
                       </span>
                     </td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ 
-                        color: user.isDisabled ? 'var(--c-danger)' : 'var(--c-success)',
+                        color: !user.isActive ? 'var(--c-danger)' : 'var(--c-success)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px',
                         fontSize: '14px'
                       }}>
-                        {user.isDisabled ? <UserX size={14} /> : <UserCheck size={14} />}
-                        {user.isDisabled ? 'Disabled' : 'Enabled'}
+                        {!user.isActive ? <UserX size={14} /> : <UserCheck size={14} />}
+                        {!user.isActive ? 'Disabled' : 'Enabled'}
                       </span>
                     </td>
                     <td style={{ padding: '16px', textAlign: 'right' }}>
@@ -285,12 +301,12 @@ export default function UsersPage() {
                           <Key size={16} />
                         </Button>
                         <Button 
-                          variant={user.isDisabled ? 'primary' : 'secondary'} 
+                          variant={!user.isActive ? 'primary' : 'secondary'} 
                           size="sm" 
                           onClick={() => handleToggleStatus(user)}
-                          title={user.isDisabled ? 'Enable' : 'Disable'}
+                          title={!user.isActive ? 'Enable' : 'Disable'}
                         >
-                          {user.isDisabled ? <UserCheck size={16} /> : <UserX size={16} />}
+                          {!user.isActive ? <UserCheck size={16} /> : <UserX size={16} />}
                         </Button>
                       </div>
                     </td>
