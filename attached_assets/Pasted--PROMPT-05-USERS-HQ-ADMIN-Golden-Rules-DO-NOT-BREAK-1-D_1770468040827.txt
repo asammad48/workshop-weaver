@@ -1,0 +1,91 @@
+# PROMPT 05 — USERS HQ ADMIN
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts), load once and cache in `src/api/lookups/*`.
+9) For every CRUD screen: define (a) table columns, (b) row actions, (c) modal fields + types, (d) API flow, (e) test checklist.
+
+
+## APIs (exact)
+Users:
+- `usersGET(...)` -> `UserDtoPageResponseApiResponse`
+- `usersGET2(id)` -> `UserDtoApiResponse`
+- `usersPOST(body?: CreateUserDto)` -> `UserDtoApiResponse`
+- `disable(id)` -> `StringApiResponse`
+- `enable(id)` -> `StringApiResponse`
+- `setPassword(id, body?: ResetPasswordDto)` -> `StringApiResponse`
+- `roles(id, body?: UpdateRoleDto)` -> `StringApiResponse`
+
+Branches for dropdown:
+- `branchesGET(...)` -> `BranchResponsePageResponseApiResponse`
+
+## Files to create/edit
+- `src/api/repositories/usersRepo.ts`
+- `src/api/repositories/branchesRepo.ts` (if not already)
+- `src/api/lookups/branchesLookup.ts` (getBranchesOnce)
+- `src/pages/admin/UsersPage.tsx`
+
+## Table columns (UsersPage)
+Show these columns in order:
+1) Email  -> user.email
+2) Role   -> USER_ROLE_LABELS[user.role]
+3) Branch -> branchMap[user.branchId]?.name ?? "—"
+4) Active -> user.isActive ? "Yes" : "No"
+5) CreatedAt -> user.createdAt (if exists) else remove
+
+## Row actions (last column)
+HQ_ADMIN only:
+- Reset Password (modal)
+- Disable/Enable (confirm)
+- Change Role (modal)
+Optional:
+- View (navigates to `/admin/users/:id` if you implement later)
+
+## Create User modal (CreateUserDto)
+Fields + types:
+- email: input type="email" (required)
+- password: input type="password" (required, min 8)
+- role: Select (required) options=USER_ROLE_OPTIONS
+- branchId: Select (required ONLY if requireBranchForRole(role) else disabled/hidden)
+
+Validation:
+- if branch required but not selected → show error under branch select.
+
+Flow:
+1) Click "Create User" → open modal
+2) Modal open → call `getBranchesOnce()` → options
+3) Submit → `usersRepo.create(dto)` → toast → close → refetch page 1
+
+## Reset Password modal (ResetPasswordDto)
+Fields:
+- newPassword: password (required, min 8)
+Flow:
+- submit → `usersRepo.setPassword(id,{newPassword})` → toast → close
+
+## Change Role modal (UpdateRoleDto)
+Fields:
+- role: Select (required)
+- branchId: Select (required only if branch role)
+Flow:
+1) open → call `usersRepo.get(id)` populate current role/branchId
+2) ensure branches loaded
+3) submit → `usersRepo.setRole(id,{role,branchId})` → toast → close → refetch current page
+
+## Disable/Enable flow
+- Click → confirm → call repo → toast → refetch current page
+
+## Test (must)
+- branches dropdown loads (names show)
+- creating manager without branch blocked
+- disable user prevents login
+- role change enforces branch requirement
+

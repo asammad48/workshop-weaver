@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { userRepo } from '@/api/repositories/userRepo';
+import { usersRepo } from '@/api/repositories/usersRepo';
 import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto } from '@/api/generated/apiClient';
 import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
 import { Select } from '@/components/forms/Select';
-import { USER_ROLE_LABELS, USER_ROLE_OPTIONS, UserRole } from '@/constants/enums';
+import { USER_ROLE_LABELS, USER_ROLE_OPTIONS, UserRole, requireBranchForRole } from '@/constants/enums';
+import { getBranchesOnce, getBranchMap } from '@/api/lookups/branchesLookup';
 import { 
   UserPlus, 
   Search, 
@@ -17,7 +18,8 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
-  Loader2
+  Loader2,
+  Eye
 } from 'lucide-react';
 
 export default function UsersPage() {
@@ -27,13 +29,14 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [branches, setBranches] = useState<{value: string, label: string}[]>([]);
   const pageSize = 10;
 
   const fetchUsers = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await userRepo.list(page, pageSize, search);
+      const response = await usersRepo.list(page, pageSize, search);
       if (response.success && response.data?.items) {
         setUsers(response.data.items);
         setTotalItems(response.data.totalCount || 0);
@@ -47,28 +50,43 @@ export default function UsersPage() {
     }
   };
 
+  const loadBranches = async () => {
+    const branchList = await getBranchesOnce();
+    setBranches(branchList.map(b => ({ value: b.id, label: b.name })));
+  };
+
   useEffect(() => {
     fetchUsers();
+    loadBranches();
   }, [page, search]);
 
+  const branchMap = useMemo(() => getBranchMap(), [branches]);
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
   const handleCreateUser = () => {
     let email = '';
     let password = '';
     let roleValue = UserRole.HQ_ADMIN;
+    let branchId = '';
+    let branchError = '';
 
-    openModal('Create User', (
+    const renderModal = () => openModal('Create User', (
       <ModalContent
         footer={
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={closeModal}>Cancel</Button>
             <Button onClick={async () => {
+              if (requireBranchForRole(roleValue) && !branchId) {
+                branchError = 'Branch is required for this role';
+                renderModal();
+                return;
+              }
               try {
-                const res = await userRepo.create(new CreateUserDto({
+                const res = await usersRepo.create(new CreateUserDto({
                   email,
                   password,
-                  role: roleValue
+                  role: roleValue,
+                  branchId: requireBranchForRole(roleValue) ? branchId : undefined
                 }));
                 if (res.success) {
                   toast.success('User created successfully');
@@ -85,17 +103,36 @@ export default function UsersPage() {
         }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Input label="Email" type="email" onChange={(e) => email = e.target.value} />
-          <Input label="Password" type="password" onChange={(e) => password = e.target.value} />
+          <Input label="Email" type="email" required onChange={(e) => email = e.target.value} />
+          <Input label="Password" type="password" required placeholder="Min 8 characters" onChange={(e) => password = e.target.value} />
           <Select 
             label="Role"
             options={USER_ROLE_OPTIONS}
             defaultValue={roleValue}
-            onChange={(e) => roleValue = Number(e.target.value)}
+            onChange={(e) => {
+              roleValue = Number(e.target.value);
+              branchError = '';
+              renderModal();
+            }}
           />
+          {requireBranchForRole(roleValue) && (
+            <Select 
+              label="Branch"
+              options={branches}
+              placeholder="Select branch..."
+              errorText={branchError}
+              onChange={(e) => {
+                branchId = e.target.value;
+                branchError = '';
+                renderModal();
+              }}
+            />
+          )}
         </div>
       </ModalContent>
     ));
+
+    renderModal();
   };
 
   const handleResetPassword = (user: UserDto) => {
@@ -106,8 +143,12 @@ export default function UsersPage() {
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={closeModal}>Cancel</Button>
             <Button onClick={async () => {
+              if (newPassword.length < 8) {
+                toast.error('Password must be at least 8 characters');
+                return;
+              }
               try {
-                const res = await userRepo.setPassword(user.id!, new ResetPasswordDto({ newPassword }));
+                const res = await usersRepo.setPassword(user.id!, new ResetPasswordDto({ newPassword }));
                 if (res.success) {
                   toast.success('Password reset successfully');
                   closeModal();
@@ -121,24 +162,42 @@ export default function UsersPage() {
           </div>
         }
       >
-        <Input label="New Password" type="password" onChange={(e) => newPassword = e.target.value} />
+        <Input label="New Password" type="password" required placeholder="Min 8 characters" onChange={(e) => newPassword = e.target.value} />
       </ModalContent>
     ));
   };
 
-  const handleUpdateRole = (user: UserDto) => {
-    let selectedRole = user.role || UserRole.HQ_ADMIN;
+  const handleUpdateRole = async (user: UserDto) => {
+    let userData = user;
+    try {
+      const res = await usersRepo.get(user.id!);
+      if (res.success && res.data) {
+        userData = res.data;
+      }
+    } catch (err) {
+      console.error('Failed to fetch latest user data', err);
+    }
 
-    openModal(`Update Role for ${user.email}`, (
+    let selectedRole = userData.role || UserRole.HQ_ADMIN;
+    let selectedBranchId = userData.branchId || '';
+    let branchError = '';
+
+    const renderModal = () => openModal(`Update Role for ${user.email}`, (
       <ModalContent
         footer={
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={closeModal}>Cancel</Button>
             <Button onClick={async () => {
+              if (requireBranchForRole(selectedRole) && !selectedBranchId) {
+                branchError = 'Branch is required for this role';
+                renderModal();
+                return;
+              }
               try {
-                const res = await userRepo.updateRole(user.id!, new UpdateRoleDto({ 
-                  role: selectedRole 
-                }));
+                const res = await usersRepo.updateRole(user.id!, new UpdateRoleDto({ 
+                  role: selectedRole,
+                  branchId: requireBranchForRole(selectedRole) ? selectedBranchId : undefined
+                } as any)); // Using any because UpdateRoleDto in apiClient might need branchId adding if missing from DTO
                 if (res.success) {
                   toast.success('Role updated successfully');
                   closeModal();
@@ -153,14 +212,36 @@ export default function UsersPage() {
           </div>
         }
       >
-        <Select 
-          label="Role"
-          options={USER_ROLE_OPTIONS}
-          defaultValue={selectedRole}
-          onChange={(e) => selectedRole = Number(e.target.value)}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Select 
+            label="Role"
+            options={USER_ROLE_OPTIONS}
+            defaultValue={selectedRole}
+            onChange={(e) => {
+              selectedRole = Number(e.target.value);
+              branchError = '';
+              renderModal();
+            }}
+          />
+          {requireBranchForRole(selectedRole) && (
+            <Select 
+              label="Branch"
+              options={branches}
+              defaultValue={selectedBranchId}
+              placeholder="Select branch..."
+              errorText={branchError}
+              onChange={(e) => {
+                selectedBranchId = e.target.value;
+                branchError = '';
+                renderModal();
+              }}
+            />
+          )}
+        </div>
       </ModalContent>
     ));
+
+    renderModal();
   };
 
   const handleToggleStatus = async (user: UserDto) => {
@@ -176,7 +257,7 @@ export default function UsersPage() {
 
     if (confirmed) {
       try {
-        const res = isCurrentlyActive ? await userRepo.disable(user.id!) : await userRepo.enable(user.id!);
+        const res = isCurrentlyActive ? await usersRepo.disable(user.id!) : await usersRepo.enable(user.id!);
         if (res.success) {
           toast.success(`User ${action}d successfully`);
           fetchUsers();
@@ -220,26 +301,28 @@ export default function UsersPage() {
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Email</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Role</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Branch</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Active</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>CreatedAt</th>
                 <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: '48px', textAlign: 'center' }}>
+                  <td colSpan={6} style={{ padding: '48px', textAlign: 'center' }}>
                     <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto', color: 'var(--c-primary)' }} />
                   </td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-danger)' }}>
+                  <td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-danger)' }}>
                     {error}
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                  <td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
                     No users found
                   </td>
                 </tr>
@@ -253,6 +336,9 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td style={{ padding: '16px' }}>
+                      {user.branchId ? branchMap[user.branchId]?.name ?? user.branchName ?? '—' : '—'}
+                    </td>
+                    <td style={{ padding: '16px' }}>
                       <span style={{ 
                         color: !user.isActive ? 'var(--c-danger)' : 'var(--c-success)',
                         display: 'flex',
@@ -261,8 +347,11 @@ export default function UsersPage() {
                         fontSize: '14px'
                       }}>
                         {!user.isActive ? <UserX size={14} /> : <UserCheck size={14} />}
-                        {!user.isActive ? 'Disabled' : 'Enabled'}
+                        {user.isActive ? 'Yes' : 'No'}
                       </span>
+                    </td>
+                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
                     </td>
                     <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>

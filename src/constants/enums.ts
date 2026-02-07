@@ -1,10 +1,12 @@
+import { UserRole as ApiUserRole } from '@/api/generated/apiClient';
+
 export enum UserRole {
-  HQ_ADMIN = 1,
-  BRANCH_MANAGER = 2,
-  STOREKEEPER = 3,
-  CASHIER = 4,
-  TECHNICIAN = 5,
-  RECEPTIONIST = 6,
+  HQ_ADMIN = ApiUserRole._1,
+  BRANCH_MANAGER = ApiUserRole._2,
+  STOREKEEPER = ApiUserRole._3,
+  CASHIER = ApiUserRole._4,
+  TECHNICIAN = ApiUserRole._5,
+  RECEPTIONIST = ApiUserRole._6,
 }
 
 export const USER_ROLE_LABELS: Record<number, string> = {
