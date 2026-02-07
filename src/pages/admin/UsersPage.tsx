@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { usersRepo } from '@/api/repositories/usersRepo';
-import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto } from '@/api/generated/apiClient';
+import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto, UserRole as ApiUserRole } from '@/api/generated/apiClient';
 import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
 import { Select } from '@/components/forms/Select';
@@ -18,8 +18,7 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
-  Loader2,
-  Eye
+  Loader2
 } from 'lucide-react';
 
 export default function UsersPage() {
@@ -81,16 +80,21 @@ export default function UsersPage() {
                 renderModal();
                 return;
               }
+              if (password.length < 8) {
+                toast.error('Password must be at least 8 characters');
+                return;
+              }
               try {
                 const res = await usersRepo.create(new CreateUserDto({
                   email,
                   password,
-                  role: roleValue,
+                  role: roleValue as unknown as ApiUserRole,
                   branchId: requireBranchForRole(roleValue) ? branchId : undefined
                 }));
                 if (res.success) {
                   toast.success('User created successfully');
                   closeModal();
+                  setPage(1); // refetch page 1
                   fetchUsers();
                 } else {
                   toast.error(res.message || 'Failed to create user');
@@ -178,7 +182,7 @@ export default function UsersPage() {
       console.error('Failed to fetch latest user data', err);
     }
 
-    let selectedRole = userData.role || UserRole.HQ_ADMIN;
+    let selectedRole = (userData.role as unknown as number) || UserRole.HQ_ADMIN;
     let selectedBranchId = userData.branchId || '';
     let branchError = '';
 
@@ -195,9 +199,9 @@ export default function UsersPage() {
               }
               try {
                 const res = await usersRepo.updateRole(user.id!, new UpdateRoleDto({ 
-                  role: selectedRole,
+                  role: selectedRole as unknown as ApiUserRole,
                   branchId: requireBranchForRole(selectedRole) ? selectedBranchId : undefined
-                } as any)); // Using any because UpdateRoleDto in apiClient might need branchId adding if missing from DTO
+                } as any));
                 if (res.success) {
                   toast.success('Role updated successfully');
                   closeModal();
@@ -332,7 +336,7 @@ export default function UsersPage() {
                     <td style={{ padding: '16px' }}>{user.email}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '12px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)' }}>
-                        {user.role !== undefined ? USER_ROLE_LABELS[user.role] : 'N/A'}
+                        {user.role !== undefined ? USER_ROLE_LABELS[user.role as unknown as number] : 'N/A'}
                       </span>
                     </td>
                     <td style={{ padding: '16px' }}>
