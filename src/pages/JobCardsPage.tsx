@@ -163,7 +163,7 @@ const JobCardsPage = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Job Cards</h1>
-        <Button onClick={() => openModal({ title: "Create Job Card", content: renderCreateForm() })}>
+        <Button onClick={() => openModal("Create Job Card", renderCreateForm())}>
           Create Job Card
         </Button>
       </div>
