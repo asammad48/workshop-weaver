@@ -1,25 +1,23 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
-import { customersLookup } from "@/api/lookups/customersLookup";
-import { vehiclesLookup } from "@/api/lookups/vehiclesLookup";
+import { getCustomersOnce } from "@/api/lookups/customersLookup";
+import { getVehiclesOnce } from "@/api/lookups/vehiclesLookup";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { Modal } from "@/components/ui/Modal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ModalContent, ModalHost } from "@/components/ui/Modal";
+import { ConfirmDialogHost, confirm } from "@/components/ui/ConfirmDialog";
 import { toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useUIStore } from "@/state/uiStore";
 
 const JobCardsPage = () => {
-  const queryClient = useQueryClient();
   const { user } = useAuth();
+  const openModal = useUIStore((s) => s.openModal);
+  const closeModal = useUIStore((s) => s.closeModal);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [selectedJobCardId, setSelectedJobCardId] = useState<string | null>(null);
-  const [confirmAction, setConfirmAction] = useState<"checkIn" | "checkOut" | null>(null);
 
   const [formData, setFormData] = useState({
     customerId: "",
@@ -35,19 +33,19 @@ const JobCardsPage = () => {
 
   const { data: customers } = useQuery({
     queryKey: ["customersLookup"],
-    queryFn: () => customersLookup.getAll(),
+    queryFn: () => getCustomersOnce(),
   });
 
   const { data: vehicles } = useQuery({
     queryKey: ["vehiclesLookup"],
-    queryFn: () => vehiclesLookup.getAll(),
+    queryFn: () => getVehiclesOnce(),
   });
 
   const createMutation = useMutation({
     mutationFn: jobCardsRepo.create,
     onSuccess: () => {
       toast.success("Job card created successfully");
-      setIsCreateModalOpen(false);
+      closeModal();
       refetch();
     },
     onError: (error: any) => {
@@ -59,7 +57,6 @@ const JobCardsPage = () => {
     mutationFn: jobCardsRepo.checkIn,
     onSuccess: () => {
       toast.success("Checked in successfully");
-      setIsConfirmOpen(false);
       refetch();
     },
     onError: (error: any) => {
@@ -71,7 +68,6 @@ const JobCardsPage = () => {
     mutationFn: jobCardsRepo.checkOut,
     onSuccess: () => {
       toast.success("Checked out successfully");
-      setIsConfirmOpen(false);
       refetch();
     },
     onError: (error: any) => {
@@ -86,28 +82,90 @@ const JobCardsPage = () => {
       vehicleId: formData.vehicleId,
       mileage: formData.mileage,
       initialReport: formData.notes,
+    } as any);
+  };
+
+  const handleAction = async (id: string, action: "checkIn" | "checkOut") => {
+    const isConfirmed = await confirm({
+      title: action === "checkIn" ? "Check-in Vehicle" : "Check-out Vehicle",
+      message: `Are you sure you want to ${action === "checkIn" ? "check-in" : "check-out"} this vehicle?`,
+      confirmText: action === "checkIn" ? "Check-in" : "Check-out",
+      danger: action === "checkOut",
     });
-  };
 
-  const handleAction = (id: string, action: "checkIn" | "checkOut") => {
-    setSelectedJobCardId(id);
-    setConfirmAction(action);
-    setIsConfirmOpen(true);
-  };
-
-  const onConfirm = () => {
-    if (!selectedJobCardId || !confirmAction) return;
-    if (confirmAction === "checkIn") checkInMutation.mutate(selectedJobCardId);
-    else checkOutMutation.mutate(selectedJobCardId);
+    if (isConfirmed) {
+      if (action === "checkIn") checkInMutation.mutate(id);
+      else checkOutMutation.mutate(id);
+    }
   };
 
   const canManage = user?.role === "HQ_ADMIN" || user?.role === "MANAGER";
+
+  const renderCreateForm = () => (
+    <ModalContent>
+      <form onSubmit={handleCreate} className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Customer</label>
+          <select
+            className="w-full p-2 border rounded"
+            value={formData.customerId}
+            onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
+            required
+          >
+            <option value="">Select Customer</option>
+            {customers?.map((c: any) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Vehicle</label>
+          <select
+            className="w-full p-2 border rounded"
+            value={formData.vehicleId}
+            onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
+            required
+          >
+            <option value="">Select Vehicle</option>
+            {vehicles?.map((v: any) => (
+              <option key={v.id} value={v.id}>{v.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Mileage</label>
+          <Input
+            type="number"
+            value={formData.mileage || ""}
+            onChange={(e) => setFormData({ ...formData, mileage: parseInt(e.target.value) || undefined })}
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Notes</label>
+          <textarea
+            className="w-full p-2 border rounded"
+            rows={3}
+            value={formData.notes}
+            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          />
+        </div>
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="secondary" onClick={closeModal}>Cancel</Button>
+          <Button type="submit" disabled={createMutation.isPending}>
+            {createMutation.isPending ? "Creating..." : "Create"}
+          </Button>
+        </div>
+      </form>
+    </ModalContent>
+  );
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Job Cards</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>Create Job Card</Button>
+        <Button onClick={() => openModal({ title: "Create Job Card", content: renderCreateForm() })}>
+          Create Job Card
+        </Button>
       </div>
 
       <Card className="p-4">
@@ -155,7 +213,7 @@ const JobCardsPage = () => {
                     <td className="p-2">{item.exitAt ? new Date(item.exitAt).toLocaleString() : "-"}</td>
                     <td className="p-2">{item.mileage}</td>
                     <td className="p-2 text-right space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => {}}>Open</Button>
+                      <Button variant="ghost" size="sm" onClick={() => {}}>Open</Button>
                       {canManage && !item.entryAt && (
                         <Button size="sm" onClick={() => handleAction(item.id, "checkIn")}>Check-in</Button>
                       )}
@@ -171,75 +229,11 @@ const JobCardsPage = () => {
         </div>
       </Card>
 
-      <Modal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        title="Create Job Card"
-      >
-        <form onSubmit={handleCreate} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Customer</label>
-            <select
-              className="w-full p-2 border rounded"
-              value={formData.customerId}
-              onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-              required
-            >
-              <option value="">Select Customer</option>
-              {customers?.map((c: any) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Vehicle</label>
-            <select
-              className="w-full p-2 border rounded"
-              value={formData.vehicleId}
-              onChange={(e) => setFormData({ ...formData, vehicleId: e.target.value })}
-              required
-            >
-              <option value="">Select Vehicle</option>
-              {vehicles?.map((v: any) => (
-                <option key={v.id} value={v.id}>{v.plate} - {v.make} {v.model}</option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Mileage</label>
-            <Input
-              type="number"
-              value={formData.mileage}
-              onChange={(e) => setFormData({ ...formData, mileage: parseInt(e.target.value) || undefined })}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Notes</label>
-            <textarea
-              className="w-full p-2 border rounded"
-              rows={3}
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Creating..." : "Create"}
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      <ConfirmDialog
-        isOpen={isConfirmOpen}
-        onClose={() => setIsConfirmOpen(false)}
-        onConfirm={onConfirm}
-        title={confirmAction === "checkIn" ? "Check-in Vehicle" : "Check-out Vehicle"}
-        description={`Are you sure you want to ${confirmAction === "checkIn" ? "check-in" : "check-out"} this vehicle?`}
-      />
+      <ModalHost />
+      <ConfirmDialogHost />
     </div>
   );
 };
 
 export default JobCardsPage;
+
