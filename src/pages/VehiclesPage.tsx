@@ -197,7 +197,7 @@ export default function VehiclesPage() {
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.make || '-'}</td>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.model || '-'}</td>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.year || '-'}</td>
-                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.customerName || '-'}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{(vehicle as any).customerName || '-'}</td>
                     <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                         <Button variant="secondary" size="sm" title="View Details">
