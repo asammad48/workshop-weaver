@@ -1,0 +1,65 @@
+# PROMPT 05 — USERS HQ_ADMIN (Create + Edit + Role + Branch + Password)
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs (exact)
+- List: `usersGET(pageNumber?, pageSize?, search?, sortBy?, sortDirection?)` -> `UserDtoPageResponseApiResponse`
+- Get: `usersGET2(id)` -> `UserDtoApiResponse`
+- Create: `usersPOST(body?: CreateUserDto)` -> `UserDtoApiResponse`
+- Update user: `usersPUT(id, body?: UpdateUserDto)` -> `UserDtoApiResponse`
+- Disable: `disable(id)` -> `StringApiResponse`
+- Enable: `enable(id)` -> `StringApiResponse`
+- Reset password: `setPassword(id, body?: ResetPasswordDto)` -> `StringApiResponse`
+- Change role: `roles(id, body?: UpdateRoleDto)` -> `StringApiResponse`
+Branches:
+- `branchesGET(...)` -> `BranchResponsePageResponseApiResponse`
+
+## Files
+- `src/api/repositories/usersRepo.ts` (wrap all above)
+- `src/api/repositories/branchesRepo.ts`
+- `src/api/lookups/branchesLookup.ts` (getBranchesOnce)
+- `src/pages/admin/UsersPage.tsx`
+
+## Table columns
+- Email, Role(label), Branch(name), Active, CreatedAt(if exists), UpdatedAt(if exists)
+
+## Row actions (HQ_ADMIN)
+- Edit (UpdateUserDto modal: email + branchId)
+- Change Role (UpdateRoleDto modal)
+- Reset Password (ResetPasswordDto modal)
+- Disable/Enable (confirm)
+
+## Create modal (CreateUserDto)
+Fields + types:
+- email: email (required)
+- password: password (required, min 8)
+- role: Select (required)
+- branchId: Select (required only if role needs branch)
+
+## Edit modal (UpdateUserDto)
+Fields + types:
+- email: email (required)
+- branchId: Select (required only if current role needs branch)
+- role: read-only label (for context)
+
+Flow:
+- open → `usersGET2(id)` populate → submit → `usersPUT(id,dto)` → toast → refetch
+
+## Test
+- Edit email saves
+- Edit branch saves
+- Role change still uses `roles()`
+
