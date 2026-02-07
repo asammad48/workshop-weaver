@@ -1,5 +1,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { 
+  Wrench, 
+  Plus, 
+  Search,
+  Eye, 
+  CheckCircle, 
+  LogOut, 
+  ChevronLeft, 
+  ChevronRight 
+} from 'lucide-react';
 import { jobCardsRepo } from '@/api/repositories/jobCardsRepo';
 import { getCustomersOnce } from '@/api/lookups/customersLookup';
 import { getVehiclesOnce } from '@/api/lookups/vehiclesLookup';
@@ -7,18 +17,16 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { ModalContent } from '@/components/ui/Modal';
-import { useUIStore, toast, confirm } from '@/state/uiStore';
+import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { useAuth } from '@/hooks/useAuth';
-import { Wrench, Plus, Eye, CheckCircle, LogOut, Loader2, AlertCircle } from 'lucide-react';
 
 export default function JobCardsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const openModal = useUIStore(s => s.openModal);
-  const closeModal = useUIStore(s => s.closeModal);
   
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   // Lookups
   const { data: customers = [] } = useQuery({ queryKey: ['customers-lookup'], queryFn: getCustomersOnce });
@@ -27,15 +35,23 @@ export default function JobCardsPage() {
   // Main list
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['job-cards', page, search],
-    queryFn: () => jobCardsRepo.list(page, 10, search)
+    queryFn: () => jobCardsRepo.list(page, pageSize, search)
   });
+
+  const items = data?.data?.items || [];
+  const totalItems = (data?.data as any)?.totalCount || 0;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
   const createMutation = useMutation({
     mutationFn: jobCardsRepo.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['job-cards'] });
-      closeModal();
-      toast.success('Job card created successfully');
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success('Job card created successfully');
+        queryClient.invalidateQueries({ queryKey: ['job-cards'] });
+        closeModal();
+      } else {
+        toast.error(res.message || 'Failed to create job card');
+      }
     },
     onError: (err: any) => toast.error(err.message || 'Failed to create job card')
   });
@@ -77,162 +93,250 @@ export default function JobCardsPage() {
   };
 
   const handleCreate = () => {
-    openModal('Create Job Card', (
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        createMutation.mutate({
-          customerId: formData.get('customerId') as string,
-          vehicleId: formData.get('vehicleId') as string,
-          mileage: formData.get('mileage') ? Number(formData.get('mileage')) : undefined,
-          notes: formData.get('notes') as string
-        } as any);
-      }}>
-        <ModalContent>
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Customer</label>
-              <select name="customerId" required className="w-full border rounded p-2 bg-white">
-                <option value="">Select Customer</option>
-                {customers.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Vehicle</label>
-              <select name="vehicleId" required className="w-full border rounded p-2 bg-white">
-                <option value="">Select Vehicle</option>
-                {vehicles.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Mileage</label>
-              <Input name="mileage" type="number" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Notes</label>
-              <textarea name="notes" className="w-full border rounded p-2" rows={3} />
-            </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <Button variant="ghost" type="button" onClick={closeModal}>Cancel</Button>
-              <Button type="submit">Create</Button>
-            </div>
+    let formData: any = {
+      customerId: '',
+      vehicleId: '',
+      mileage: undefined,
+      notes: ''
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!formData.customerId || !formData.vehicleId) {
+        toast.error('Customer and Vehicle are required');
+        return;
+      }
+      createMutation.mutate(formData as any);
+    };
+
+    openModal(
+      'Create Job Card',
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={handleSubmit} disabled={createMutation.isPending}>
+              {createMutation.isPending ? 'Creating...' : 'Create Job Card'}
+            </Button>
           </div>
-        </ModalContent>
-      </form>
-    ));
+        }
+      >
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '4px', color: 'var(--c-text)' }}>Customer *</label>
+            <select 
+              required 
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-card)',
+                color: 'var(--c-text)',
+                outline: 'none'
+              }}
+              onChange={(e) => formData.customerId = e.target.value}
+            >
+              <option value="">Select Customer</option>
+              {customers.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '4px', color: 'var(--c-text)' }}>Vehicle *</label>
+            <select 
+              required 
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-card)',
+                color: 'var(--c-text)',
+                outline: 'none'
+              }}
+              onChange={(e) => formData.vehicleId = e.target.value}
+            >
+              <option value="">Select Vehicle</option>
+              {vehicles.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
+            </select>
+          </div>
+          <Input 
+            label="Mileage" 
+            type="number" 
+            placeholder="Enter current mileage"
+            onChange={(e) => formData.mileage = e.target.value ? Number(e.target.value) : undefined}
+          />
+          <div>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 500, marginBottom: '4px', color: 'var(--c-text)' }}>Notes</label>
+            <textarea 
+              placeholder="Initial report or notes"
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-card)',
+                color: 'var(--c-text)',
+                outline: 'none',
+                minHeight: '80px',
+                resize: 'vertical'
+              }}
+              onChange={(e) => formData.notes = e.target.value}
+            />
+          </div>
+        </form>
+      </ModalContent>
+    );
   };
 
   const canManage = user?.role === 'HQ_ADMIN' || user?.role === 'MANAGER';
-  const items = data?.data?.items || [];
-  const totalPages = (data?.data as any)?.totalPages || 1;
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold flex items-center gap-2">
-          <Wrench /> Job Cards
-        </h1>
+    <div style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
+            Job Cards
+          </h1>
+          <p style={{ color: 'var(--c-muted)', marginTop: '4px' }}>Manage entry and exit tracking</p>
+        </div>
         <Button onClick={handleCreate}>
-          <Plus size={16} className="mr-2" /> New Job Card
+          <Plus size={18} style={{ marginRight: '8px' }} />
+          New Job Card
         </Button>
       </div>
 
-      <Card className="mb-6 p-4">
-        <Input 
-          placeholder="Search job cards..." 
-          value={search} 
-          onChange={(e) => setSearch(e.target.value)} 
-          className="max-w-sm"
-        />
-      </Card>
+      <Card>
+        <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)', display: 'flex', gap: '16px' }}>
+          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+            <Search 
+              size={18} 
+              style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} 
+            />
+            <input
+              type="text"
+              placeholder="Search job cards..."
+              style={{
+                width: '100%',
+                padding: '8px 12px 8px 40px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-bg)',
+                color: 'var(--c-text)',
+                outline: 'none'
+              }}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+            />
+          </div>
+        </div>
 
-      <Card className="overflow-hidden">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
-            <Loader2 className="animate-spin mb-2" />
-            <p>Loading job cards...</p>
-          </div>
-        ) : isError ? (
-          <div className="flex flex-col items-center justify-center p-12 text-danger">
-            <AlertCircle className="mb-2" />
-            <p>Failed to load job cards</p>
-            <Button variant="ghost" size="sm" onClick={() => refetch()} className="mt-2">Try Again</Button>
-          </div>
-        ) : items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
-            <Wrench className="mb-2 opacity-20" size={48} />
-            <p>No job cards found</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Plate</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Customer</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Status</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Entry</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Exit</th>
+                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Mileage</th>
+                <th style={{ padding: '12px 16px', textAlign: 'right' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
                 <tr>
-                  <th className="p-3">Plate</th>
-                  <th className="p-3">Customer</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Entry</th>
-                  <th className="p-3">Exit</th>
-                  <th className="p-3">Mileage</th>
-                  <th className="p-3 text-right">Actions</th>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                    Loading job cards...
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y">
-                {items.map((row: any) => (
-                  <tr key={row.id} className="hover:bg-muted/30">
-                    <td className="p-3 font-medium">{row.plate}</td>
-                    <td className="p-3">{row.customerName}</td>
-                    <td className="p-3">
-                      <span className="px-2 py-1 rounded-full text-xs bg-muted">
+              ) : isError ? (
+                <tr>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-danger)' }}>
+                    Failed to load job cards
+                  </td>
+                </tr>
+              ) : items.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                    <Wrench size={48} style={{ marginBottom: '16px', opacity: 0.2, margin: '0 auto' }} />
+                    <p>No job cards found</p>
+                  </td>
+                </tr>
+              ) : (
+                items.map((row: any) => (
+                  <tr key={row.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)', fontWeight: 500 }}>{row.plate}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{row.customerName}</td>
+                    <td style={{ padding: '12px 16px' }}>
+                      <span style={{ 
+                        padding: '2px 8px', 
+                        borderRadius: '999px', 
+                        fontSize: '12px', 
+                        backgroundColor: 'var(--c-bg)',
+                        color: 'var(--c-text)',
+                        border: '1px solid var(--c-border)'
+                      }}>
                         {row.status}
                       </span>
                     </td>
-                    <td className="p-3">{row.entryAt ? new Date(row.entryAt).toLocaleString() : '-'}</td>
-                    <td className="p-3">{row.exitAt ? new Date(row.exitAt).toLocaleString() : '-'}</td>
-                    <td className="p-3">{row.mileage || '-'}</td>
-                    <td className="p-3 text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => {/* Details */}}>
-                          <Eye size={14} />
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{row.entryAt ? new Date(row.entryAt).toLocaleString() : '-'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{row.exitAt ? new Date(row.exitAt).toLocaleString() : '-'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{row.mileage || '-'}</td>
+                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <Button variant="ghost" size="sm" title="View Details">
+                          <Eye size={16} />
                         </Button>
                         {canManage && !row.entryAt && (
                           <Button variant="secondary" size="sm" onClick={() => handleCheckIn(row.id)}>
-                            <CheckCircle size={14} className="mr-1" /> In
+                            <CheckCircle size={16} style={{ marginRight: '4px' }} /> In
                           </Button>
                         )}
                         {canManage && row.entryAt && !row.exitAt && (
                           <Button variant="secondary" size="sm" onClick={() => handleCheckOut(row.id)}>
-                            <LogOut size={14} className="mr-1" /> Out
+                            <LogOut size={16} style={{ marginRight: '4px' }} /> Out
                           </Button>
                         )}
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            {totalPages > 1 && (
-              <div className="p-3 flex items-center justify-between border-t bg-muted/20">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  disabled={page <= 1}
-                  onClick={() => setPage(p => p - 1)}
-                >
-                  Previous
-                </Button>
-                <span className="text-xs text-muted-foreground">Page {page} of {totalPages}</span>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  disabled={page >= totalPages}
-                  onClick={() => setPage(p => p + 1)}
-                >
-                  Next
-                </Button>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {totalPages > 1 && (
+          <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+              Showing {items.length} of {totalItems} items
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                disabled={page === 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+              >
+                <ChevronLeft size={16} />
+              </Button>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontSize: '14px', color: 'var(--c-text)' }}>
+                Page {page} of {totalPages}
               </div>
-            )}
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                disabled={page === totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              >
+                <ChevronRight size={16} />
+              </Button>
+            </div>
           </div>
         )}
       </Card>
