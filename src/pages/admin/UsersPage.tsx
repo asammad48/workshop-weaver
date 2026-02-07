@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { usersRepo } from '@/api/repositories/usersRepo';
-import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto, UserRole as ApiUserRole } from '@/api/generated/apiClient';
+import { UserDto, CreateUserDto, ResetPasswordDto, UpdateRoleDto, UserRole as ApiUserRole, UpdateUserDto } from '@/api/generated/apiClient';
 import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
 import { Select } from '@/components/forms/Select';
@@ -18,7 +18,8 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
-  Loader2
+  Loader2,
+  Edit
 } from 'lucide-react';
 
 export default function UsersPage() {
@@ -123,6 +124,87 @@ export default function UsersPage() {
             <Select 
               label="Branch"
               options={branches}
+              placeholder="Select branch..."
+              errorText={branchError}
+              onChange={(e) => {
+                branchId = e.target.value;
+                branchError = '';
+                renderModal();
+              }}
+            />
+          )}
+        </div>
+      </ModalContent>
+    ));
+
+    renderModal();
+  };
+
+  const handleEditUser = async (user: UserDto) => {
+    let userData = user;
+    try {
+      const res = await usersRepo.get(user.id!);
+      if (res.success && res.data) {
+        userData = res.data;
+      }
+    } catch (err) {
+      console.error('Failed to fetch latest user data', err);
+    }
+
+    let email = userData.email || '';
+    let branchId = userData.branchId || '';
+    let branchError = '';
+    const currentRole = userData.role as unknown as number;
+
+    const renderModal = () => openModal(`Edit User: ${user.email}`, (
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={async () => {
+              if (requireBranchForRole(currentRole) && !branchId) {
+                branchError = 'Branch is required for this role';
+                renderModal();
+                return;
+              }
+              try {
+                const res = await usersRepo.update(user.id!, new UpdateUserDto({
+                  email,
+                  branchId: requireBranchForRole(currentRole) ? branchId : undefined
+                }));
+                if (res.success) {
+                  toast.success('User updated successfully');
+                  closeModal();
+                  fetchUsers();
+                } else {
+                  toast.error(res.message || 'Failed to update user');
+                }
+              } catch (err: any) {
+                toast.error(err.message);
+              }
+            }}>Save Changes</Button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <label style={{ display: 'block', fontSize: '14px', color: 'var(--c-muted)', marginBottom: '4px' }}>Role (Read-only)</label>
+            <div style={{ padding: '8px 12px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)', borderRadius: '4px', fontSize: '14px' }}>
+              {currentRole !== undefined ? USER_ROLE_LABELS[currentRole] : 'N/A'}
+            </div>
+          </div>
+          <Input 
+            label="Email" 
+            type="email" 
+            required 
+            defaultValue={email}
+            onChange={(e) => email = e.target.value} 
+          />
+          {requireBranchForRole(currentRole) && (
+            <Select 
+              label="Branch"
+              options={branches}
+              defaultValue={branchId}
               placeholder="Select branch..."
               errorText={branchError}
               onChange={(e) => {
@@ -359,6 +441,9 @@ export default function UsersPage() {
                     </td>
                     <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <Button variant="secondary" size="sm" onClick={() => handleEditUser(user)} title="Edit User">
+                          <Edit size={16} />
+                        </Button>
                         <Button variant="secondary" size="sm" onClick={() => handleUpdateRole(user)} title="Update Role">
                           <Shield size={16} />
                         </Button>

@@ -6,7 +6,8 @@ import {
   UserDto,
   UserDtoApiResponse,
   UserDtoPageResponseApiResponse,
-  StringApiResponse
+  StringApiResponse,
+  UpdateUserDto
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
@@ -33,6 +34,14 @@ export const usersRepo = {
   async create(body: CreateUserDto): Promise<UserDtoApiResponse> {
     try {
       return await client.usersPOST(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async update(id: string, body: UpdateUserDto): Promise<UserDtoApiResponse> {
+    try {
+      return await client.usersPUT(id, body);
     } catch (error) {
       throw normalizeError(error);
     }
