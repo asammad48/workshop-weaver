@@ -10,6 +10,7 @@ import {
   BarChart3,
   UserCog,
   Building2,
+  Monitor,
   FileText,
   User,
   Palette,
@@ -71,6 +72,7 @@ const allNavGroups: NavGroup[] = [
     items: [
       { path: '/admin/users', label: 'Users', icon: UserCog },
       { path: '/admin/branches', label: 'Branches', icon: Building2 },
+      { path: '/admin/workstations', label: 'Workstations', icon: Monitor },
       { path: '/admin/audit', label: 'Audit', icon: FileText },
     ],
   },

@@ -27,6 +27,7 @@ import ReportsPage from '@/pages/ReportsPage';
 // Admin
 import UsersPage from '@/pages/admin/UsersPage';
 import BranchesPage from '@/pages/admin/BranchesPage';
+import WorkstationsPage from '@/pages/admin/WorkstationsPage';
 import AuditPage from '@/pages/admin/AuditPage';
 
 export function AppRoutes() {
@@ -59,6 +60,7 @@ export function AppRoutes() {
         {/* Admin */}
         <Route path="/admin/users" element={<UsersPage />} />
         <Route path="/admin/branches" element={<BranchesPage />} />
+        <Route path="/admin/workstations" element={<WorkstationsPage />} />
         <Route path="/admin/audit" element={<AuditPage />} />
       </Route>
 
