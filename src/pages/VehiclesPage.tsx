@@ -6,7 +6,8 @@ import {
   Plus, 
   ChevronLeft, 
   ChevronRight,
-  Eye
+  Eye,
+  Loader2
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -16,6 +17,7 @@ import { openModal, closeModal, toast } from '@/state/uiStore';
 import { vehiclesRepo } from '@/api/repositories/vehiclesRepo';
 import { getCustomersOnce } from '@/api/lookups/customersLookup';
 import { VehicleCreateRequest } from '@/api/generated/apiClient';
+import { Select } from '@/components/forms/Select';
 
 export default function VehiclesPage() {
   const queryClient = useQueryClient();
@@ -31,7 +33,7 @@ export default function VehiclesPage() {
 
   const vehicles = data?.data?.items ?? [];
   const totalItems = data?.data?.totalCount ?? 0;
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
   // Mutations
   const createMutation = useMutation({
@@ -52,17 +54,17 @@ export default function VehiclesPage() {
 
   const handleAddVehicle = async () => {
     const customers = await getCustomersOnce();
+    const customerOptions = customers.map(c => ({ value: c.id!, label: c.name! }));
     
-    let formData: any = {
+    let formData = {
       plate: '',
       make: '',
       model: '',
-      year: undefined,
+      year: undefined as number | undefined,
       customerId: ''
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
+    const handleSubmit = async () => {
       if (!formData.plate || !formData.customerId) {
         toast.error('Plate and Customer are required');
         return;
@@ -82,7 +84,7 @@ export default function VehiclesPage() {
           </div>
         }
       >
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <Input 
             label="Plate Number *" 
             placeholder="e.g. KAA 123A" 
@@ -111,28 +113,14 @@ export default function VehiclesPage() {
             placeholder="e.g. 2020" 
             onChange={(e) => formData.year = e.target.value ? parseInt(e.target.value) : undefined}
           />
-          <div className="inputWrapper">
-            <label className="inputLabel">Customer *</label>
-            <select 
-              required
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--c-border)',
-                backgroundColor: 'var(--c-bg)',
-                color: 'var(--c-text)',
-                outline: 'none'
-              }}
-              onChange={(e) => formData.customerId = e.target.value}
-            >
-              <option value="">Select a customer</option>
-              {customers.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-        </form>
+          <Select 
+            label="Customer *"
+            options={customerOptions}
+            placeholder="Select a customer"
+            required
+            onChange={(e) => formData.customerId = e.target.value}
+          />
+        </div>
       </ModalContent>
     );
   };
@@ -140,37 +128,25 @@ export default function VehiclesPage() {
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
-            Vehicles
-          </h1>
-          <p style={{ color: 'var(--c-muted)', marginTop: '4px' }}>Manage your vehicle database</p>
-        </div>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
+          Vehicles
+        </h1>
         <Button onClick={handleAddVehicle}>
           <Plus size={18} style={{ marginRight: '8px' }} />
           Add Vehicle
         </Button>
       </div>
 
-      <Card>
-        <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)', display: 'flex', gap: '16px' }}>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+      <Card style={{ marginBottom: '24px' }}>
+        <div style={{ padding: '16px', display: 'flex', gap: '12px' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
             <Search 
               size={18} 
               style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} 
             />
-            <input
-              type="text"
+            <Input
               placeholder="Search vehicles..."
-              style={{
-                width: '100%',
-                padding: '8px 12px 8px 40px',
-                borderRadius: '6px',
-                border: '1px solid var(--c-border)',
-                backgroundColor: 'var(--c-bg)',
-                color: 'var(--c-text)',
-                outline: 'none'
-              }}
+              style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -179,24 +155,26 @@ export default function VehiclesPage() {
             />
           </div>
         </div>
+      </Card>
 
+      <Card>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Plate</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Make</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Model</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Year</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Customer</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}></th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Plate</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Make</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Model</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Year</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Customer</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
-                    Loading vehicles...
+                  <td colSpan={6} style={{ padding: '48px', textAlign: 'center' }}>
+                    <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto', color: 'var(--c-primary)' }} />
                   </td>
                 </tr>
               ) : isError ? (
@@ -215,14 +193,14 @@ export default function VehiclesPage() {
               ) : (
                 vehicles.map((vehicle) => (
                   <tr key={vehicle.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)', fontWeight: 500 }}>{vehicle.plate}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{vehicle.make || '-'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{vehicle.model || '-'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{vehicle.year || '-'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{vehicle.customerName || '-'}</td>
-                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <td style={{ padding: '16px', color: 'var(--c-text)', fontWeight: 500 }}>{vehicle.plate}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.make || '-'}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.model || '-'}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.year || '-'}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{vehicle.customerName || '-'}</td>
+                    <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                        <Button variant="ghost" size="sm" title="View Details">
+                        <Button variant="secondary" size="sm" title="View Details">
                           <Eye size={16} />
                         </Button>
                       </div>
@@ -234,34 +212,29 @@ export default function VehiclesPage() {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-              Showing {vehicles.length} of {totalItems} vehicles
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                disabled={pageNumber === 1}
-                onClick={() => setPageNumber(p => Math.max(1, p - 1))}
-              >
-                <ChevronLeft size={16} />
-              </Button>
-              <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontSize: '14px', color: 'var(--c-text)' }}>
-                Page {pageNumber} of {totalPages}
-              </div>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                disabled={pageNumber === totalPages}
-                onClick={() => setPageNumber(p => Math.min(totalPages, p + 1))}
-              >
-                <ChevronRight size={16} />
-              </Button>
-            </div>
+        <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+            Page {pageNumber} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              disabled={pageNumber <= 1}
+              onClick={() => setPageNumber(p => Math.max(1, p - 1))}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              disabled={pageNumber >= totalPages}
+              onClick={() => setPageNumber(p => Math.min(totalPages, p + 1))}
+            >
+              <ChevronRight size={16} />
+            </Button>
           </div>
-        )}
+        </div>
       </Card>
     </div>
   );

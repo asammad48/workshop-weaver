@@ -8,7 +8,8 @@ import {
   LogOut,
   Wrench,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { getCustomersOnce } from "@/api/lookups/customersLookup";
@@ -21,6 +22,7 @@ import { ConfirmDialogHost, confirm } from "@/components/ui/ConfirmDialog";
 import { toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUIStore } from "@/state/uiStore";
+import { Select } from "@/components/forms/Select";
 
 const JobCardsPage = () => {
   const { user } = useAuth();
@@ -44,7 +46,7 @@ const JobCardsPage = () => {
 
   const items = data?.data?.items ?? [];
   const totalItems = data?.data?.totalCount ?? 0;
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
   const { data: customers } = useQuery({
     queryKey: ["customersLookup"],
@@ -94,8 +96,7 @@ const JobCardsPage = () => {
     },
   });
 
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreate = () => {
     createMutation.mutate({
       customerId: formData.customerId,
       vehicleId: formData.vehicleId,
@@ -143,124 +144,87 @@ const JobCardsPage = () => {
 
   const canManage = user?.role === "HQ_ADMIN" || user?.role === "MANAGER";
 
-  const renderCreateForm = () => (
-    <ModalContent
-      footer={
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-          <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-          <Button onClick={handleCreate} disabled={createMutation.isPending}>
-            {createMutation.isPending ? "Creating..." : "Create"}
-          </Button>
-        </div>
-      }
-    >
-      <form onSubmit={handleCreate} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Customer *</label>
-          <select
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--c-border)',
-              backgroundColor: 'var(--c-bg)',
-              color: 'var(--c-text)',
-              outline: 'none'
-            }}
-            value={formData.customerId}
+  const renderCreateForm = () => {
+    const customerOptions = (customers || []).map((c: any) => ({ value: c.id, label: c.name }));
+    const vehicleOptions = (vehicles || []).map((v: any) => ({ value: v.id, label: v.name }));
+
+    return (
+      <ModalContent
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={createMutation.isPending}>
+              {createMutation.isPending ? "Creating..." : "Create"}
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Select 
+            label="Customer *"
+            options={customerOptions}
+            placeholder="Select Customer"
+            required
             onChange={(e) => formData.customerId = e.target.value}
-            required
-          >
-            <option value="">Select Customer</option>
-            {customers?.map((c: any) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Vehicle *</label>
-          <select
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--c-border)',
-              backgroundColor: 'var(--c-bg)',
-              color: 'var(--c-text)',
-              outline: 'none'
-            }}
-            value={formData.vehicleId}
-            onChange={(e) => formData.vehicleId = e.target.value}
-            required
-          >
-            <option value="">Select Vehicle</option>
-            {vehicles?.map((v: any) => (
-              <option key={v.id} value={v.id}>{v.name}</option>
-            ))}
-          </select>
-        </div>
-        <Input
-          label="Mileage"
-          type="number"
-          placeholder="Enter current mileage"
-          onChange={(e) => formData.mileage = parseInt(e.target.value) || undefined}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Notes</label>
-          <textarea
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              border: '1px solid var(--c-border)',
-              backgroundColor: 'var(--c-bg)',
-              color: 'var(--c-text)',
-              outline: 'none',
-              resize: 'vertical'
-            }}
-            rows={3}
-            placeholder="Initial report or notes"
-            onChange={(e) => formData.notes = e.target.value}
           />
+          <Select 
+            label="Vehicle *"
+            options={vehicleOptions}
+            placeholder="Select Vehicle"
+            required
+            onChange={(e) => formData.vehicleId = e.target.value}
+          />
+          <Input
+            label="Mileage"
+            type="number"
+            placeholder="Enter current mileage"
+            onChange={(e) => formData.mileage = parseInt(e.target.value) || undefined}
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text)' }}>Notes</label>
+            <textarea
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                backgroundColor: 'var(--c-bg)',
+                color: 'var(--c-text)',
+                outline: 'none',
+                resize: 'vertical'
+              }}
+              rows={3}
+              placeholder="Initial report or notes"
+              onChange={(e) => formData.notes = e.target.value}
+            />
+          </div>
         </div>
-      </form>
-    </ModalContent>
-  );
+      </ModalContent>
+    );
+  };
 
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
-            Job Cards
-          </h1>
-          <p style={{ color: 'var(--c-muted)', marginTop: '4px' }}>Manage vehicle entry and exit</p>
-        </div>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
+          Job Cards
+        </h1>
         <Button onClick={() => openModal("Create Job Card", renderCreateForm())}>
           <Plus size={18} style={{ marginRight: '8px' }} />
           Create Job Card
         </Button>
       </div>
 
-      <Card>
-        <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)', display: 'flex', gap: '16px' }}>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+      <Card style={{ marginBottom: '24px' }}>
+        <div style={{ padding: '16px', display: 'flex', gap: '12px' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
             <Search 
               size={18} 
               style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} 
             />
-            <input
-              type="text"
+            <Input
               placeholder="Search plate or customer..."
-              style={{
-                width: '100%',
-                padding: '8px 12px 8px 40px',
-                borderRadius: '6px',
-                border: '1px solid var(--c-border)',
-                backgroundColor: 'var(--c-bg)',
-                color: 'var(--c-text)',
-                outline: 'none'
-              }}
+              style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -269,25 +233,27 @@ const JobCardsPage = () => {
             />
           </div>
         </div>
+      </Card>
 
+      <Card>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Plate</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Customer</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Status</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Entry At</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Exit At</th>
-                <th style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--c-muted)' }}>Mileage</th>
-                <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Plate</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Customer</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Entry At</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Exit At</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Mileage</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
-                    Loading job cards...
+                  <td colSpan={7} style={{ padding: '48px', textAlign: 'center' }}>
+                    <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto', color: 'var(--c-primary)' }} />
                   </td>
                 </tr>
               ) : isError ? (
@@ -306,9 +272,9 @@ const JobCardsPage = () => {
               ) : (
                 items.map((item: any) => (
                   <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.plate}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.customerName}</td>
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{item.plate}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{item.customerName}</td>
+                    <td style={{ padding: '16px' }}>
                       <span style={{ 
                         padding: '4px 8px', 
                         borderRadius: '4px', 
@@ -321,16 +287,16 @@ const JobCardsPage = () => {
                         {item.status}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>
                       {item.entryAt ? new Date(item.entryAt).toLocaleString() : "-"}
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>
                       {item.exitAt ? new Date(item.exitAt).toLocaleString() : "-"}
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--c-text)' }}>{item.mileage}</td>
-                    <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <td style={{ padding: '16px', color: 'var(--c-text)' }}>{item.mileage}</td>
+                    <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                        <Button variant="ghost" size="sm" title="View Details" onClick={() => handleView(item)}>
+                        <Button variant="secondary" size="sm" title="View Details" onClick={() => handleView(item)}>
                           <Eye size={16} />
                         </Button>
                         {canManage && !item.entryAt && (
@@ -339,7 +305,7 @@ const JobCardsPage = () => {
                           </Button>
                         )}
                         {canManage && item.entryAt && !item.exitAt && (
-                          <Button variant="danger" size="sm" title="Check-out" onClick={() => handleAction(item.id, "checkOut")}>
+                          <Button variant="secondary" size="sm" title="Check-out" onClick={() => handleAction(item.id, "checkOut")}>
                             <LogOut size={16} />
                           </Button>
                         )}
@@ -352,34 +318,29 @@ const JobCardsPage = () => {
           </table>
         </div>
 
-        {totalPages > 1 && (
-          <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-              Showing {items.length} of {totalItems} job cards
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                disabled={pageNumber === 1}
-                onClick={() => setPageNumber(p => Math.max(1, p - 1))}
-              >
-                <ChevronLeft size={16} />
-              </Button>
-              <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontSize: '14px', color: 'var(--c-text)' }}>
-                Page {pageNumber} of {totalPages}
-              </div>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                disabled={pageNumber === totalPages}
-                onClick={() => setPageNumber(p => Math.min(totalPages, p + 1))}
-              >
-                <ChevronRight size={16} />
-              </Button>
-            </div>
+        <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+            Page {pageNumber} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              disabled={pageNumber <= 1}
+              onClick={() => setPageNumber(p => Math.max(1, p - 1))}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              disabled={pageNumber >= totalPages}
+              onClick={() => setPageNumber(p => Math.min(totalPages, p + 1))}
+            >
+              <ChevronRight size={16} />
+            </Button>
           </div>
-        )}
+        </div>
       </Card>
 
       <ModalHost />
