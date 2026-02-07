@@ -10,6 +10,7 @@ import { ModalContent } from '@/components/ui/Modal';
 import { useUIStore, toast, confirm } from '@/state/uiStore';
 import { useAuth } from '@/hooks/useAuth';
 import { Wrench, Plus, Eye, CheckCircle, LogOut, Loader2, AlertCircle } from 'lucide-react';
+import styles from '@/components/ui/ui.module.css';
 
 export default function JobCardsPage() {
   const queryClient = useQueryClient();
@@ -35,27 +36,27 @@ export default function JobCardsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['job-cards'] });
       closeModal();
-      toast.success('Job card created successfully');
+      toast('Job card created successfully', 'success');
     },
-    onError: (err: any) => toast.error(err.message || 'Failed to create job card')
+    onError: (err: any) => toast(err.message || 'Failed to create job card', 'error')
   });
 
   const checkInMutation = useMutation({
     mutationFn: jobCardsRepo.checkIn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['job-cards'] });
-      toast.success('Checked in successfully');
+      toast('Checked in successfully', 'success');
     },
-    onError: (err: any) => toast.error(err.message || 'Failed to check in')
+    onError: (err: any) => toast(err.message || 'Failed to check in', 'error')
   });
 
   const checkOutMutation = useMutation({
     mutationFn: jobCardsRepo.checkOut,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['job-cards'] });
-      toast.success('Checked out successfully');
+      toast('Checked out successfully', 'success');
     },
-    onError: (err: any) => toast.error(err.message || 'Failed to check out')
+    onError: (err: any) => toast(err.message || 'Failed to check out', 'error')
   });
 
   const handleCheckIn = async (id: string) => {
@@ -77,49 +78,52 @@ export default function JobCardsPage() {
   };
 
   const handleCreate = () => {
-    openModal('Create Job Card', (
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        createMutation.mutate({
-          customerId: formData.get('customerId') as string,
-          vehicleId: formData.get('vehicleId') as string,
-          mileage: formData.get('mileage') ? Number(formData.get('mileage')) : undefined,
-          notes: formData.get('notes') as string
-        } as any);
-      }}>
-        <ModalContent>
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Customer</label>
-              <select name="customerId" required className="w-full border rounded p-2 bg-white">
-                <option value="">Select Customer</option>
-                {customers.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
+    openModal({
+      title: 'Create Job Card',
+      content: (
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          createMutation.mutate({
+            customerId: formData.get('customerId') as string,
+            vehicleId: formData.get('vehicleId') as string,
+            mileage: formData.get('mileage') ? Number(formData.get('mileage')) : undefined,
+            notes: formData.get('notes') as string
+          } as any);
+        }}>
+          <ModalContent>
+            <div className="space-y-4 py-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Customer</label>
+                <select name="customerId" required className="w-full border rounded p-2 bg-white">
+                  <option value="">Select Customer</option>
+                  {customers.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Vehicle</label>
+                <select name="vehicleId" required className="w-full border rounded p-2 bg-white">
+                  <option value="">Select Vehicle</option>
+                  {vehicles.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Mileage</label>
+                <Input name="mileage" type="number" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Notes</label>
+                <textarea name="notes" className="w-full border rounded p-2" rows={3} />
+              </div>
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="ghost" type="button" onClick={closeModal}>Cancel</Button>
+                <Button type="submit">Create</Button>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Vehicle</label>
-              <select name="vehicleId" required className="w-full border rounded p-2 bg-white">
-                <option value="">Select Vehicle</option>
-                {vehicles.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Mileage</label>
-              <Input name="mileage" type="number" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Notes</label>
-              <textarea name="notes" className="w-full border rounded p-2" rows={3} />
-            </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <Button variant="ghost" type="button" onClick={closeModal}>Cancel</Button>
-              <Button type="submit">Create</Button>
-            </div>
-          </div>
-        </ModalContent>
-      </form>
-    ));
+          </ModalContent>
+        </form>
+      )
+    });
   };
 
   const canManage = user?.role === 'HQ_ADMIN' || user?.role === 'MANAGER';
