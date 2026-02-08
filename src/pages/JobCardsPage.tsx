@@ -24,6 +24,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUIStore } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { StationTab } from "@/features/jobcards/tabs/StationTab";
+import { TasksTab } from "@/features/jobcards/tabs/TasksTab";
 import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 
 const JobCardsPage = () => {
@@ -133,7 +134,7 @@ const JobCardsPage = () => {
             gap: '24px',
             marginBottom: '8px'
           }}>
-            {['details', 'stations'].map((tab) => (
+            {['details', 'tasks', 'stations'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setLocalTab(tab)}
@@ -218,6 +219,8 @@ const JobCardsPage = () => {
                   </div>
                 )}
               </div>
+            ) : localTab === 'tasks' ? (
+              <TasksTab jobCardId={item.id} />
             ) : (
               <StationTab jobCardId={item.id} />
             )}
