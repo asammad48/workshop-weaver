@@ -4,7 +4,7 @@ let workstationsCache: any[] | null = null;
 
 export const getWorkstationsOnce = async () => {
   if (workstationsCache) return workstationsCache;
-  const res = await workstationsRepo.list(1, 1000);
+  const res = await workstationsRepo.list();
   if (res.success && res.data?.items) {
     workstationsCache = res.data.items.map((w: any) => ({
       id: w.id,

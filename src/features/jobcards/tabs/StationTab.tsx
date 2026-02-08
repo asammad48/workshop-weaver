@@ -47,9 +47,15 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
     }
   });
 
+  const { data: workstationsData } = useQuery({
+    queryKey: ["workstations"],
+    queryFn: () => getWorkstationsOnce(),
+    staleTime: Infinity,
+  });
+
   const handleMove = async () => {
-    const workstations = await getWorkstationsOnce();
-    const workstationOptions = workstations.map(w => ({ value: w.id, label: `${w.code} - ${w.name}` }));
+    const workstations = workstationsData || [];
+    const workstationOptions = workstations.map((w: any) => ({ value: w.id, label: `${w.code} - ${w.name}` }));
     
     let formData = {
       workStationId: "",
@@ -61,10 +67,10 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
         toast.error("Please select a target station");
         return;
       }
-      moveMutation.mutate(new MoveJobCardRequest({
+      moveMutation.mutate({
           stationId: formData.workStationId,
           notes: formData.notes
-      } as any));
+      } as any);
     };
 
     openModal(
