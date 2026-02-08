@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Play, Square, History, Plus, Loader2, AlertCircle } from "lucide-react";
-import { tasksRepo } from "@/api/repositories/tasksRepo";
+import { getWorkstationsOnce } from "@/api/lookups/workstationsLookup";
 import { JobTaskStatus, JOB_TASK_STATUS_LABELS } from "@/constants/enums";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -66,10 +66,10 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
 
   const { data: stationsData } = useQuery({
     queryKey: ["stations"],
-    queryFn: () => tasksRepo.listStations(), // Assuming this exists or I'll add it
+    queryFn: () => getWorkstationsOnce(),
   });
 
-  const stations = stationsData?.data || [];
+  const stations = stationsData || [];
 
   const handleCreateTask = () => {
     let formData = {
@@ -232,9 +232,36 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
 };
 
 const TimelogsModal: React.FC<{ taskId: string }> = ({ taskId }) => {
-  const { data, isLoading, isError, error } = useQuery({
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["taskTimelogs", taskId],
     queryFn: () => tasksRepo.listTimelogs(taskId),
+  });
+
+  const startTimelogMutation = useMutation({
+    mutationFn: () => tasksRepo.startTimelog(taskId),
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success("Timelog started");
+        refetch();
+      } else {
+        toast.error(res.message || "Failed to start timelog");
+      }
+    },
+    onError: (err: any) => toast.error(err.message || "An error occurred"),
+  });
+
+  const stopTimelogMutation = useMutation({
+    mutationFn: () => tasksRepo.stopTimelog(taskId),
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success("Timelog stopped");
+        refetch();
+      } else {
+        toast.error(res.message || "Failed to stop timelog");
+      }
+    },
+    onError: (err: any) => toast.error(err.message || "An error occurred"),
   });
 
   const timelogs = data?.data || [];
@@ -242,7 +269,21 @@ const TimelogsModal: React.FC<{ taskId: string }> = ({ taskId }) => {
   return (
     <ModalContent
       footer={
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <Button 
+            variant="secondary" 
+            onClick={() => startTimelogMutation.mutate()}
+            disabled={startTimelogMutation.isPending}
+          >
+            {startTimelogMutation.isPending ? "Starting..." : "Start Log"}
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => stopTimelogMutation.mutate()}
+            disabled={stopTimelogMutation.isPending}
+          >
+            {stopTimelogMutation.isPending ? "Stopping..." : "Stop Log"}
+          </Button>
           <Button variant="secondary" onClick={closeModal}>Close</Button>
         </div>
       }
