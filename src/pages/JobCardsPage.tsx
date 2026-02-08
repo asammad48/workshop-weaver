@@ -23,6 +23,7 @@ import { toast } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUIStore } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
+import { StationTab } from "@/features/jobcards/tabs/StationTab";
 
 const JobCardsPage = () => {
   const { user } = useAuth();
@@ -118,13 +119,6 @@ const JobCardsPage = () => {
       else checkOutMutation.mutate(id);
     }
   };
-import { StationTab } from "@/features/jobcards/tabs/StationTab";
-
-const JobCardsPage = () => {
-  const { user } = useAuth();
-  const openModal = useUIStore((s) => s.openModal);
-  const closeModal = useUIStore((s) => s.closeModal);
-  const [activeTab, setActiveTab] = useState("details");
 
   const handleView = (item: any) => {
     const ModalContentBody = () => {
