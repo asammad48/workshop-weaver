@@ -24,6 +24,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUIStore } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { StationTab } from "@/features/jobcards/tabs/StationTab";
+import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 
 const JobCardsPage = () => {
   const { user } = useAuth();
@@ -156,6 +157,7 @@ const JobCardsPage = () => {
           </div>
 
           <div style={{ flex: 1 }}>
+            <JobCardHeader jobCard={item} />
             {localTab === 'details' ? (
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
