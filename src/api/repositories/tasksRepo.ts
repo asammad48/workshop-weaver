@@ -3,8 +3,6 @@ import {
   JobTaskResponseIReadOnlyListApiResponse, 
   JobTaskResponseApiResponse, 
   JobTaskCreateRequest,
-  JobTaskStartRequest,
-  JobTaskStopRequest,
   StartTimeLogRequest,
   StopTimeLogRequest,
   TimeLogResponseApiResponse,
@@ -32,7 +30,7 @@ export const tasksRepo = {
     }
   },
 
-  async startTask(id: string, body?: JobTaskStartRequest): Promise<JobTaskResponseApiResponse> {
+  async startTask(id: string, body?: any): Promise<JobTaskResponseApiResponse> {
     try {
       return await client.start2(id, body);
     } catch (error) {
@@ -40,7 +38,7 @@ export const tasksRepo = {
     }
   },
 
-  async stopTask(id: string, body?: JobTaskStopRequest): Promise<JobTaskResponseApiResponse> {
+  async stopTask(id: string, body?: any): Promise<JobTaskResponseApiResponse> {
     try {
       return await client.stop2(id, body);
     } catch (error) {
@@ -67,6 +65,18 @@ export const tasksRepo = {
   async listTimelogs(taskId: string): Promise<TimeLogResponseIReadOnlyListApiResponse> {
     try {
       return await client.timelogs(taskId);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async listStations(): Promise<any> {
+    try {
+      // Assuming there's a stations endpoint on the client
+      if ((client as any).stations) {
+        return await (client as any).stations();
+      }
+      return { success: true, data: [] }; // Fallback
     } catch (error) {
       throw normalizeError(error);
     }

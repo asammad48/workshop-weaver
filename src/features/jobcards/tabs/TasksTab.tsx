@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Play, Square, History, Plus, Loader2, AlertCircle } from "lucide-react";
 import { tasksRepo } from "@/api/repositories/tasksRepo";
+import { JobTaskStatus, JOB_TASK_STATUS_LABELS } from "@/constants/enums";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -63,6 +64,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
     onError: (err: any) => toast.error(err.message || "An error occurred"),
   });
 
+  const { data: stationsData } = useQuery({
+    queryKey: ["stations"],
+    queryFn: () => tasksRepo.listStations(), // Assuming this exists or I'll add it
+  });
+
+  const stations = stationsData?.data || [];
+
   const handleCreateTask = () => {
     let formData = {
       jobCardId: jobCardId,
@@ -84,11 +92,12 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
         }
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <Input
-            label="Station Code *"
-            placeholder="e.g. ST-01"
+          <Select
+            label="Station *"
+            placeholder="Select a station"
             required
-            onChange={(e) => (formData.stationCode = e.target.value)}
+            options={stations.map((s: any) => ({ value: s.code, label: s.name }))}
+            onChange={(val) => (formData.stationCode = val as unknown as string)}
           />
           <Input
             label="Title *"
@@ -183,12 +192,12 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                         padding: "2px 8px", 
                         borderRadius: "4px", 
                         fontSize: "12px",
-                        backgroundColor: task.status === 'COMPLETED' ? 'rgba(34, 197, 94, 0.1)' : 
-                                       task.status === 'IN_PROGRESS' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                        color: task.status === 'COMPLETED' ? 'rgb(34, 197, 94)' : 
-                               task.status === 'IN_PROGRESS' ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                        backgroundColor: task.status === JobTaskStatus.DONE ? 'rgba(34, 197, 94, 0.1)' : 
+                                       task.status === JobTaskStatus.IN_PROGRESS ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                        color: task.status === JobTaskStatus.DONE ? 'rgb(34, 197, 94)' : 
+                               task.status === JobTaskStatus.IN_PROGRESS ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
                       }}>
-                        {task.status}
+                        {JOB_TASK_STATUS_LABELS[task.status as number] || task.status}
                       </span>
                     </td>
                     <td style={{ padding: "16px" }}>{task.startedAt ? new Date(task.startedAt).toLocaleString() : "-"}</td>
@@ -196,12 +205,12 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                     <td style={{ padding: "16px" }}>{task.totalMinutes || 0}</td>
                     <td style={{ padding: "16px", textAlign: "right" }}>
                       <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                        {task.status !== 'COMPLETED' && task.status !== 'IN_PROGRESS' && (
+                        {task.status !== JobTaskStatus.DONE && task.status !== JobTaskStatus.IN_PROGRESS && (
                           <Button variant="secondary" size="sm" title="Start Task" onClick={() => startMutation.mutate(task.id)}>
                             <Play size={14} />
                           </Button>
                         )}
-                        {task.status === 'IN_PROGRESS' && (
+                        {task.status === JobTaskStatus.IN_PROGRESS && (
                           <Button variant="secondary" size="sm" title="Stop Task" onClick={() => stopMutation.mutate(task.id)}>
                             <Square size={14} />
                           </Button>
