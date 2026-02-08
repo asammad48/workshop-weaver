@@ -132,7 +132,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
   const handleViewTimelogs = (taskId: string) => {
     openModal(
       "Task Timelogs",
-      <TimelogsModal taskId={taskId} />
+      <TimelogsModal taskId={taskId} jobCardId={jobCardId} />
     );
   };
 
@@ -232,7 +232,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
   );
 };
 
-const TimelogsModal: React.FC<{ taskId: string }> = ({ taskId }) => {
+const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({ taskId, jobCardId }) => {
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["taskTimelogs", taskId],
@@ -240,7 +240,7 @@ const TimelogsModal: React.FC<{ taskId: string }> = ({ taskId }) => {
   });
 
   const startTimelogMutation = useMutation({
-    mutationFn: () => tasksRepo.startTimelog(taskId),
+    mutationFn: () => tasksRepo.startTimelog(jobCardId, { jobTaskId: taskId }),
     onSuccess: (res) => {
       if (res.success) {
         toast.success("Timelog started");
@@ -253,7 +253,7 @@ const TimelogsModal: React.FC<{ taskId: string }> = ({ taskId }) => {
   });
 
   const stopTimelogMutation = useMutation({
-    mutationFn: () => tasksRepo.stopTimelog(taskId),
+    mutationFn: () => tasksRepo.stopTimelog(jobCardId, {}), // Stop usually just needs the log ID or the active one
     onSuccess: (res) => {
       if (res.success) {
         toast.success("Timelog stopped");

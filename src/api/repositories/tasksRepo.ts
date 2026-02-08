@@ -46,17 +46,17 @@ export const tasksRepo = {
     }
   },
 
-  async startTimelog(id: string, body?: StartTimeLogRequest): Promise<TimeLogResponseApiResponse> {
+  async startTimelog(jobCardId: string, body?: StartTimeLogRequest): Promise<TimeLogResponseApiResponse> {
     try {
-      return await client.start(id, body);
+      return await client.start(jobCardId, body);
     } catch (error) {
       throw normalizeError(error);
     }
   },
 
-  async stopTimelog(id: string, body?: StopTimeLogRequest): Promise<TimeLogResponseApiResponse> {
+  async stopTimelog(jobCardId: string, body?: StopTimeLogRequest): Promise<TimeLogResponseApiResponse> {
     try {
-      return await client.stop(id, body);
+      return await client.stop(jobCardId, body);
     } catch (error) {
       throw normalizeError(error);
     }
