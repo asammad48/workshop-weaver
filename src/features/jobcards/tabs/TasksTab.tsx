@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Play, Square, History, Plus, Loader2, AlertCircle } from "lucide-react";
 import { getWorkstationsOnce } from "@/api/lookups/workstationsLookup";
 import { JobTaskStatus, JOB_TASK_STATUS_LABELS } from "@/constants/enums";
+import { tasksRepo } from "@/api/repositories/tasksRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";

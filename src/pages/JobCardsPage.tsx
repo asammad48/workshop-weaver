@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { JobCardStatus, JOB_CARD_STATUS_LABELS } from "@/constants/enums";
 import { 
   Plus, 
   Search, 
@@ -276,12 +277,12 @@ const JobCardsPage = () => {
                         padding: '4px 8px', 
                         borderRadius: '4px', 
                         fontSize: '12px',
-                        backgroundColor: item.status === 'COMPLETED' ? 'rgba(34, 197, 94, 0.1)' : 
-                                       item.status === 'IN_PROGRESS' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                        color: item.status === 'COMPLETED' ? 'rgb(34, 197, 94)' : 
-                               item.status === 'IN_PROGRESS' ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                        backgroundColor: item.status === JobCardStatus.PAGADO ? 'rgba(34, 197, 94, 0.1)' : 
+                                       item.status === JobCardStatus.EN_PROCESO ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                        color: item.status === JobCardStatus.PAGADO ? 'rgb(34, 197, 94)' : 
+                               item.status === JobCardStatus.EN_PROCESO ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
                       }}>
-                        {item.status}
+                        {JOB_CARD_STATUS_LABELS[item.status as number] || item.status}
                       </span>
                     </td>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>
