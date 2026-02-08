@@ -158,7 +158,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                 </tr>
               ) : (
                 history.map((item: any) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)', transition: 'background-color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(var(--c-primary-rgb), 0.02)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>{(item as any).fromStationName || '-'}</td>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>{(item as any).toStationName || '-'}</td>
                     <td style={{ padding: '16px', color: 'var(--c-text)' }}>
