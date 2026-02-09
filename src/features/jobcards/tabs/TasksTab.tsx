@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Play, Square, History, Plus, Loader2, AlertCircle } from "lucide-react";
+import { Play, Square, History, Plus, Loader2, AlertCircle, StopCircle } from "lucide-react";
 import { getWorkstationsOnce } from "@/api/lookups/workstationsLookup";
+import { getTechnicians } from "@/api/lookups/usersLookup";
 import { JobTaskStatus, JOB_TASK_STATUS_LABELS } from "@/constants/enums";
 import { tasksRepo } from "@/api/repositories/tasksRepo";
 import { Button } from "@/components/ui/Button";
@@ -234,17 +235,29 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
 
 const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({ taskId, jobCardId }) => {
   const queryClient = useQueryClient();
+  const [technicians, setTechnicians] = useState<any[]>([]);
+  const [selectedTechId, setSelectedTechId] = useState<string>("");
+
+  useEffect(() => {
+    getTechnicians().then(setTechnicians);
+  }, []);
+
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["taskTimelogs", taskId],
     queryFn: () => tasksRepo.listTimelogs(taskId),
   });
 
   const startTimelogMutation = useMutation({
-    mutationFn: () => tasksRepo.startTimelog(jobCardId, { jobTaskId: taskId }),
+    mutationFn: (userId: string) => {
+      const request: any = { jobTaskId: taskId };
+      request.userId = userId;
+      return tasksRepo.startTimelog(jobCardId, request);
+    },
     onSuccess: (res) => {
       if (res.success) {
         toast.success("Timelog started");
         refetch();
+        setSelectedTechId("");
       } else {
         toast.error(res.message || "Failed to start timelog");
       }
@@ -253,7 +266,7 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({ taskId
   });
 
   const stopTimelogMutation = useMutation({
-    mutationFn: () => tasksRepo.stopTimelog(jobCardId, {}), // Stop usually just needs the log ID or the active one
+    mutationFn: () => tasksRepo.stopTimelog(jobCardId, { toJSON: () => ({}) } as any),
     onSuccess: (res) => {
       if (res.success) {
         toast.success("Timelog stopped");
@@ -265,59 +278,89 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({ taskId
     onError: (err: any) => toast.error(err.message || "An error occurred"),
   });
 
+  const handleStartLog = () => {
+    if (!selectedTechId) {
+      toast.error("Please select a technician first");
+      return;
+    }
+    startTimelogMutation.mutate(selectedTechId);
+  };
+
   const timelogs = data?.data || [];
 
   return (
     <ModalContent
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-          <Button 
-            variant="secondary" 
-            onClick={() => startTimelogMutation.mutate()}
-            disabled={startTimelogMutation.isPending}
-          >
-            {startTimelogMutation.isPending ? "Starting..." : "Start Log"}
-          </Button>
-          <Button 
-            variant="secondary" 
-            onClick={() => stopTimelogMutation.mutate()}
-            disabled={stopTimelogMutation.isPending}
-          >
-            {stopTimelogMutation.isPending ? "Stopping..." : "Stop Log"}
-          </Button>
           <Button variant="secondary" onClick={closeModal}>Close</Button>
         </div>
       }
     >
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-              <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Started</th>
-              <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Ended</th>
-              <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Mins</th>
-              <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>By</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr><td colSpan={4} style={{ padding: "24px", textAlign: "center" }}><Loader2 size={18} className="animate-spin" /></td></tr>
-            ) : isError ? (
-              <tr><td colSpan={4} style={{ padding: "24px", textAlign: "center", color: "var(--c-danger)" }}>Error</td></tr>
-            ) : timelogs.length === 0 ? (
-              <tr><td colSpan={4} style={{ padding: "24px", textAlign: "center", color: "var(--c-muted)" }}>No timelogs</td></tr>
-            ) : (
-              timelogs.map((log: any) => (
-                <tr key={log.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
-                  <td style={{ padding: "12px", fontSize: "13px" }}>{log.startedAt ? new Date(log.startedAt).toLocaleString() : "-"}</td>
-                  <td style={{ padding: "12px", fontSize: "13px" }}>{log.endedAt ? new Date(log.endedAt).toLocaleString() : "-"}</td>
-                  <td style={{ padding: "12px", fontSize: "13px" }}>{log.minutes || 0}</td>
-                  <td style={{ padding: "12px", fontSize: "13px" }}>{log.createdBy}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "12px", padding: "12px", backgroundColor: "var(--c-bg-alt)", borderRadius: "8px", border: "1px solid var(--c-border)" }}>
+          <div style={{ flex: 1 }}>
+            <Select
+              label="Select Technician"
+              placeholder="Choose technician..."
+              value={selectedTechId}
+              options={technicians.map(t => ({ value: t.id, label: t.name || t.userName }))}
+              onChange={(val) => setSelectedTechId(val as unknown as string)}
+            />
+          </div>
+          <Button 
+            onClick={handleStartLog}
+            disabled={startTimelogMutation.isPending || !selectedTechId}
+            style={{ marginBottom: "2px" }}
+          >
+            {startTimelogMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} style={{ marginRight: "6px" }} />}
+            Start Log
+          </Button>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Started</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Ended</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Mins</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>By</th>
+                <th style={{ padding: "12px", textAlign: "right", color: "var(--c-muted)", fontSize: "13px" }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr><td colSpan={5} style={{ padding: "24px", textAlign: "center" }}><Loader2 size={18} className="animate-spin" /></td></tr>
+              ) : isError ? (
+                <tr><td colSpan={5} style={{ padding: "24px", textAlign: "center", color: "var(--c-danger)" }}>Error</td></tr>
+              ) : timelogs.length === 0 ? (
+                <tr><td colSpan={5} style={{ padding: "24px", textAlign: "center", color: "var(--c-muted)" }}>No timelogs</td></tr>
+              ) : (
+                timelogs.map((log: any) => (
+                  <tr key={log.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.startedAt ? new Date(log.startedAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.endedAt ? new Date(log.endedAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.minutes || 0}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.createdBy}</td>
+                    <td style={{ padding: "12px", textAlign: "right" }}>
+                      {!log.endedAt && (
+                        <Button 
+                          variant="secondary" 
+                          size="sm" 
+                          title="Stop Log"
+                          onClick={() => stopTimelogMutation.mutate()}
+                          disabled={stopTimelogMutation.isPending}
+                        >
+                          {stopTimelogMutation.isPending ? <Loader2 size={12} className="animate-spin" /> : <StopCircle size={14} color="var(--c-danger)" />}
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </ModalContent>
   );
