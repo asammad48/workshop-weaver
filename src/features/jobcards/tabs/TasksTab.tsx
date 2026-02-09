@@ -406,9 +406,8 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
     mutationFn: (userId: string) => {
       const request: any = {
         jobTaskId: taskId,
-        technicianUserId: selectedTechId,
+        technicianUserId: userId,
       };
-      request.userId = userId;
       return tasksRepo.startTimelog(jobCardId, request);
     },
     onSuccess: (res) => {
@@ -480,9 +479,9 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
               value={selectedTechId}
               options={technicians.map((t) => ({
                 value: t.id,
-                label: t.email,
+                label: t.name || t.userName || t.email,
               }))}
-              onChange={(val) => setSelectedTechId(val as unknown as string)}
+              onChange={(e: any) => setSelectedTechId(e.target.value)}
             />
           </div>
           <Button
