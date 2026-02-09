@@ -598,23 +598,21 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
                     style={{ borderBottom: "1px solid var(--c-border)" }}
                   >
                     <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.startedAt
-                        ? new Date(log.startedAt).toLocaleString()
+                      {log.startAt
+                        ? new Date(log.startAt).toLocaleString()
                         : "-"}
                     </td>
                     <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.endedAt
-                        ? new Date(log.endedAt).toLocaleString()
-                        : "-"}
+                      {log.endAt ? new Date(log.endAt).toLocaleString() : "-"}
                     </td>
                     <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.minutes || 0}
+                      {log.totalMinutes || 0}
                     </td>
                     <td style={{ padding: "12px", fontSize: "13px" }}>
                       {log.createdBy}
                     </td>
                     <td style={{ padding: "12px", textAlign: "right" }}>
-                      {!log.endedAt && (
+                      {!log.endAt && (
                         <Button
                           variant="secondary"
                           size="sm"
