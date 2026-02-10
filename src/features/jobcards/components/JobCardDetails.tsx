@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { JobCardHeader } from "./JobCardHeader";
 import { TasksTab } from "../tabs/TasksTab";
 import { StationTab } from "../tabs/StationTab";
+import { LineItemsTab } from "../tabs/LineItemsTab";
 
 interface JobCardDetailsProps {
   jobCard: any;
@@ -31,7 +32,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
         gap: '24px',
         marginBottom: '8px'
       }}>
-        {['details', 'tasks', 'stations'].map((tab) => (
+        {['details', 'tasks', 'stations', 'line-items'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -49,7 +50,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
               textTransform: 'capitalize'
             }}
           >
-            {tab}
+            {tab.replace('-', ' ')}
           </button>
         ))}
       </div>
@@ -119,8 +120,10 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
           </div>
         ) : activeTab === 'tasks' ? (
           <TasksTab jobCardId={jobCard.id} />
-        ) : (
+        ) : activeTab === 'stations' ? (
           <StationTab jobCardId={jobCard.id} />
+        ) : (
+          <LineItemsTab jobCardId={jobCard.id} />
         )}
       </div>
     </div>
