@@ -191,7 +191,7 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
             { value: "2", label: "Labor" },
             { value: "3", label: "Other" },
           ]}
-          onChange={(val) => setFormData(prev => ({ ...prev, itemType: parseInt(val as string) }))}
+          onChange={(val) => setFormData(prev => ({ ...prev, itemType: parseInt(val as unknown as string) }))}
         />
 
         {formData.itemType === 1 && (
@@ -203,7 +203,7 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
               value: p.id,
               label: p.name,
             }))}
-            onChange={(val) => handlePartChange(val as string)}
+            onChange={(val) => handlePartChange(val as unknown as string)}
           />
         )}
 
