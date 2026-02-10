@@ -1,0 +1,71 @@
+# PROMPT 15 — PART REQUESTS + ORDER/ARRIVE/SIGN + PART USAGE
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs
+- List: `partRequestsGET(jobCardId)` -> `JobPartRequestResponseIReadOnlyListApiResponse`
+- Create: `partRequestsPOST(jobCardId, body?: JobPartRequestCreateRequest)` -> `JobPartRequestResponseApiResponse`
+Fulfillment state changes:
+- `markOrdered(id)` -> `JobPartRequestResponseApiResponse`
+- `markArrived(id)` -> `JobPartRequestResponseApiResponse`
+- `stationSign(id)` -> `JobPartRequestResponseApiResponse`
+- `officeSign(id)` -> `JobPartRequestResponseApiResponse`
+Usage on jobcard:
+- `use(jobCardId, body?: JobCardPartUseRequest)` -> `JobCardPartUsageResponseApiResponse`
+
+## Files
+- `src/api/repositories/partRequestsRepo.ts`
+- `src/features/jobcards/tabs/PartRequestsTab.tsx`
+- lookups: parts, suppliers (if needed)
+
+## Part requests table columns
+- partName/sku
+- qty
+- status
+- requestedAt
+- orderedAt
+- arrivedAt
+- stationSignedAt
+- officeSignedAt
+
+## Row actions (role-gated)
+- TECH/MANAGER: Create request
+- STORE: Mark Ordered / Mark Arrived
+- TECH (at station): Station Sign
+- MANAGER/Office: Office Sign
+(Backend decides; UI just gates)
+
+## Create Part Request modal (JobPartRequestCreateRequest)
+- partId: Select required
+- qty: number required
+- stationCode: text/select required
+- note: textarea optional
+
+## Part Usage modal (JobCardPartUseRequest)
+Triggered from JobCard detail "Use Part" button.
+Fields:
+- partId: Select required
+- qty: number required
+- locationId: Select required (locations lookup)
+- note: textarea optional
+Flow:
+- submit → `use(jobCardId, dto)` → toast → refresh stock/usage widget
+
+## Test
+- Mark ordered/arrived updates dates
+- Signs update dates
+- Use part creates usage record (and stock moves if backend does)
+

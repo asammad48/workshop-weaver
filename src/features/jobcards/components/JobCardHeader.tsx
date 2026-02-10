@@ -1,7 +1,10 @@
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope } from "lucide-react";
+import { ClipboardList, Stethoscope, Tool } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
+import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
+import { getLocationsOnce } from "@/api/lookups/locationsLookup";
+import { getPartsOnce } from "@/api/lookups/partsLookup";
 import { Button } from "@/components/ui/Button";
 import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
@@ -44,6 +47,21 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         closeModal();
       } else {
         toast.error(res.message || "Failed to update diagnosis");
+      }
+    },
+    onError: (err: any) => toast.error(err.message || "An error occurred"),
+  });
+
+  const usePartMutation = useMutation({
+    mutationFn: (body: any) => partRequestsRepo.use(jobCard.id, body),
+    onSuccess: (res) => {
+      if (res.success) {
+        toast.success("Part usage recorded");
+        queryClient.invalidateQueries({ queryKey: ["jobCardUsage", jobCard.id] });
+        if (onUpdate) onUpdate();
+        closeModal();
+      } else {
+        toast.error(res.message || "Failed to record part usage");
       }
     },
     onError: (err: any) => toast.error(err.message || "An error occurred"),
@@ -192,6 +210,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     );
   };
 
+  const handleUsePart = () => {
+    openModal(
+      "Use Part",
+      <UsePartModal 
+        onSubmit={(data) => usePartMutation.mutate(data)}
+        isPending={usePartMutation.isPending}
+      />
+    );
+  };
+
   return (
     <div
       style={{
@@ -205,6 +233,10 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         justifyContent: "flex-end",
       }}
     >
+      <Button variant="secondary" onClick={handleUsePart}>
+        <Tool size={18} style={{ marginRight: "8px" }} />
+        Use Part
+      </Button>
       <Button variant="secondary" onClick={handleDiagnosis}>
         <Stethoscope size={18} style={{ marginRight: "8px" }} />
         Update Diagnosis
@@ -214,5 +246,67 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         Change Status
       </Button>
     </div>
+  );
+};
+
+const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean }> = ({ onSubmit, isPending }) => {
+  const [formData, setFormData] = useState({
+    partId: "",
+    qty: 1,
+    locationId: "",
+    note: "",
+  });
+
+  const { data: parts } = useQuery({ queryKey: ["parts"], queryFn: getPartsOnce });
+  const { data: locations } = useQuery({ queryKey: ["locations"], queryFn: getLocationsOnce });
+
+  return (
+    <ModalContent
+      footer={
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+          <Button onClick={() => onSubmit(formData)} disabled={isPending}>
+            {isPending ? "Recording..." : "Use Part"}
+          </Button>
+        </div>
+      }
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <Select
+          label="Part *"
+          required
+          placeholder="Select part"
+          value={formData.partId}
+          options={(parts || []).map((p: any) => ({ value: p.id, label: p.name }))}
+          onChange={(val) => setFormData(prev => ({ ...prev, partId: val as unknown as string }))}
+        />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <Input
+            label="Quantity *"
+            type="number"
+            required
+            value={formData.qty}
+            onChange={(e) => setFormData(prev => ({ ...prev, qty: parseFloat(e.target.value) }))}
+          />
+          <Select
+            label="Location *"
+            required
+            placeholder="Select location"
+            value={formData.locationId}
+            options={(locations || []).map((l: any) => ({ value: l.id, label: l.name }))}
+            onChange={(val) => setFormData(prev => ({ ...prev, locationId: val as unknown as string }))}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <label style={{ fontSize: "14px", fontWeight: 500 }}>Notes</label>
+          <textarea
+            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--c-border)", backgroundColor: "var(--c-bg)", color: "var(--c-text)", outline: "none" }}
+            rows={3}
+            value={formData.note}
+            onChange={(e) => setFormData(prev => ({ ...prev, note: e.target.value }))}
+          />
+        </div>
+      </div>
+    </ModalContent>
   );
 };
