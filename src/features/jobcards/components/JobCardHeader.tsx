@@ -13,7 +13,10 @@ interface JobCardHeaderProps {
   onUpdate?: () => void;
 }
 
-export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate }) => {
+export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
+  jobCard,
+  onUpdate,
+}) => {
   const queryClient = useQueryClient();
 
   const statusMutation = useMutation({
@@ -48,7 +51,7 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
 
   const handleStatusChange = () => {
     let formData = {
-      status: jobCard.status || "",
+      status: jobCard.status || 0,
       note: "",
     };
 
@@ -56,9 +59,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
       "Change Job Card Status",
       <ModalContent
         footer={
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-            <Button onClick={() => statusMutation.mutate(formData)} disabled={statusMutation.isPending}>
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
+          >
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => statusMutation.mutate(formData)}
+              disabled={statusMutation.isPending}
+            >
               {statusMutation.isPending ? "Updating..." : "Update Status"}
             </Button>
           </div>
@@ -69,15 +79,17 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
             label="Status *"
             required
             options={[
-              { value: "DRAFT", label: "Draft" },
-              { value: "OPEN", label: "Open" },
-              { value: "IN_PROGRESS", label: "In Progress" },
-              { value: "PENDING_PARTS", label: "Pending Parts" },
-              { value: "COMPLETED", label: "Completed" },
-              { value: "CANCELLED", label: "Cancelled" },
+              { value: 0, label: "New Request" }, // NuevaSolicitud
+              { value: 1, label: "Order Placed" }, // PedidoRealizado
+              { value: 2, label: "Order Received" }, // PedidoRecibido
+              { value: 3, label: "Awaiting Approval" }, // EsperandoAprobacion
+              { value: 4, label: "In Progress" }, // EnProceso
+              { value: 5, label: "Customer Notified" }, // ClienteInformado
+              { value: 6, label: "Ready for Pickup" }, // ListoParaRecoger
+              { value: 7, label: "Paid" }, // Pagado
             ]}
             defaultValue={formData.status}
-            onChange={(e) => (formData.status = e.target.value)}
+            onChange={(e) => (formData.status = Number(e.target.value))}
           />
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <label style={{ fontSize: "14px", fontWeight: 500 }}>Note</label>
@@ -98,7 +110,7 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
             />
           </div>
         </div>
-      </ModalContent>
+      </ModalContent>,
     );
   };
 
@@ -113,9 +125,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
       "Update Diagnosis",
       <ModalContent
         footer={
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-            <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-            <Button onClick={() => diagnosisMutation.mutate(formData)} disabled={diagnosisMutation.isPending}>
+          <div
+            style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
+          >
+            <Button variant="secondary" onClick={closeModal}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => diagnosisMutation.mutate(formData)}
+              disabled={diagnosisMutation.isPending}
+            >
               {diagnosisMutation.isPending ? "Saving..." : "Save Diagnosis"}
             </Button>
           </div>
@@ -123,7 +142,9 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <label style={{ fontSize: "14px", fontWeight: 500 }}>Diagnosis *</label>
+            <label style={{ fontSize: "14px", fontWeight: 500 }}>
+              Diagnosis *
+            </label>
             <textarea
               style={{
                 width: "100%",
@@ -142,36 +163,48 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({ jobCard, onUpdate 
               onChange={(e) => (formData.diagnosis = e.target.value)}
             />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "16px",
+            }}
+          >
             <Input
               label="Estimated Cost"
               type="number"
               defaultValue={formData.estimateCost}
-              onChange={(e) => (formData.estimateCost = parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                (formData.estimateCost = parseFloat(e.target.value) || 0)
+              }
             />
             <Input
               label="Estimated Minutes"
               type="number"
               defaultValue={formData.estimateMinutes}
-              onChange={(e) => (formData.estimateMinutes = parseInt(e.target.value) || 0)}
+              onChange={(e) =>
+                (formData.estimateMinutes = parseInt(e.target.value) || 0)
+              }
             />
           </div>
         </div>
-      </ModalContent>
+      </ModalContent>,
     );
   };
 
   return (
-    <div style={{ 
-      display: "flex", 
-      gap: "12px", 
-      padding: "16px", 
-      backgroundColor: "var(--c-card)", 
-      borderRadius: "8px",
-      border: "1px solid var(--c-border)",
-      marginBottom: "16px",
-      justifyContent: "flex-end"
-    }}>
+    <div
+      style={{
+        display: "flex",
+        gap: "12px",
+        padding: "16px",
+        backgroundColor: "var(--c-card)",
+        borderRadius: "8px",
+        border: "1px solid var(--c-border)",
+        marginBottom: "16px",
+        justifyContent: "flex-end",
+      }}
+    >
       <Button variant="secondary" onClick={handleDiagnosis}>
         <Stethoscope size={18} style={{ marginRight: "8px" }} />
         Update Diagnosis
