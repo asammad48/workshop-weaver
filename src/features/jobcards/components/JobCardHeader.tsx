@@ -1,6 +1,6 @@
-import React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope, Tool } from "lucide-react";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ClipboardList, Stethoscope, Wrench } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
 import { getLocationsOnce } from "@/api/lookups/locationsLookup";
@@ -234,7 +234,7 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
       }}
     >
       <Button variant="secondary" onClick={handleUsePart}>
-        <Tool size={18} style={{ marginRight: "8px" }} />
+        <Wrench size={18} style={{ marginRight: "8px" }} />
         Use Part
       </Button>
       <Button variant="secondary" onClick={handleDiagnosis}>
