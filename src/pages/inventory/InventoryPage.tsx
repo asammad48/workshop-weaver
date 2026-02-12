@@ -13,9 +13,9 @@ export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<Tab>('suppliers');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const showModal = useUIStore((s) => s.showModal);
+  const showModal = useUIStore((s) => s.openModal);
   const closeModal = useUIStore((s) => s.closeModal);
-  const showToast = useUIStore((s) => s.showToast);
+  const showToast = useUIStore((s) => s.showToast || ((m: string) => console.log(m)));
   const queryClient = useQueryClient();
 
   const renderContent = () => {
@@ -104,13 +104,13 @@ function SuppliersTable({ search, page, setPage }: any) {
           {items.length === 0 && <tr><td colSpan={4} className="p-4 text-center">No suppliers found</td></tr>}
         </tbody>
       </table>
-      <Pagination page={page} setPage={setPage} hasNext={data?.data?.hasNextPage} />
+      <Pagination page={page} setPage={setPage} hasNext={data?.data?.totalCount && (page * 10 < data.data.totalCount)} />
     </div>
   );
 }
 
 function PartsTable({ search, page, setPage }: any) {
-  const showModal = useUIStore((s) => s.showModal);
+  const showModal = useUIStore((s) => s.openModal);
   const { data, isLoading, error } = useQuery({
     queryKey: ['parts', page, search],
     queryFn: () => inventoryRepo.getParts(page, 10, search)
@@ -148,7 +148,7 @@ function PartsTable({ search, page, setPage }: any) {
           {items.length === 0 && <tr><td colSpan={4} className="p-4 text-center">No parts found</td></tr>}
         </tbody>
       </table>
-      <Pagination page={page} setPage={setPage} hasNext={data?.data?.hasNextPage} />
+      <Pagination page={page} setPage={setPage} hasNext={data?.data?.totalCount && (page * 10 < data.data.totalCount)} />
     </div>
   );
 }
@@ -185,7 +185,7 @@ function LocationsTable({ search, page, setPage }: any) {
           {items.length === 0 && <tr><td colSpan={3} className="p-4 text-center">No locations found</td></tr>}
         </tbody>
       </table>
-      <Pagination page={page} setPage={setPage} hasNext={data?.data?.hasNextPage} />
+      <Pagination page={page} setPage={setPage} hasNext={data?.data?.totalCount && (page * 10 < data.data.totalCount)} />
     </div>
   );
 }
@@ -203,7 +203,7 @@ function Pagination({ page, setPage, hasNext }: any) {
 function SupplierForm({ onSuccess }: any) {
   const [form, setForm] = useState({ name: '', phone: '', email: '', address: '' });
   const mutation = useMutation({
-    mutationFn: inventoryRepo.createSupplier,
+    mutationFn: (data: any) => inventoryRepo.createSupplier(data as any),
     onSuccess
   });
 
@@ -222,7 +222,7 @@ function SupplierForm({ onSuccess }: any) {
 function PartForm({ onSuccess }: any) {
   const [form, setForm] = useState({ sku: '', name: '', brand: '', unit: '' });
   const mutation = useMutation({
-    mutationFn: inventoryRepo.createPart,
+    mutationFn: (data: any) => inventoryRepo.createPart(data as any),
     onSuccess
   });
 
@@ -241,7 +241,7 @@ function PartForm({ onSuccess }: any) {
 function LocationForm({ onSuccess }: any) {
   const [form, setForm] = useState({ code: '', name: '', isActive: true });
   const mutation = useMutation({
-    mutationFn: inventoryRepo.createLocation,
+    mutationFn: (data: any) => inventoryRepo.createLocation(data as any),
     onSuccess
   });
 
@@ -266,7 +266,7 @@ function PartDetails({ id }: { id: string }) {
   });
 
   if (isLoading) return <div>Loading...</div>;
-  const p = data?.data;
+  const p = data?.data as any;
   if (!p) return <div>Part not found</div>;
 
   return (
