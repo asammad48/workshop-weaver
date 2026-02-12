@@ -1,0 +1,50 @@
+# PROMPT 16 — INVENTORY MASTER DATA (Suppliers/Parts/Locations)
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs
+Suppliers:
+- `suppliersGET(...)` -> `SupplierResponsePageResponseApiResponse`
+- `suppliersPOST(body?: SupplierCreateRequest)` -> `SupplierResponseApiResponse`
+Parts:
+- `partsGET(...)` -> `PartResponsePageResponseApiResponse`
+- `partsGET2(id)` -> `PartResponseApiResponse`
+- `partsPOST(body?: PartCreateRequest)` -> `PartResponseApiResponse`
+Locations:
+- `locationsGET(...)` -> `LocationResponsePageResponseApiResponse`
+- `locationsPOST(body?: LocationCreateRequest)` -> `LocationResponseApiResponse`
+
+## Files
+- `src/api/repositories/inventoryRepo.ts`
+- `src/pages/inventory/InventoryPage.tsx` (tabs)
+- lookups: `partsLookup`, `locationsLookup`
+
+## Suppliers tab
+Table: name, phone, email, address
+Create modal: name(text req), phone(text opt), email(email opt), address(textarea opt)
+
+## Parts tab
+Table: sku, name, brand, unit
+Create modal: sku(text req), name(text req), brand(text opt), unit(text opt)
+Details popup (GET2): show part details when row clicked.
+
+## Locations tab
+Table: code, name, isActive
+Create modal: code(text req), name(text req), isActive(checkbox)
+
+## Test
+- Create part and verify it appears in part request modal
+
