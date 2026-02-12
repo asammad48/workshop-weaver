@@ -3,7 +3,8 @@ import { Client } from '../generated/apiClient';
 import type { 
   SupplierCreateRequest, 
   PartCreateRequest, 
-  LocationCreateRequest 
+  LocationCreateRequest,
+  StockAdjustRequest 
 } from '../generated/apiClient';
 
 const client = createClient(Client);
@@ -32,4 +33,14 @@ export const inventoryRepo = {
 
   createLocation: (data: LocationCreateRequest) =>
     client.locationsPOST(data),
+
+  // Stock & Ledger
+  getStock: (pageNumber?: number, pageSize?: number, search?: string, partId?: string, locationId?: string) =>
+    client.stock(pageNumber, pageSize, search, undefined, undefined, partId, locationId),
+
+  getLedger: (pageNumber?: number, pageSize?: number, search?: string) =>
+    client.ledger(pageNumber, pageSize, search, undefined, undefined),
+
+  adjustStock: (data: StockAdjustRequest) =>
+    client.adjust(data),
 };
