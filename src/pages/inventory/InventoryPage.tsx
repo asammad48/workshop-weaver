@@ -15,7 +15,7 @@ export default function InventoryPage() {
   const [page, setPage] = useState(1);
   const showModal = useUIStore((s) => s.openModal);
   const closeModal = useUIStore((s) => s.closeModal);
-  const showToast = useUIStore((s) => s.showToast || ((m: string) => console.log(m)));
+  const showToast = (m: string) => console.log(m);
   const queryClient = useQueryClient();
 
   const renderContent = () => {
