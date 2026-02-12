@@ -1,0 +1,51 @@
+# PROMPT 18 — PURCHASE ORDERS (Create + Submit + Receive)
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs
+- List: `purchaseOrdersGET(...)` -> `PurchaseOrderResponsePageResponseApiResponse`
+- Get: `purchaseOrdersGET2(id)` -> `PurchaseOrderResponseApiResponse`
+- Create: `purchaseOrdersPOST(body?: PurchaseOrderCreateRequest)` -> `PurchaseOrderResponseApiResponse`
+- Submit: `submit(id)` -> `PurchaseOrderResponseApiResponse`
+- Receive: `receive(id, body?: PurchaseOrderReceiveRequest)` -> `PurchaseOrderResponseApiResponse`
+
+## Files
+- `src/api/repositories/purchaseOrdersRepo.ts`
+- `src/pages/inventory/PurchaseOrdersPage.tsx`
+
+## Table columns
+- orderNo, supplierName, status, createdAt, submittedAt, receivedAt
+
+## Create modal (PurchaseOrderCreateRequest)
+- supplierId: Select required
+- notes: textarea optional
+- items[]:
+  - partId: Select required
+  - qty: number required
+  - unitCost: number required
+
+## Row actions (STORE/HQ_ADMIN)
+- View (opens detail)
+- Submit (confirm) -> `submit(id)`
+- Receive (modal) -> `receive(id, dto)`
+
+Receive modal (PurchaseOrderReceiveRequest)
+- locationId: Select required
+- notes: textarea optional
+
+## Test
+- Create → Submit → Receive works in order
+

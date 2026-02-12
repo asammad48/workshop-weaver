@@ -15,6 +15,7 @@ export const lookupsCache = {
   parts: [] as LookupItem[],
   locations: [] as LookupItem[],
   vehicles: [] as LookupItem[],
+  suppliers: [] as LookupItem[],
 };
 
 /**
