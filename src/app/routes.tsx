@@ -16,7 +16,7 @@ import CustomersPage from '@/pages/CustomersPage';
 import VehiclesPage from '@/pages/VehiclesPage';
 
 // Inventory
-import InventoryPage from '@/pages/InventoryPage';
+import InventoryPage from '@/pages/inventory/InventoryPage';
 import PurchaseOrdersPage from '@/pages/PurchaseOrdersPage';
 import TransfersPage from '@/pages/TransfersPage';
 
