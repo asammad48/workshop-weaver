@@ -1,0 +1,60 @@
+# PROMPT 24 — COMMUNICATIONS + ATTACHMENTS (Presign + Metadata)
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs
+Communications:
+- `communicationsGET(jobCardId)` -> `CommunicationLogResponseIReadOnlyListApiResponse`
+- `communicationsPOST(body?: CommunicationLogCreateRequest)` -> `CommunicationLogResponseApiResponse`
+
+Attachments:
+- List: `attachments(ownerType?, ownerId?)` -> `AttachmentResponseIReadOnlyListApiResponse`
+- Presign: `presign(body?: PresignRequest)` -> `PresignResponseApiResponse`
+- Save metadata: `metadata(body?: AttachmentCreateRequest)` -> `AttachmentResponseApiResponse`  ✅ MUST call after upload
+
+## Files
+- `src/api/repositories/commsRepo.ts`
+- `src/api/repositories/attachmentsRepo.ts`
+- `src/features/jobcards/tabs/CommunicationsTab.tsx`
+- `src/features/jobcards/tabs/AttachmentsTab.tsx`
+
+## Communications table columns
+- channel, messageType, sentAt, notes
+
+Add comm modal (CommunicationLogCreateRequest)
+- jobCardId hidden required
+- channel text/select required
+- messageType text/select required
+- sentAt datetime-local required
+- notes textarea optional
+
+## Attachments table columns
+- fileName, contentType, sizeBytes, createdAt
+
+Upload flow (MUST be 4 steps)
+1) pick file
+2) call `presign(PresignRequest)` with: ownerType, ownerId, fileName, contentType, sizeBytes
+3) upload file to returned URL (PUT/POST as instructed by presign response)
+4) call `metadata(AttachmentCreateRequest)` to save DB record
+5) refresh `attachments(ownerType, ownerId)`
+
+Metadata modal not needed; it happens after upload automatically.
+
+## Test
+- presign works
+- upload completes
+- metadata call creates record and list refresh shows new file
+
