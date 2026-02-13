@@ -1,16 +1,38 @@
-import { apiClient } from "../generated/apiClient";
+import { 
+  Client,
+  AttachmentResponseIReadOnlyListApiResponse,
+  PresignRequest,
+  PresignResponseApiResponse,
+  AttachmentCreateRequest,
+  AttachmentResponseApiResponse
+} from '@/api/generated/apiClient';
+import { createClient } from './_repoBase';
+import { normalizeError } from './_errors';
+
+const client = createClient(Client);
 
 export const attachmentsRepo = {
-  list: async (ownerType?: string, ownerId?: string) => {
-    const response = await apiClient.attachments(ownerType, ownerId);
-    return response.data;
+  async list(ownerType?: string, ownerId?: string): Promise<AttachmentResponseIReadOnlyListApiResponse> {
+    try {
+      return await client.attachments(ownerType, ownerId);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  presign: async (data: any) => {
-    const response = await apiClient.presign(data);
-    return response.data;
+
+  async presign(body: PresignRequest): Promise<PresignResponseApiResponse> {
+    try {
+      return await client.presign(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  saveMetadata: async (data: any) => {
-    const response = await apiClient.metadata(data);
-    return response.data;
-  },
+
+  async saveMetadata(body: AttachmentCreateRequest): Promise<AttachmentResponseApiResponse> {
+    try {
+      return await client.metadata(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  }
 };

@@ -1,24 +1,53 @@
-import { apiClient } from "../generated/apiClient";
+import { 
+  Client,
+  JobCardApprovalResponseApiResponse,
+  ApprovalResponseIReadOnlyListApiResponse,
+  ApprovalCreateRequest,
+  ApproveRequest
+} from '@/api/generated/apiClient';
+import { createClient } from './_repoBase';
+import { normalizeError } from './_errors';
+
+const client = createClient(Client);
 
 export const approvalsRepo = {
-  list: async (targetType?: string, targetId?: string) => {
-    const response = await apiClient.approvalsGET(targetType, targetId);
-    return response.data;
+  async list(targetType?: string, targetId?: string): Promise<ApprovalResponseIReadOnlyListApiResponse> {
+    try {
+      return await client.approvalsGET(targetType, targetId);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  create: async (data: any) => {
-    const response = await apiClient.approvalsPOST(data);
-    return response.data;
+
+  async create(body: ApprovalCreateRequest): Promise<JobCardApprovalResponseApiResponse> {
+    try {
+      return await client.approvalsPOST(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  listByJobCard: async (id: string) => {
-    const response = await apiClient.approvalsGET2(id);
-    return response.data;
+
+  async listByJobCard(id: string): Promise<ApprovalResponseIReadOnlyListApiResponse> {
+    try {
+      return await client.approvalsGET2(id);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  approveSupervisor: async (id: string, data: any) => {
-    const response = await apiClient.approveSupervisor(id, data);
-    return response.data;
+
+  async approveSupervisor(id: string, body: ApproveRequest): Promise<JobCardApprovalResponseApiResponse> {
+    try {
+      return await client.approveSupervisor(id, body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
-  approveCashier: async (id: string, data: any) => {
-    const response = await apiClient.approveCashier(id, data);
-    return response.data;
+
+  async approveCashier(id: string, body: ApproveRequest): Promise<JobCardApprovalResponseApiResponse> {
+    try {
+      return await client.approveCashier(id, body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   }
 };
