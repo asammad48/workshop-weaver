@@ -72,13 +72,13 @@ export default function TransfersPage() {
     const locations = await getLocationsOnce();
     const parts = await getPartsOnce();
 
-    openModal({
-      title: 'Create Stock Transfer',
-      content: <CreateTransferForm locations={locations} parts={parts} onSuccess={() => {
+    openModal(
+      'Create Stock Transfer',
+      <CreateTransferForm locations={locations} parts={parts} onSuccess={() => {
         closeModal();
         loadTransfers();
       }} onCancel={closeModal} />
-    }, { size: 'lg' });
+    );
   };
 
   return (
