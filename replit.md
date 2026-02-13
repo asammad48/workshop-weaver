@@ -4,6 +4,7 @@
 A Workshop Management application built with React, TypeScript, Vite, and Tailwind CSS. Imported from Lovable. The app includes authentication, dashboard, customers, vehicles, job cards, inventory, purchase orders, transfers, finance, reports, and admin pages.
 
 ## Recent Changes
+- 2026-02-13: Completed migration to Replit environment. Installed npm packages, fixed missing `apiClient` export in generated API client.
 - 2026-02-06: Imported from Lovable to Replit. Updated Vite config to use port 5000 and allow all hosts.
 
 ## Project Architecture

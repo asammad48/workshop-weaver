@@ -13406,3 +13406,4 @@ export class ApiException extends Error {
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
     throw new ApiException(message, status, response, headers, result);
 }
+export const apiClient = new Client();
