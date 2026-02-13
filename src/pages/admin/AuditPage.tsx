@@ -2,8 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { auditRepo } from '@/api/repositories/auditRepo';
-import { AuditLogResponse } from '@/api/generated/apiClient';
+import { auditRepo, ExtendedAuditLogResponse } from '@/api/repositories/auditRepo';
 import { Select } from '@/components/forms/Select';
 import { getBranchesOnce, getBranchMap } from '@/api/lookups/branchesLookup';
 import { 
@@ -16,12 +15,11 @@ import {
   User,
   Activity,
   Box,
-  Hash,
   MessageSquare
 } from 'lucide-react';
 
 export default function AuditPage() {
-  const [logs, setLogs] = useState<AuditLogResponse[]>([]);
+  const [logs, setLogs] = useState<ExtendedAuditLogResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -39,7 +37,7 @@ export default function AuditPage() {
         page, 
         pageSize, 
         search || undefined, 
-        'OccurredAt', 
+        'PerformedAt', 
         'Desc', 
         branchId || undefined
       );
@@ -155,10 +153,10 @@ export default function AuditPage() {
                 logs.map((log, idx) => (
                   <tr key={idx} style={{ borderBottom: '1px solid var(--c-border)' }}>
                     <td style={{ padding: '16px', fontSize: '14px', whiteSpace: 'nowrap' }}>
-                      {log.occurredAt ? new Date(log.occurredAt).toLocaleString() : '—'}
+                      {log.performedAt ? new Date(log.performedAt).toLocaleString() : '—'}
                     </td>
                     <td style={{ padding: '16px', fontSize: '14px' }}>
-                      <div style={{ fontWeight: 500 }}>{log.actorEmail}</div>
+                      <div style={{ fontWeight: 500 }}>{log.actorEmail || 'System'}</div>
                       {log.branchId && (
                         <div style={{ fontSize: '12px', color: 'var(--c-muted)' }}>
                           {branchMap[log.branchId]?.name || 'Unknown Branch'}
