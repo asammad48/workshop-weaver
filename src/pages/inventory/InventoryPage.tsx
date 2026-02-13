@@ -18,9 +18,8 @@ import {
 import { StockTab } from './StockTab';
 import { LedgerTab } from './LedgerTab';
 import { StockAdjustModal } from './StockAdjustModal';
-import PurchaseOrdersPage from './PurchaseOrdersPage';
 
-type Tab = 'suppliers' | 'parts' | 'locations' | 'stock' | 'ledger' | 'purchase-orders';
+type Tab = 'suppliers' | 'parts' | 'locations' | 'stock' | 'ledger';
 
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<Tab>('suppliers');
@@ -35,7 +34,6 @@ export default function InventoryPage() {
       case 'locations': return <LocationsTable search={search} page={page} setPage={setPage} />;
       case 'stock': return <StockTab search={search} page={page} setPage={setPage} />;
       case 'ledger': return <LedgerTab search={search} page={page} setPage={setPage} />;
-      case 'purchase-orders': return <PurchaseOrdersPage />;
     }
   };
 
@@ -45,18 +43,12 @@ export default function InventoryPage() {
       return;
     }
 
-    if (activeTab === 'purchase-orders') {
-      // Handled inside PurchaseOrdersPage for better encapsulation
-      return;
-    }
-
     const props = {
       suppliers: { title: 'Create Supplier', content: <SupplierForm onSuccess={() => { closeModal(); queryClient.invalidateQueries({ queryKey: ['suppliers'] }); }} /> },
       parts: { title: 'Create Part', content: <PartForm onSuccess={() => { closeModal(); queryClient.invalidateQueries({ queryKey: ['parts'] }); }} /> },
       locations: { title: 'Create Location', content: <LocationForm onSuccess={() => { closeModal(); queryClient.invalidateQueries({ queryKey: ['locations'] }); }} /> },
       stock: { title: 'Adjust Stock', content: null },
-      ledger: { title: 'Ledger', content: null },
-      'purchase-orders': { title: 'PO', content: null }
+      ledger: { title: 'Ledger', content: null }
     }[activeTab];
     
     if (props && props.content) {
@@ -68,7 +60,7 @@ export default function InventoryPage() {
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Inventory Management</h1>
-        {activeTab !== 'ledger' && activeTab !== 'purchase-orders' && (
+        {activeTab !== 'ledger' && (
           <Button onClick={handleCreate}>
             {activeTab === 'stock' ? <Settings2 size={18} style={{ marginRight: '8px' }} /> : <Plus size={18} style={{ marginRight: '8px' }} />}
             {activeTab === 'stock' ? 'Adjust Stock' : 'Create New'}
@@ -77,7 +69,7 @@ export default function InventoryPage() {
       </div>
 
       <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid var(--c-border)', marginBottom: '24px', overflowX: 'auto' }}>
-        {(['suppliers', 'parts', 'locations', 'stock', 'ledger', 'purchase-orders'] as const).map((tab) => (
+        {(['suppliers', 'parts', 'locations', 'stock', 'ledger'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => { setActiveTab(tab); setPage(1); }}

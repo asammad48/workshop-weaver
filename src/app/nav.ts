@@ -51,7 +51,17 @@ const allNavGroups: NavGroup[] = [
     label: 'Inventory',
     items: [
       { path: '/inventory', label: 'Inventory', icon: Package },
+    ],
+  },
+  {
+    label: 'Purchasing',
+    items: [
       { path: '/inventory/purchase-orders', label: 'Purchase Orders', icon: ShoppingCart },
+    ],
+  },
+  {
+    label: 'Transfers',
+    items: [
       { path: '/inventory/transfers', label: 'Transfers', icon: ArrowLeftRight },
     ],
   },
@@ -88,13 +98,13 @@ const allNavGroups: NavGroup[] = [
 // Role-based access configuration
 const roleAccess: Record<UserRole, { groups: string[]; readOnlyGroups?: string[] }> = {
   HQ_ADMIN: {
-    groups: ['Main', 'Operations', 'Inventory', 'Finance', 'Reports', 'Admin', 'Profile'],
+    groups: ['Main', 'Operations', 'Inventory', 'Purchasing', 'Transfers', 'Finance', 'Reports', 'Admin', 'Profile'],
   },
   BRANCH_MANAGER: {
     groups: ['Main', 'Operations', 'Finance', 'Reports', 'Profile'],
   },
   STOREKEEPER: {
-    groups: ['Main', 'Inventory', 'Reports', 'Profile'],
+    groups: ['Main', 'Inventory', 'Purchasing', 'Transfers', 'Reports', 'Profile'],
     readOnlyGroups: ['Reports'],
   },
   CASHIER: {
