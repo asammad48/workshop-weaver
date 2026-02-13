@@ -78,7 +78,7 @@ export default function TransfersPage() {
         closeModal();
         loadTransfers();
       }} onCancel={closeModal} />
-    });
+    }, { size: 'lg' });
   };
 
   return (
