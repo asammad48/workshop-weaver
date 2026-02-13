@@ -24,7 +24,7 @@ export default function PurchaseOrdersPage() {
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
-  const canManage = user?.role === 'STORE' || user?.role === 'HQ_ADMIN';
+  const canManage = user?.role === 'STOREKEEPER' || user?.role === 'HQ_ADMIN';
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['purchase-orders', page, search],
