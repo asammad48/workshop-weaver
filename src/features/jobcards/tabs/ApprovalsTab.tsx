@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { approvalsRepo } from "@/api/repositories/approvalsRepo";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Modal } from "@/components/ui/Modal";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/components/ui/Toast";
-import { Loader2, Plus, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardHeader, CardBody } from "@/components/ui/Card";
+import { ModalContent } from "@/components/ui/Modal";
+import { Input } from "@/components/ui/Input";
+import { useUIStore } from "@/state/uiStore";
+import { Loader2, Plus } from "lucide-react";
 
 interface ApprovalsTabProps {
   jobCardId: string;
@@ -18,10 +14,9 @@ interface ApprovalsTabProps {
 
 export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
   const queryClient = useQueryClient();
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isApproveOpen, setIsApproveOpen] = useState(false);
-  const [selectedApproval, setSelectedApproval] = useState<any>(null);
-  const [approveRole, setApproveRole] = useState<"supervisor" | "cashier">("supervisor");
+  const openModal = useUIStore((s) => s.openModal);
+  const closeModal = useUIStore((s) => s.closeModal);
+  const pushToast = useUIStore((s) => s.pushToast);
 
   const { data: approvals, isLoading, isError } = useQuery({
     queryKey: ["approvals", jobCardId],
@@ -32,10 +27,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     mutationFn: (data: any) => approvalsRepo.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["approvals", jobCardId] });
-      setIsCreateOpen(false);
-      toast({ title: "Approval requested" });
+      closeModal();
+      pushToast("success", "Approval requested");
     },
-    onError: () => toast({ title: "Failed to request approval", variant: "destructive" }),
+    onError: () => pushToast("error", "Failed to request approval"),
   });
 
   const approveMutation = useMutation({
@@ -45,10 +40,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
         : approvalsRepo.approveCashier(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["approvals", jobCardId] });
-      setIsApproveOpen(false);
-      toast({ title: "Approval processed" });
+      closeModal();
+      pushToast("success", "Approval processed");
     },
-    onError: () => toast({ title: "Failed to process approval", variant: "destructive" }),
+    onError: () => pushToast("error", "Failed to process approval"),
   });
 
   const handleCreateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,13 +57,60 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     });
   };
 
-  const handleApproveSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleApproveSubmit = (e: React.FormEvent<HTMLFormElement>, id: string, role: "supervisor" | "cashier") => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     approveMutation.mutate({
-      id: selectedApproval.id,
-      role: approveRole,
+      id,
+      role,
       data: { note: formData.get("note") },
+    });
+  };
+
+  const openCreateModal = () => {
+    openModal({
+      title: "Request Approval",
+      content: (
+        <form onSubmit={handleCreateSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Target Type</label>
+            <select name="targetType" required className="w-full p-2 border rounded">
+              <option value="JobCard">Job Card</option>
+              <option value="Estimate">Estimate</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Approval Type</label>
+            <Input name="approvalType" required placeholder="e.g. Parts, Discount" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Note</label>
+            <textarea name="note" className="w-full p-2 border rounded" />
+          </div>
+          <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+            {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit Request
+          </Button>
+        </form>
+      )
+    });
+  };
+
+  const openApproveModal = (approval: any, role: "supervisor" | "cashier") => {
+    openModal({
+      title: `Approve as ${role}`,
+      content: (
+        <form onSubmit={(e) => handleApproveSubmit(e, approval.id, role)} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Approval Note</label>
+            <textarea name="note" className="w-full p-2 border rounded" placeholder="Add a note..." />
+          </div>
+          <Button type="submit" className="w-full" disabled={approveMutation.isPending}>
+            {approveMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Approve
+          </Button>
+        </form>
+      )
     });
   };
 
@@ -78,102 +120,64 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Approvals</CardTitle>
-          <Button size="sm" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Request Approval
-          </Button>
+        <CardHeader>
+          <div className="flex justify-between items-center w-full">
+            <h3 className="text-lg font-semibold">Approvals</h3>
+            <Button onClick={openCreateModal}>
+              <Plus className="mr-2 h-4 w-4" /> Request Approval
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Requested At</TableHead>
-                <TableHead>Approved At</TableHead>
-                <TableHead>Note</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {approvals?.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center">No approvals found</TableCell>
-                </TableRow>
-              ) : (
-                approvals?.map((app: any) => (
-                  <TableRow key={app.id}>
-                    <TableCell>{app.approvalType}</TableCell>
-                    <TableCell>{app.status}</TableCell>
-                    <TableCell>{app.requestedAt ? new Date(app.requestedAt).toLocaleString() : "-"}</TableCell>
-                    <TableCell>{app.approvedAt ? new Date(app.approvedAt).toLocaleString() : "-"}</TableCell>
-                    <TableCell>{app.note}</TableCell>
-                    <TableCell>
-                      {app.status === "Pending" && (
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => {
-                            setSelectedApproval(app);
-                            setApproveRole("supervisor");
-                            setIsApproveOpen(true);
-                          }}>Supervisor</Button>
-                          <Button size="sm" variant="outline" onClick={() => {
-                            setSelectedApproval(app);
-                            setApproveRole("cashier");
-                            setIsApproveOpen(true);
-                          }}>Cashier</Button>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
+        <CardBody>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2">Type</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Requested At</th>
+                  <th className="px-4 py-2">Approved At</th>
+                  <th className="px-4 py-2">Note</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {approvals?.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">No approvals found</td>
+                  </tr>
+                ) : (
+                  approvals?.map((app: any) => (
+                    <tr key={app.id} className="border-t">
+                      <td className="px-4 py-2">{app.approvalType}</td>
+                      <td className="px-4 py-2">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          app.status === 'Approved' ? 'bg-green-100 text-green-800' : 
+                          app.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {app.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2">{app.requestedAt ? new Date(app.requestedAt).toLocaleString() : "-"}</td>
+                      <td className="px-4 py-2">{app.approvedAt ? new Date(app.approvedAt).toLocaleString() : "-"}</td>
+                      <td className="px-4 py-2">{app.note}</td>
+                      <td className="px-4 py-2">
+                        {app.status === "Pending" && (
+                          <div className="flex gap-2">
+                            <Button variant="secondary" size="sm" onClick={() => openApproveModal(app, "supervisor")}>Supervisor</Button>
+                            <Button variant="secondary" size="sm" onClick={() => openApproveModal(app, "cashier")}>Cashier</Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardBody>
       </Card>
-
-      <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Request Approval">
-        <form onSubmit={handleCreateSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="targetType">Target Type</Label>
-            <Select name="targetType" required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select target type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="JobCard">Job Card</SelectItem>
-                <SelectItem value="Estimate">Estimate</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="approvalType">Approval Type</Label>
-            <Input name="approvalType" required placeholder="e.g. Parts, Discount" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="note">Note</Label>
-            <Textarea name="note" />
-          </div>
-          <Button type="submit" className="w-full" disabled={createMutation.isPending}>
-            {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit Request
-          </Button>
-        </form>
-      </Modal>
-
-      <Modal isOpen={isApproveOpen} onClose={() => setIsApproveOpen(false)} title={`Approve as ${approveRole}`}>
-        <form onSubmit={handleApproveSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="note">Approval Note</Label>
-            <Textarea name="note" placeholder="Add a note..." />
-          </div>
-          <Button type="submit" className="w-full" disabled={approveMutation.isPending}>
-            {approveMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Approve
-          </Button>
-        </form>
-      </Modal>
     </div>
   );
 };

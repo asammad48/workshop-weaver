@@ -8,6 +8,7 @@ import { LineItemsTab } from "../tabs/LineItemsTab";
 import { PartRequestsTab } from "../tabs/PartRequestsTab";
 import { InvoiceTab } from "../tabs/InvoiceTab";
 import { RoadblockersTab } from "../tabs/RoadblockersTab";
+import { ApprovalsTab } from "../tabs/ApprovalsTab";
 
 interface JobCardDetailsProps {
   jobCard: any;
@@ -35,7 +36,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
         gap: '24px',
         marginBottom: '8px'
       }}>
-        {['details', 'tasks', 'stations', 'line-items', 'part-requests', 'billing', 'roadblockers'].map((tab) => (
+        {['details', 'tasks', 'stations', 'line-items', 'part-requests', 'billing', 'roadblockers', 'approvals'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -131,6 +132,8 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
           <InvoiceTab jobCardId={jobCard.id} />
         ) : activeTab === 'roadblockers' ? (
           <RoadblockersTab jobCardId={jobCard.id} />
+        ) : activeTab === 'approvals' ? (
+          <ApprovalsTab jobCardId={jobCard.id} />
         ) : (
           <PartRequestsTab jobCardId={jobCard.id} />
         )}
