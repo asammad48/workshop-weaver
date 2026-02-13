@@ -7,7 +7,8 @@ import {
   ExpenseResponse, 
   ExpenseCreateRequest, 
   WagePayResponse, 
-  WagePayRequest 
+  WagePayRequest,
+  ExpenseCategory
 } from '@/api/generated/apiClient';
 import { useUIStore, toast, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
@@ -24,8 +25,27 @@ import {
   DollarSign
 } from 'lucide-react';
 import { getBranchesOnce } from '@/api/lookups/branchesLookup';
+import { getUsersOnce } from '@/api/lookups/usersLookup';
 
 type Tab = 'expenses' | 'wages';
+
+const EXPENSE_CATEGORY_OPTIONS = [
+  { value: ExpenseCategory._1.toString(), label: 'Category 1' },
+  { value: ExpenseCategory._2.toString(), label: 'Category 2' },
+  { value: ExpenseCategory._3.toString(), label: 'Category 3' },
+  { value: ExpenseCategory._4.toString(), label: 'Category 4' },
+  { value: ExpenseCategory._5.toString(), label: 'Category 5' },
+  { value: ExpenseCategory._99.toString(), label: 'Other' },
+];
+
+const CATEGORY_LABELS: Record<number, string> = {
+  [ExpenseCategory._1]: 'Category 1',
+  [ExpenseCategory._2]: 'Category 2',
+  [ExpenseCategory._3]: 'Category 3',
+  [ExpenseCategory._4]: 'Category 4',
+  [ExpenseCategory._5]: 'Category 5',
+  [ExpenseCategory._99]: 'Other',
+};
 
 export default function FinancePage() {
   const [activeTab, setActiveTab] = useState<Tab>('expenses');
@@ -107,9 +127,9 @@ function ExpensesTab() {
 
   const handleCreate = () => {
     let date = new Date().toISOString().split('T')[0];
-    let category = '';
+    let category = ExpenseCategory._1;
     let amount = 0;
-    let notes = '';
+    let description = '';
 
     openModal('Add Expense', (
       <ModalContent
@@ -123,10 +143,10 @@ function ExpensesTab() {
               }
               try {
                 const res = await financeRepo.createExpense(new ExpenseCreateRequest({
-                  date: new Date(date),
-                  category,
+                  expenseAt: new Date(date),
+                  category: category as any,
                   amount,
-                  notes
+                  description
                 }));
                 if (res.success) {
                   toast.success('Expense added successfully');
@@ -144,7 +164,13 @@ function ExpensesTab() {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <Input label="Date" type="date" required defaultValue={date} onChange={(e) => date = e.target.value} />
-          <Input label="Category" required onChange={(e) => category = e.target.value} />
+          <Select 
+            label="Category" 
+            options={EXPENSE_CATEGORY_OPTIONS} 
+            defaultValue={category}
+            onChange={(e) => category = Number(e.target.value)} 
+            required 
+          />
           <Input label="Amount" type="number" required onChange={(e) => amount = Number(e.target.value)} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <label style={{ fontSize: '14px', fontWeight: 500 }}>Notes</label>
@@ -157,7 +183,7 @@ function ExpensesTab() {
                 color: 'var(--c-text)',
                 minHeight: '80px'
               }}
-              onChange={(e) => notes = e.target.value} 
+              onChange={(e) => description = e.target.value} 
             />
           </div>
         </div>
@@ -221,14 +247,14 @@ function ExpensesTab() {
               ) : (
                 items.map((item) => (
                   <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                    <td style={{ padding: '16px' }}>{item.date ? new Date(item.date).toLocaleDateString() : '—'}</td>
+                    <td style={{ padding: '16px' }}>{item.expenseAt ? new Date(item.expenseAt).toLocaleDateString() : '—'}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '12px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)' }}>
-                        {item.category}
+                        {item.category !== undefined ? CATEGORY_LABELS[item.category as unknown as number] || item.category : '—'}
                       </span>
                     </td>
                     <td style={{ padding: '16px', fontWeight: 500 }}>{item.amount?.toLocaleString()}</td>
-                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>{item.notes || '—'}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>{item.description || '—'}</td>
                   </tr>
                 ))
               )}
@@ -262,6 +288,7 @@ function WagesTab() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [branches, setBranches] = useState<{value: string, label: string}[]>([]);
+  const [users, setUsers] = useState<{value: string, label: string}[]>([]);
   const pageSize = 10;
 
   const fetchItems = async () => {
@@ -282,22 +309,26 @@ function WagesTab() {
     }
   };
 
-  const loadBranches = async () => {
-    const list = await getBranchesOnce();
-    setBranches(list.map(b => ({ value: b.id, label: b.name })));
+  const loadLookups = async () => {
+    const [branchList, userList] = await Promise.all([
+      getBranchesOnce(),
+      getUsersOnce()
+    ]);
+    setBranches(branchList.map(b => ({ value: b.id, label: b.name })));
+    setUsers(userList.map(u => ({ value: u.id!, label: u.email || 'Unknown User' })));
   };
 
   useEffect(() => {
     fetchItems();
-    loadBranches();
+    loadLookups();
   }, [page, search]);
 
   const handlePay = () => {
-    let staffName = '';
+    let employeeUserId = '';
     let amount = 0;
-    let paidAt = new Date().toISOString().slice(0, 16);
+    let periodStart = new Date().toISOString().split('T')[0];
+    let periodEnd = new Date().toISOString().split('T')[0];
     let notes = '';
-    let branchId = '';
 
     openModal('Pay Wage', (
       <ModalContent
@@ -305,17 +336,17 @@ function WagesTab() {
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button variant="secondary" onClick={closeModal}>Cancel</Button>
             <Button onClick={async () => {
-              if (!staffName || !amount || !paidAt) {
+              if (!employeeUserId || !amount || !periodStart || !periodEnd) {
                 toast.error('Please fill required fields');
                 return;
               }
               try {
                 const res = await financeRepo.payWage(new WagePayRequest({
-                  staffName,
+                  employeeUserId,
                   amount,
-                  paidAt: new Date(paidAt),
-                  notes,
-                  branchId: branchId || undefined
+                  periodStart: new Date(periodStart),
+                  periodEnd: new Date(periodEnd),
+                  notes
                 }));
                 if (res.success) {
                   toast.success('Wage paid successfully');
@@ -332,15 +363,18 @@ function WagesTab() {
         }
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <Input label="Staff Name" required onChange={(e) => staffName = e.target.value} />
-          <Input label="Amount" type="number" required onChange={(e) => amount = Number(e.target.value)} />
-          <Input label="Paid At" type="datetime-local" required defaultValue={paidAt} onChange={(e) => paidAt = e.target.value} />
           <Select 
-            label="Branch" 
-            options={branches} 
-            placeholder="Select branch (optional)" 
-            onChange={(e) => branchId = e.target.value} 
+            label="Staff (User)" 
+            options={users} 
+            placeholder="Select staff member" 
+            required 
+            onChange={(e) => employeeUserId = e.target.value} 
           />
+          <Input label="Amount" type="number" required onChange={(e) => amount = Number(e.target.value)} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <Input label="Period Start" type="date" required defaultValue={periodStart} onChange={(e) => periodStart = e.target.value} />
+            <Input label="Period End" type="date" required defaultValue={periodEnd} onChange={(e) => periodEnd = e.target.value} />
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <label style={{ fontSize: '14px', fontWeight: 500 }}>Notes</label>
             <textarea 
@@ -388,10 +422,10 @@ function WagesTab() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Staff Name</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Employee ID</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Amount</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Paid At</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Branch</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Period</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Notes</th>
               </tr>
             </thead>
@@ -417,15 +451,13 @@ function WagesTab() {
               ) : (
                 items.map((item) => (
                   <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                    <td style={{ padding: '16px' }}>{item.staffName}</td>
+                    <td style={{ padding: '16px' }}>{item.employeeUserId || '—'}</td>
                     <td style={{ padding: '16px', fontWeight: 500 }}>{item.amount?.toLocaleString()}</td>
                     <td style={{ padding: '16px' }}>{item.paidAt ? new Date(item.paidAt).toLocaleString() : '—'}</td>
                     <td style={{ padding: '16px' }}>
-                      {item.branchName ? (
-                        <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '12px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)' }}>
-                          {item.branchName}
-                        </span>
-                      ) : '—'}
+                      <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>
+                        {item.periodStart ? new Date(item.periodStart).toLocaleDateString() : '?'} - {item.periodEnd ? new Date(item.periodEnd).toLocaleDateString() : '?'}
+                      </span>
                     </td>
                     <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>{item.notes || '—'}</td>
                   </tr>
