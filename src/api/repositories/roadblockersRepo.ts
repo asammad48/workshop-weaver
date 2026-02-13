@@ -1,3 +1,4 @@
+import { Client } from "../generated/apiClient";
 import { apiClient } from "../generated/apiClient";
 
 export const roadblockersRepo = {
