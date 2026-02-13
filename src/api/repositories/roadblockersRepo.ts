@@ -15,11 +15,9 @@ export const roadblockersRepo = {
     return response.data;
   },
   getAging: async (from?: Date, to?: Date) => {
-    const response = await apiClient.roadblockersAging(from, to);
-    return response.data;
+    return await client.roadblockersAging(from, to);
   },
   getStuckVehicles: async () => {
-    const response = await apiClient.stuckVehicles();
-    return response.data;
+    return await client.stuckVehicles();
   }
 };

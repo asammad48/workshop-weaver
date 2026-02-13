@@ -63,8 +63,8 @@ export default function ReportsPage() {
   });
 
   const summary = summaryData?.data;
-  const agingItems = agingData?.data || [];
-  const stuckItems = stuckData?.data || [];
+  const agingItems = agingData || [];
+  const stuckItems = stuckData || [];
 
   const SummaryCard = ({ title, value, icon: Icon, color }: any) => (
     <Card>
