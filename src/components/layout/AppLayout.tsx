@@ -48,7 +48,13 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    // Exact match for paths like /inventory, /inventory/purchase-orders, etc.
+    // to prevent highlighting /inventory when on /inventory/purchase-orders
+    if (location.pathname === path) return true;
+    
+    // For nested routes within a feature that aren't themselves main nav items
+    // we can use startsWith but only if the next char is / or it's an exact match
+    return location.pathname.startsWith(path + '/');
   };
 
   return (
