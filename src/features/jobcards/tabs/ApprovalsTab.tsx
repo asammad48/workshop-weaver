@@ -68,9 +68,9 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
   };
 
   const openCreateModal = () => {
-    openModal({
-      title: "Request Approval",
-      content: (
+    openModal(
+      "Request Approval",
+      (
         <form onSubmit={handleCreateSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Target Type</label>
@@ -93,13 +93,13 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           </Button>
         </form>
       )
-    });
+    );
   };
 
   const openApproveModal = (approval: any, role: "supervisor" | "cashier") => {
-    openModal({
-      title: `Approve as ${role}`,
-      content: (
+    openModal(
+      `Approve as ${role}`,
+      (
         <form onSubmit={(e) => handleApproveSubmit(e, approval.id, role)} className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Approval Note</label>
@@ -111,7 +111,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           </Button>
         </form>
       )
-    });
+    );
   };
 
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>;
