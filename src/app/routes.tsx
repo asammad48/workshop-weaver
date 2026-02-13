@@ -17,7 +17,7 @@ import VehiclesPage from '@/pages/VehiclesPage';
 
 // Inventory
 import InventoryPage from '@/pages/inventory/InventoryPage';
-import PurchaseOrdersPage from '@/pages/PurchaseOrdersPage';
+import PurchaseOrdersPage from '@/pages/inventory/PurchaseOrdersPage';
 import TransfersPage from '@/pages/TransfersPage';
 
 // Finance & Reports
