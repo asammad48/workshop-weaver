@@ -5,26 +5,37 @@ import { getPartsOnce } from '@/api/lookups/partsLookup';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
-import { useUIStore } from '@/state/uiStore';
+import { useUIStore, toast, confirm, closeModal, openModal } from '@/state/uiStore';
 import { ModalContent } from '@/components/ui/Modal';
-import { confirm } from '@/components/ui/ConfirmDialog';
-import { toast } from '@/components/ui/Toast';
+import { Select } from '@/components/forms/Select';
+import { 
+  Plus, 
+  Search, 
+  ChevronLeft, 
+  ChevronRight, 
+  Loader2,
+  ArrowRight,
+  Truck,
+  PackageCheck,
+  ClipboardList
+} from 'lucide-react';
 
 export default function TransfersPage() {
   const [transfers, setTransfers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { openModal, closeModal } = useUIStore();
+  const pageSize = 10;
 
   const loadTransfers = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const res = await transfersRepo.getTransfers(page, 10);
+      const res = await transfersRepo.getTransfers(page, pageSize);
       if (res.success && res.data) {
         setTransfers(res.data.items || []);
-        // Safely access total pages or fallback to 1
         const total = (res.data as any).totalPages || 1;
         setTotalPages(total);
       } else {
@@ -43,10 +54,10 @@ export default function TransfersPage() {
 
   const handleAction = async (action: 'request' | 'ship' | 'receive', id: string) => {
     const confirmed = await confirm({
-      title: `Confirm ${action}`,
+      title: `Confirm ${action.charAt(0).toUpperCase() + action.slice(1)}`,
       message: `Are you sure you want to ${action} this transfer?`,
       confirmText: action.charAt(0).toUpperCase() + action.slice(1),
-      cancelText: 'Cancel'
+      danger: action !== 'receive'
     });
 
     if (confirmed) {
@@ -71,72 +82,147 @@ export default function TransfersPage() {
   const openCreateModal = async () => {
     const locations = await getLocationsOnce();
     const parts = await getPartsOnce();
+    const locationOptions = locations.map(l => ({ value: l.id, label: l.name }));
+    const partOptions = parts.map(p => ({ value: p.id, label: p.name }));
 
     openModal(
       'Create Stock Transfer',
-      <CreateTransferForm locations={locations} parts={parts} onSuccess={() => {
-        closeModal();
-        loadTransfers();
-      }} onCancel={closeModal} />
+      <CreateTransferForm 
+        locations={locationOptions} 
+        parts={partOptions} 
+        onSuccess={() => {
+          closeModal();
+          loadTransfers();
+        }} 
+        onCancel={closeModal} 
+      />
     );
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Stock Transfers</h1>
-        <Button onClick={openCreateModal}>Create Transfer</Button>
+    <div style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Stock Transfers</h1>
+        <Button onClick={openCreateModal}>
+          <Plus size={18} style={{ marginRight: '8px' }} />
+          Create Transfer
+        </Button>
       </div>
 
+      <Card style={{ marginBottom: '24px' }}>
+        <div style={{ padding: '16px', display: 'flex', gap: '12px' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} />
+            <Input 
+              placeholder="Search transfers..." 
+              style={{ paddingLeft: '40px' }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+      </Card>
+
       <Card>
-        {loading ? (
-          <div className="p-8 text-center">Loading...</div>
-        ) : error ? (
-          <div className="p-8 text-center text-red-500">{error}</div>
-        ) : transfers.length === 0 ? (
-          <div className="p-8 text-center">No transfers found</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="p-3">Transfer No</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">From</th>
-                  <th className="p-3">To</th>
-                  <th className="p-3">Requested</th>
-                  <th className="p-3">Shipped</th>
-                  <th className="p-3">Received</th>
-                  <th className="p-3 text-right">Actions</th>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Transfer No</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>From</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>To</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Requested</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Shipped</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Received</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '48px', textAlign: 'center' }}>
+                    <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto', color: 'var(--c-primary)' }} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {transfers.map((t) => (
-                  <tr key={t.id} className="border-b hover:bg-muted/30">
-                    <td className="p-3 font-medium">{t.transferNo}</td>
-                    <td className="p-3">{t.status}</td>
-                    <td className="p-3">{t.fromLocation?.name}</td>
-                    <td className="p-3">{t.toLocation?.name}</td>
-                    <td className="p-3">{t.requestedAt ? new Date(t.requestedAt).toLocaleDateString() : '-'}</td>
-                    <td className="p-3">{t.shippedAt ? new Date(t.shippedAt).toLocaleDateString() : '-'}</td>
-                    <td className="p-3">{t.receivedAt ? new Date(t.receivedAt).toLocaleDateString() : '-'}</td>
-                    <td className="p-3 text-right space-x-2">
-                      {t.status === 'Draft' && <Button size="sm" onClick={() => handleAction('request', t.id)}>Request</Button>}
-                      {t.status === 'Requested' && <Button size="sm" onClick={() => handleAction('ship', t.id)}>Ship</Button>}
-                      {t.status === 'Shipped' && <Button size="sm" onClick={() => handleAction('receive', t.id)}>Receive</Button>}
+              ) : error ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-danger)' }}>
+                    {error}
+                  </td>
+                </tr>
+              ) : transfers.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
+                    No transfers found
+                  </td>
+                </tr>
+              ) : (
+                transfers.map((t) => (
+                  <tr key={t.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                    <td style={{ padding: '16px', fontWeight: 500 }}>{t.transferNo}</td>
+                    <td style={{ padding: '16px' }}>
+                      <span style={{ 
+                        fontSize: '12px', 
+                        padding: '2px 8px', 
+                        borderRadius: '12px', 
+                        background: 'var(--c-bg-alt)', 
+                        border: '1px solid var(--c-border)',
+                        color: t.status === 'Received' ? 'var(--c-success)' : t.status === 'Shipped' ? 'var(--c-primary)' : 'inherit'
+                      }}>
+                        {t.status}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px' }}>{t.fromLocation?.name}</td>
+                    <td style={{ padding: '16px' }}>{t.toLocation?.name}</td>
+                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
+                      {t.requestedAt ? new Date(t.requestedAt).toLocaleDateString() : '—'}
+                    </td>
+                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
+                      {t.shippedAt ? new Date(t.shippedAt).toLocaleDateString() : '—'}
+                    </td>
+                    <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
+                      {t.receivedAt ? new Date(t.receivedAt).toLocaleDateString() : '—'}
+                    </td>
+                    <td style={{ padding: '16px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        {t.status === 'Draft' && (
+                          <Button variant="secondary" size="sm" onClick={() => handleAction('request', t.id)} title="Request Transfer">
+                            <ClipboardList size={16} />
+                          </Button>
+                        )}
+                        {t.status === 'Requested' && (
+                          <Button variant="secondary" size="sm" onClick={() => handleAction('ship', t.id)} title="Ship Transfer">
+                            <Truck size={16} />
+                          </Button>
+                        )}
+                        {t.status === 'Shipped' && (
+                          <Button variant="primary" size="sm" onClick={() => handleAction('receive', t.id)} title="Receive Transfer">
+                            <PackageCheck size={16} />
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            
-            <div className="p-3 flex justify-between items-center border-t">
-              <Button disabled={page === 1} onClick={() => setPage(p => p - 1)}>Previous</Button>
-              <span>Page {page} of {totalPages}</span>
-              <Button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Next</Button>
-            </div>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+            Page {page} of {totalPages}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
+              <ChevronLeft size={16} />
+            </Button>
+            <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>
+              <ChevronRight size={16} />
+            </Button>
           </div>
-        )}
+        </div>
       </Card>
     </div>
   );
@@ -151,8 +237,7 @@ function CreateTransferForm({ locations, parts, onSuccess, onCancel }: any) {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!formData.fromLocationId || !formData.toLocationId || formData.items.some(i => !i.partId)) {
       toast.error('Please fill required fields');
       return;
@@ -162,7 +247,7 @@ function CreateTransferForm({ locations, parts, onSuccess, onCancel }: any) {
     try {
       const res = await transfersRepo.createTransfer(formData as any);
       if (res.success) {
-        toast.success('Transfer created');
+        toast.success('Transfer created successfully');
         onSuccess();
       } else {
         toast.error(res.message || 'Creation failed');
@@ -178,91 +263,95 @@ function CreateTransferForm({ locations, parts, onSuccess, onCancel }: any) {
   const removeItem = (idx: number) => setFormData(d => ({ ...d, items: d.items.filter((_, i) => i !== idx) }));
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1">
-          <label className="text-sm font-medium">From Location *</label>
-          <select 
-            className="w-full border rounded p-2"
+    <ModalContent
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+          <Button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? 'Creating...' : 'Create Transfer'}
+          </Button>
+        </div>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <Select 
+            label="From Location"
+            options={locations}
+            placeholder="Select Location"
             value={formData.fromLocationId}
             onChange={e => setFormData({ ...formData, fromLocationId: e.target.value })}
             required
-          >
-            <option value="">Select Location</option>
-            {locations.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}
-          </select>
-        </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium">To Location *</label>
-          <select 
-            className="w-full border rounded p-2"
+          />
+          <Select 
+            label="To Location"
+            options={locations}
+            placeholder="Select Location"
             value={formData.toLocationId}
             onChange={e => setFormData({ ...formData, toLocationId: e.target.value })}
             required
-          >
-            <option value="">Select Location</option>
-            {locations.map((l: any) => <option key={l.id} value={l.id}>{l.name}</option>)}
-          </select>
+          />
         </div>
-      </div>
 
-      <div className="space-y-1">
-        <label className="text-sm font-medium">Notes</label>
-        <textarea 
-          className="w-full border rounded p-2"
+        <Input 
+          label="Notes"
+          placeholder="Enter any notes..."
           value={formData.notes}
           onChange={e => setFormData({ ...formData, notes: e.target.value })}
         />
-      </div>
 
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <label className="text-sm font-medium">Items *</label>
-          <Button type="button" size="sm" variant="secondary" onClick={addItem}>Add Item</Button>
-        </div>
-        {formData.items.map((item, idx) => (
-          <div key={idx} className="flex gap-2 items-end">
-            <div className="flex-1 space-y-1">
-              <select 
-                className="w-full border rounded p-2"
-                value={item.partId}
-                onChange={e => {
-                  const newItems = [...formData.items];
-                  newItems[idx].partId = e.target.value;
-                  setFormData({ ...formData, items: newItems });
-                }}
-                required
-              >
-                <option value="">Select Part</option>
-                {parts.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-            </div>
-            <div className="w-24 space-y-1">
-              <Input 
-                type="number" 
-                min="1" 
-                value={item.qty} 
-                onChange={e => {
-                  const newItems = [...formData.items];
-                  newItems[idx].qty = parseInt(e.target.value) || 0;
-                  setFormData({ ...formData, items: newItems });
-                }}
-                required
-              />
-            </div>
-            {formData.items.length > 1 && (
-              <Button type="button" variant="secondary" onClick={() => removeItem(idx)}>×</Button>
-            )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <label style={{ fontSize: '14px', fontWeight: 500 }}>Items *</label>
+            <Button type="button" size="sm" variant="secondary" onClick={addItem}>
+              <Plus size={14} style={{ marginRight: '4px' }} />
+              Add Item
+            </Button>
           </div>
-        ))}
+          
+          {formData.items.map((item, idx) => (
+            <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <div style={{ flex: 1 }}>
+                <Select 
+                  options={parts}
+                  placeholder="Select Part"
+                  value={item.partId}
+                  onChange={e => {
+                    const newItems = [...formData.items];
+                    newItems[idx].partId = e.target.value;
+                    setFormData({ ...formData, items: newItems });
+                  }}
+                  required
+                />
+              </div>
+              <div style={{ width: '100px' }}>
+                <Input 
+                  type="number" 
+                  min="1" 
+                  value={item.qty} 
+                  onChange={e => {
+                    const newItems = [...formData.items];
+                    newItems[idx].qty = parseInt(e.target.value) || 0;
+                    setFormData({ ...formData, items: newItems });
+                  }}
+                  required
+                />
+              </div>
+              {formData.items.length > 1 && (
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => removeItem(idx)}
+                  style={{ marginTop: '4px' }}
+                >
+                  ×
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-
-      <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" disabled={submitting}>
-          {submitting ? 'Creating...' : 'Create Transfer'}
-        </Button>
-      </div>
-    </form>
+    </ModalContent>
   );
 }
+
