@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { stationsRepo } from '@/api/repositories/stationsRepo';
+import { roadblockersRepo } from '@/api/repositories/roadblockersRepo';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
@@ -21,15 +22,22 @@ export default function ReportsPage() {
     new Date().toISOString().split('T')[0]
   );
 
-  const { data: stationTimeData, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['stationTimeReport', fromDate, toDate],
-    queryFn: () => stationsRepo.stationTime(
+  const { data: agingData, isLoading: agingLoading } = useQuery({
+    queryKey: ['roadblockersAging', fromDate, toDate],
+    queryFn: () => roadblockersRepo.getAging(
       fromDate ? new Date(fromDate) : undefined,
       toDate ? new Date(toDate) : undefined
     ),
   });
 
+  const { data: stuckData, isLoading: stuckLoading } = useQuery({
+    queryKey: ['stuckVehicles'],
+    queryFn: () => roadblockersRepo.getStuckVehicles(),
+  });
+
   const reports = stationTimeData?.data || [];
+  const agingItems = agingData?.data || [];
+  const stuckItems = stuckData?.data || [];
 
   return (
     <div style={{ padding: '24px' }}>
@@ -125,6 +133,72 @@ export default function ReportsPage() {
             </table>
           </div>
         </Card>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '24px' }}>
+          <Card>
+            <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>Roadblocker Aging</h2>
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Type</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Description</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days Open</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {agingLoading ? (
+                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center' }}>Loading...</td></tr>
+                  ) : agingItems.length === 0 ? (
+                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No aging roadblockers</td></tr>
+                  ) : (
+                    agingItems.map((item: any, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.type}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.description}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px', color: item.daysOpen > 3 ? 'var(--c-danger)' : 'inherit' }}>{item.daysOpen}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card>
+            <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>Stuck Vehicles</h2>
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Plate</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Station</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stuckLoading ? (
+                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center' }}>Loading...</td></tr>
+                  ) : stuckItems.length === 0 ? (
+                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No stuck vehicles</td></tr>
+                  ) : (
+                    stuckItems.map((item: any, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid var(--c-border)' }}>
+                        <td style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 500 }}>{item.plate}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.currentStation}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px', color: item.daysInShop > 5 ? 'var(--c-danger)' : 'inherit' }}>{item.daysInShop}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

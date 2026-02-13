@@ -1,4 +1,5 @@
-import { apiClient } from "../generated/apiClient";
+import { Client } from "../generated/apiClient";
+import { apiClient } from "../generated/apiClient"; // Assuming apiClient is an instance of Client exported elsewhere, but if it's missing, we need to fix it.
 
 export const billingRepo = {
   getInvoice: async (id: string) => {

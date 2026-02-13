@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { billingRepo } from "@/api/repositories/billingRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Modal } from "@/components/ui/Modal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ModalHost as Modal } from "@/components/ui/Modal";
+import { ConfirmDialogHost as ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { toast } from "@/components/ui/Toast";
 import { Plus, Receipt, History } from "lucide-react";
 

@@ -1,0 +1,53 @@
+# PROMPT 22 — ROADBLOCKERS + STUCK VEHICLES
+
+# Golden Rules (DO NOT BREAK)
+1) Do not move/rename folders. Only add files in specified paths.
+2) Pages must stay thin: NO direct fetch in pages. All network calls go via `src/api/repositories/*`.
+3) All popups use existing hosts:
+   - Modal: `src/components/ui/Modal.tsx`
+   - Confirm: `src/components/ui/ConfirmDialog.tsx`
+   - Toast: `src/components/ui/Toast.tsx`
+4) Reuse UI primitives from `src/components/ui/*` (Button/Input/Card).
+5) UI role gating is only for UX; backend remains the source of truth.
+6) Every table must support: loading, empty state, error state, pagination.
+7) Use exact NSwag function + DTO names from your `apiClient.ts`.
+8) For any dropdown (branches, customers, parts, locations), load once and cache in `src/api/lookups/*`.
+9) DO NOT invent endpoints. If apiClient.ts has no PUT/PATCH/DELETE for an entity, hide Edit/Delete.
+
+
+## APIs
+Roadblockers:
+- Create: `roadblockers(body?: RoadblockerCreateRequest)` -> `RoadblockerResponseApiResponse`
+- List by jobcard: `jobcard(jobCardId)` -> `RoadblockerResponseIReadOnlyListApiResponse`
+- Resolve: `resolve(id)` -> `RoadblockerResponseApiResponse`
+- Aging: `roadblockersAging(from?: Date, to?: Date)` -> `RoadblockerAgingResponseIReadOnlyListApiResponse`
+Stuck vehicles:
+- `stuckVehicles()` -> `StuckVehicleResponseIReadOnlyListApiResponse`
+
+## Files
+- `src/api/repositories/roadblockersRepo.ts`
+- `src/features/jobcards/tabs/RoadblockersTab.tsx`
+- `src/pages/ReportsPage.tsx` (Aging + Stuck Vehicles widgets)
+
+## Roadblockers table columns (JobCard tab)
+- type, description, createdAt, resolvedAt, status
+
+Add modal (RoadblockerCreateRequest)
+- jobCardId hidden required
+- type: text/select required
+- description: textarea required
+
+Resolve action
+- button "Resolve" -> confirm -> `resolve(id)` -> refetch
+
+Aging table columns (Reports)
+- type, description, createdAt, daysOpen, jobCardId
+
+Stuck vehicles table columns (Reports)
+- plate, customerName, status, entryAt, daysInShop, currentStation
+
+## Test
+- add roadblocker
+- resolve roadblocker
+- stuckVehicles returns and displays
+
