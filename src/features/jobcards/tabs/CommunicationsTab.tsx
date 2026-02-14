@@ -110,12 +110,8 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                 </tr>
               </thead>
               <tbody>
-                {comms?.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No logs found</td>
-                  </tr>
-                ) : (
-                  comms?.map((log: any) => (
+                {Array.isArray(comms) && comms.length > 0 ? (
+                  comms.map((log: any) => (
                     <tr key={log.id} className="border-t">
                       <td className="px-4 py-2">{log.channel}</td>
                       <td className="px-4 py-2">{log.messageType}</td>
@@ -123,6 +119,10 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                       <td className="px-4 py-2">{log.notes}</td>
                     </tr>
                   ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No logs found</td>
+                  </tr>
                 )}
               </tbody>
             </table>

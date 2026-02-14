@@ -119,12 +119,8 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
                 </tr>
               </thead>
               <tbody>
-                {attachments?.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No attachments found</td>
-                  </tr>
-                ) : (
-                  attachments?.map((file: any) => (
+                {Array.isArray(attachments) && attachments.length > 0 ? (
+                  attachments.map((file: any) => (
                     <tr key={file.id} className="border-t">
                       <td className="px-4 py-2 flex items-center">
                         <FileIcon className="mr-2 h-4 w-4 text-gray-400" />
@@ -135,6 +131,10 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
                       <td className="px-4 py-2">{new Date(file.createdAt).toLocaleString()}</td>
                     </tr>
                   ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">No attachments found</td>
+                  </tr>
                 )}
               </tbody>
             </table>

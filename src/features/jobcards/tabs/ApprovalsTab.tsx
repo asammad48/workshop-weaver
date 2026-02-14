@@ -142,12 +142,8 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                 </tr>
               </thead>
               <tbody>
-                {approvals?.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">No approvals found</td>
-                  </tr>
-                ) : (
-                  approvals?.map((app: any) => (
+                {Array.isArray(approvals) && approvals.length > 0 ? (
+                  approvals.map((app: any) => (
                     <tr key={app.id} className="border-t">
                       <td className="px-4 py-2">{app.approvalType}</td>
                       <td className="px-4 py-2">
@@ -172,6 +168,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                       </td>
                     </tr>
                   ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">No approvals found</td>
+                  </tr>
                 )}
               </tbody>
             </table>
