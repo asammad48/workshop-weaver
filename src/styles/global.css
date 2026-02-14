@@ -23,6 +23,18 @@ body {
   background-color: var(--c-bg);
 }
 
+select {
+  background-color: var(--c-card);
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+}
+
+textarea {
+  background-color: var(--c-card);
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+}
+
 /* Layout utilities */
 .page {
   min-height: 100%;

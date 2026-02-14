@@ -90,7 +90,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           <form id="create-approval-form" onSubmit={handleCreateSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Type</label>
-              <select name="targetType" required className="w-full p-2 border rounded bg-white">
+              <select name="targetType" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
                 <option value="JobCard">Job Card</option>
                 <option value="Estimate">Estimate</option>
               </select>
@@ -101,7 +101,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Note</label>
-              <textarea name="note" className="w-full p-2 border rounded bg-white" rows={3} />
+              <textarea name="note" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" rows={3} />
             </div>
           </form>
         </ModalContent>
@@ -127,7 +127,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           <form id="approve-form" onSubmit={(e) => handleApproveSubmit(e, approval.id, role)} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Approval Note</label>
-              <textarea name="note" className="w-full p-2 border rounded bg-white" placeholder="Add a note..." rows={3} />
+              <textarea name="note" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" placeholder="Add a note..." rows={3} />
             </div>
           </form>
         </ModalContent>

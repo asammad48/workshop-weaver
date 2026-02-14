@@ -68,7 +68,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
           <form id="create-comm-form" onSubmit={handleCreateSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Channel *</label>
-              <select name="channel" required className="w-full p-2 border rounded bg-white">
+              <select name="channel" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
                 <option value="WhatsApp">WhatsApp</option>
                 <option value="Email">Email</option>
                 <option value="SMS">SMS</option>
@@ -77,7 +77,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Message Type *</label>
-              <select name="messageType" required className="w-full p-2 border rounded bg-white">
+              <select name="messageType" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
                 <option value="Estimate">Estimate</option>
                 <option value="Update">Update</option>
                 <option value="Reminder">Reminder</option>
@@ -90,7 +90,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Notes</label>
-              <textarea name="notes" className="w-full p-2 border rounded bg-white" rows={3} />
+              <textarea name="notes" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" rows={3} />
             </div>
           </form>
         </ModalContent>
