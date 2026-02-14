@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ModalContent } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/forms/Select";
 import { useUIStore, toast, closeModal, openModal } from "@/state/uiStore";
 import { Loader2, Plus, Shield, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -73,66 +74,117 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
   };
 
   const openCreateModal = () => {
-    openModal(
+    let targetType = "JobCard";
+    let approvalType = "";
+    let note = "";
+
+    const renderModal = () => openModal(
       "Request Approval",
       (
         <ModalContent
           footer={
             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
               <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button type="submit" form="create-approval-form" disabled={createMutation.isPending}>
+              <Button onClick={() => {
+                createMutation.mutate({
+                  targetType,
+                  targetId: jobCardId,
+                  approvalType,
+                  note,
+                });
+              }} disabled={createMutation.isPending}>
                 {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Submit Request
               </Button>
             </div>
           }
         >
-          <form id="create-approval-form" onSubmit={handleCreateSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Target Type</label>
-              <select name="targetType" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
-                <option value="JobCard">Job Card</option>
-                <option value="Estimate">Estimate</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Approval Type</label>
-              <Input name="approvalType" required placeholder="e.g. Parts, Discount" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Note</label>
-              <textarea name="note" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" rows={3} />
-            </div>
-          </form>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Select 
+            label="Target Type"
+            options={[
+              { value: "JobCard", label: "Job Card" },
+              { value: "Estimate", label: "Estimate" },
+            ]}
+            defaultValue={targetType}
+            onChange={(e) => {
+              targetType = e.target.value;
+              renderModal();
+            }}
+          />
+          <Input 
+            label="Approval Type" 
+            required 
+            placeholder="e.g. Parts, Discount" 
+            defaultValue={approvalType}
+            onChange={(e) => {
+              approvalType = e.target.value;
+              renderModal();
+            }}
+          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-var(--c-text)">Note</label>
+            <textarea 
+              className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
+              rows={3} 
+              defaultValue={note}
+              onChange={(e) => {
+                note = e.target.value;
+                renderModal();
+              }}
+            />
+          </div>
+        </div>
         </ModalContent>
       )
     );
+
+    renderModal();
   };
 
   const openApproveModal = (approval: any, role: "supervisor" | "cashier") => {
-    openModal(
+    let note = "";
+
+    const renderModal = () => openModal(
       `Approve as ${role}`,
       (
         <ModalContent
           footer={
             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
               <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button type="submit" form="approve-form" disabled={approveMutation.isPending}>
+              <Button onClick={() => {
+                approveMutation.mutate({
+                  id: approval.id,
+                  role,
+                  data: { note },
+                });
+              }} disabled={approveMutation.isPending}>
                 {approveMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Approve
               </Button>
             </div>
           }
         >
-          <form id="approve-form" onSubmit={(e) => handleApproveSubmit(e, approval.id, role)} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Approval Note</label>
-              <textarea name="note" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" placeholder="Add a note..." rows={3} />
-            </div>
-          </form>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-var(--c-text)">Approval Note</label>
+            <textarea 
+              className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
+              placeholder="Add a note..." 
+              rows={3} 
+              defaultValue={note}
+              onChange={(e) => {
+                note = e.target.value;
+                renderModal();
+              }}
+            />
+          </div>
+        </div>
         </ModalContent>
       )
     );
+
+    renderModal();
   };
 
   if (isError) return <div className="p-8 text-center text-red-500">Error loading approvals</div>;

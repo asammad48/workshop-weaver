@@ -4,6 +4,7 @@ import { commsRepo } from "@/api/repositories/commsRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/forms/Select";
 import { useUIStore, toast, closeModal, openModal } from "@/state/uiStore";
 import { ModalContent } from "@/components/ui/Modal";
 import { Loader2, Plus, MessageSquare, Search, ChevronLeft, ChevronRight } from "lucide-react";
@@ -51,51 +52,90 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
   };
 
   const openCreateModal = () => {
-    openModal(
+    let channel = "WhatsApp";
+    let messageType = "Estimate";
+    let sentAt = new Date().toISOString().slice(0, 16);
+    let notes = "";
+
+    const renderModal = () => openModal(
       "Add Communication Log",
       (
         <ModalContent
           footer={
             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
               <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button type="submit" form="create-comm-form" disabled={createMutation.isPending}>
+              <Button onClick={() => {
+                createMutation.mutate({
+                  jobCardId,
+                  channel,
+                  messageType,
+                  sentAt: new Date(sentAt).toISOString(),
+                  notes,
+                });
+              }} disabled={createMutation.isPending}>
                 {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save Log
               </Button>
             </div>
           }
         >
-          <form id="create-comm-form" onSubmit={handleCreateSubmit} className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Select 
+              label="Channel"
+              options={[
+                { value: "WhatsApp", label: "WhatsApp" },
+                { value: "Email", label: "Email" },
+                { value: "SMS", label: "SMS" },
+                { value: "Phone", label: "Phone" },
+              ]}
+              defaultValue={channel}
+              onChange={(e) => {
+                channel = e.target.value;
+                renderModal();
+              }}
+            />
+            <Select 
+              label="Message Type"
+              options={[
+                { value: "Estimate", label: "Estimate" },
+                { value: "Update", label: "Update" },
+                { value: "Reminder", label: "Reminder" },
+                { value: "Feedback", label: "Feedback" },
+              ]}
+              defaultValue={messageType}
+              onChange={(e) => {
+                messageType = e.target.value;
+                renderModal();
+              }}
+            />
+            <Input 
+              label="Sent At" 
+              type="datetime-local" 
+              required 
+              defaultValue={sentAt}
+              onChange={(e) => {
+                sentAt = e.target.value;
+                renderModal();
+              }}
+            />
             <div className="space-y-2">
-              <label className="text-sm font-medium">Channel *</label>
-              <select name="channel" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
-                <option value="WhatsApp">WhatsApp</option>
-                <option value="Email">Email</option>
-                <option value="SMS">SMS</option>
-                <option value="Phone">Phone</option>
-              </select>
+              <label className="text-sm font-medium text-var(--c-text)">Notes</label>
+              <textarea 
+                className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
+                rows={3} 
+                defaultValue={notes}
+                onChange={(e) => {
+                  notes = e.target.value;
+                  renderModal();
+                }}
+              />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Message Type *</label>
-              <select name="messageType" required className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)">
-                <option value="Estimate">Estimate</option>
-                <option value="Update">Update</option>
-                <option value="Reminder">Reminder</option>
-                <option value="Feedback">Feedback</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Sent At *</label>
-              <Input name="sentAt" type="datetime-local" required defaultValue={new Date().toISOString().slice(0, 16)} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Notes</label>
-              <textarea name="notes" className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border)" rows={3} />
-            </div>
-          </form>
+          </div>
         </ModalContent>
       )
     );
+
+    renderModal();
   };
 
   if (isError) return <div className="p-8 text-center text-red-500">Error loading communications</div>;
