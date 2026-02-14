@@ -118,11 +118,11 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                 renderModal();
               }}
             />
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-var(--c-text)">Notes</label>
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-[var(--c-text)]">Notes</label>
               <textarea 
-                className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
-                rows={3} 
+                className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
+                placeholder="Enter communication notes..."
                 defaultValue={notes}
                 onChange={(e) => {
                   notes = e.target.value;
@@ -142,8 +142,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Communication Logs</h3>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '16px' }}>
         <Button onClick={openCreateModal}>
           <Plus className="mr-2 h-4 w-4" /> Add Log
         </Button>

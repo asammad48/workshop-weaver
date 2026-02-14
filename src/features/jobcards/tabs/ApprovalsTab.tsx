@@ -122,11 +122,11 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
               renderModal();
             }}
           />
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-var(--c-text)">Note</label>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[var(--c-text)]">Note</label>
             <textarea 
-              className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
-              rows={3} 
+              className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
+              placeholder="Enter approval details..."
               defaultValue={note}
               onChange={(e) => {
                 note = e.target.value;
@@ -166,12 +166,11 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           }
         >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-var(--c-text)">Approval Note</label>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[var(--c-text)]">Approval Note</label>
             <textarea 
-              className="w-full p-2 border rounded bg-var(--c-card) text-var(--c-text) border-var(--c-border) focus:outline-none focus:border-var(--c-primary)" 
+              className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
               placeholder="Add a note..." 
-              rows={3} 
               defaultValue={note}
               onChange={(e) => {
                 note = e.target.value;
@@ -191,8 +190,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Approvals</h3>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '16px' }}>
         <Button onClick={openCreateModal}>
           <Plus className="mr-2 h-4 w-4" /> Request Approval
         </Button>

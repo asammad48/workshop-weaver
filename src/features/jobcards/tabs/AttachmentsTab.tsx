@@ -93,8 +93,7 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">Attachments</h3>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '16px' }}>
         <div>
           <input
             type="file"
