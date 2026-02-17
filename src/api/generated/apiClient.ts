@@ -5268,6 +5268,8 @@ export class AuditLogResponse implements IAuditLogResponse {
     newValue?: string | undefined;
     performedByUserId?: string;
     performedAt?: Date;
+    actorEmail?: string | undefined;
+    branchName?: string | undefined;
 
     constructor(data?: IAuditLogResponse) {
         if (data) {
@@ -5289,6 +5291,8 @@ export class AuditLogResponse implements IAuditLogResponse {
             this.newValue = _data["newValue"];
             this.performedByUserId = _data["performedByUserId"];
             this.performedAt = _data["performedAt"] ? new Date(_data["performedAt"].toString()) : undefined as any;
+            this.actorEmail = _data["actorEmail"];
+            this.branchName = _data["branchName"];
         }
     }
 
@@ -5310,6 +5314,8 @@ export class AuditLogResponse implements IAuditLogResponse {
         data["newValue"] = this.newValue;
         data["performedByUserId"] = this.performedByUserId;
         data["performedAt"] = this.performedAt ? this.performedAt.toISOString() : undefined as any;
+        data["actorEmail"] = this.actorEmail;
+        data["branchName"] = this.branchName;
         return data;
     }
 }
@@ -5324,6 +5330,8 @@ export interface IAuditLogResponse {
     newValue?: string | undefined;
     performedByUserId?: string;
     performedAt?: Date;
+    actorEmail?: string | undefined;
+    branchName?: string | undefined;
 }
 
 export class AuditLogResponsePageResponse implements IAuditLogResponsePageResponse {
@@ -6419,6 +6427,7 @@ export class ExpenseResponse implements IExpenseResponse {
     amount?: number;
     description?: string | undefined;
     expenseAt?: Date;
+    branchName?: string | undefined;
 
     constructor(data?: IExpenseResponse) {
         if (data) {
@@ -6437,6 +6446,7 @@ export class ExpenseResponse implements IExpenseResponse {
             this.amount = _data["amount"];
             this.description = _data["description"];
             this.expenseAt = _data["expenseAt"] ? new Date(_data["expenseAt"].toString()) : undefined as any;
+            this.branchName = _data["branchName"];
         }
     }
 
@@ -6455,6 +6465,7 @@ export class ExpenseResponse implements IExpenseResponse {
         data["amount"] = this.amount;
         data["description"] = this.description;
         data["expenseAt"] = this.expenseAt ? this.expenseAt.toISOString() : undefined as any;
+        data["branchName"] = this.branchName;
         return data;
     }
 }
@@ -6466,6 +6477,7 @@ export interface IExpenseResponse {
     amount?: number;
     description?: string | undefined;
     expenseAt?: Date;
+    branchName?: string | undefined;
 }
 
 export class ExpenseResponseApiResponse implements IExpenseResponseApiResponse {
@@ -7299,6 +7311,11 @@ export class JobCardResponse implements IJobCardResponse {
     mileage?: number | undefined;
     initialReport?: string | undefined;
     diagnosis?: string | undefined;
+    customerName?: string | undefined;
+    vehiclePlate?: string | undefined;
+    branchName?: string | undefined;
+    currentStationName?: string | undefined;
+    currentStationCode?: string | undefined;
 
     constructor(data?: IJobCardResponse) {
         if (data) {
@@ -7321,6 +7338,11 @@ export class JobCardResponse implements IJobCardResponse {
             this.mileage = _data["mileage"];
             this.initialReport = _data["initialReport"];
             this.diagnosis = _data["diagnosis"];
+            this.customerName = _data["customerName"];
+            this.vehiclePlate = _data["vehiclePlate"];
+            this.branchName = _data["branchName"];
+            this.currentStationName = _data["currentStationName"];
+            this.currentStationCode = _data["currentStationCode"];
         }
     }
 
@@ -7343,6 +7365,11 @@ export class JobCardResponse implements IJobCardResponse {
         data["mileage"] = this.mileage;
         data["initialReport"] = this.initialReport;
         data["diagnosis"] = this.diagnosis;
+        data["customerName"] = this.customerName;
+        data["vehiclePlate"] = this.vehiclePlate;
+        data["branchName"] = this.branchName;
+        data["currentStationName"] = this.currentStationName;
+        data["currentStationCode"] = this.currentStationCode;
         return data;
     }
 }
@@ -7358,6 +7385,11 @@ export interface IJobCardResponse {
     mileage?: number | undefined;
     initialReport?: string | undefined;
     diagnosis?: string | undefined;
+    customerName?: string | undefined;
+    vehiclePlate?: string | undefined;
+    branchName?: string | undefined;
+    currentStationName?: string | undefined;
+    currentStationCode?: string | undefined;
 }
 
 export class JobCardResponseApiResponse implements IJobCardResponseApiResponse {
@@ -8546,6 +8578,11 @@ export class LedgerRowResponse implements ILedgerRowResponse {
     notes?: string | undefined;
     performedByUserId?: string;
     performedAt?: Date;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
+    performedByEmail?: string | undefined;
 
     constructor(data?: ILedgerRowResponse) {
         if (data) {
@@ -8570,6 +8607,11 @@ export class LedgerRowResponse implements ILedgerRowResponse {
             this.notes = _data["notes"];
             this.performedByUserId = _data["performedByUserId"];
             this.performedAt = _data["performedAt"] ? new Date(_data["performedAt"].toString()) : undefined as any;
+            this.partSku = _data["partSku"];
+            this.partName = _data["partName"];
+            this.locationCode = _data["locationCode"];
+            this.locationName = _data["locationName"];
+            this.performedByEmail = _data["performedByEmail"];
         }
     }
 
@@ -8594,6 +8636,11 @@ export class LedgerRowResponse implements ILedgerRowResponse {
         data["notes"] = this.notes;
         data["performedByUserId"] = this.performedByUserId;
         data["performedAt"] = this.performedAt ? this.performedAt.toISOString() : undefined as any;
+        data["partSku"] = this.partSku;
+        data["partName"] = this.partName;
+        data["locationCode"] = this.locationCode;
+        data["locationName"] = this.locationName;
+        data["performedByEmail"] = this.performedByEmail;
         return data;
     }
 }
@@ -8611,6 +8658,11 @@ export interface ILedgerRowResponse {
     notes?: string | undefined;
     performedByUserId?: string;
     performedAt?: Date;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
+    performedByEmail?: string | undefined;
 }
 
 export class LedgerRowResponsePageResponse implements ILedgerRowResponsePageResponse {
@@ -8771,6 +8823,7 @@ export class LocationResponse implements ILocationResponse {
     code?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
+    branchName?: string | undefined;
 
     constructor(data?: ILocationResponse) {
         if (data) {
@@ -8788,6 +8841,7 @@ export class LocationResponse implements ILocationResponse {
             this.code = _data["code"];
             this.name = _data["name"];
             this.isActive = _data["isActive"];
+            this.branchName = _data["branchName"];
         }
     }
 
@@ -8805,6 +8859,7 @@ export class LocationResponse implements ILocationResponse {
         data["code"] = this.code;
         data["name"] = this.name;
         data["isActive"] = this.isActive;
+        data["branchName"] = this.branchName;
         return data;
     }
 }
@@ -8815,6 +8870,7 @@ export interface ILocationResponse {
     code?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
+    branchName?: string | undefined;
 }
 
 export class LocationResponseApiResponse implements ILocationResponseApiResponse {
@@ -10079,6 +10135,7 @@ export class PurchaseOrderResponse implements IPurchaseOrderResponse {
     orderedAt?: Date | undefined;
     receivedAt?: Date | undefined;
     notes?: string | undefined;
+    supplierName?: string | undefined;
 
     constructor(data?: IPurchaseOrderResponse) {
         if (data) {
@@ -10099,6 +10156,7 @@ export class PurchaseOrderResponse implements IPurchaseOrderResponse {
             this.orderedAt = _data["orderedAt"] ? new Date(_data["orderedAt"].toString()) : undefined as any;
             this.receivedAt = _data["receivedAt"] ? new Date(_data["receivedAt"].toString()) : undefined as any;
             this.notes = _data["notes"];
+            this.supplierName = _data["supplierName"];
         }
     }
 
@@ -10119,6 +10177,7 @@ export class PurchaseOrderResponse implements IPurchaseOrderResponse {
         data["orderedAt"] = this.orderedAt ? this.orderedAt.toISOString() : undefined as any;
         data["receivedAt"] = this.receivedAt ? this.receivedAt.toISOString() : undefined as any;
         data["notes"] = this.notes;
+        data["supplierName"] = this.supplierName;
         return data;
     }
 }
@@ -10132,6 +10191,7 @@ export interface IPurchaseOrderResponse {
     orderedAt?: Date | undefined;
     receivedAt?: Date | undefined;
     notes?: string | undefined;
+    supplierName?: string | undefined;
 }
 
 export class PurchaseOrderResponseApiResponse implements IPurchaseOrderResponseApiResponse {
@@ -10950,6 +11010,10 @@ export class StockItemResponse implements IStockItemResponse {
     partId?: string;
     locationId?: string;
     quantityOnHand?: number;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
 
     constructor(data?: IStockItemResponse) {
         if (data) {
@@ -10965,6 +11029,10 @@ export class StockItemResponse implements IStockItemResponse {
             this.partId = _data["partId"];
             this.locationId = _data["locationId"];
             this.quantityOnHand = _data["quantityOnHand"];
+            this.partSku = _data["partSku"];
+            this.partName = _data["partName"];
+            this.locationCode = _data["locationCode"];
+            this.locationName = _data["locationName"];
         }
     }
 
@@ -10980,6 +11048,10 @@ export class StockItemResponse implements IStockItemResponse {
         data["partId"] = this.partId;
         data["locationId"] = this.locationId;
         data["quantityOnHand"] = this.quantityOnHand;
+        data["partSku"] = this.partSku;
+        data["partName"] = this.partName;
+        data["locationCode"] = this.locationCode;
+        data["locationName"] = this.locationName;
         return data;
     }
 }
@@ -10988,6 +11060,10 @@ export interface IStockItemResponse {
     partId?: string;
     locationId?: string;
     quantityOnHand?: number;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
 }
 
 export class StockItemResponsePageResponse implements IStockItemResponsePageResponse {
@@ -12006,6 +12082,10 @@ export class TransferResponse implements ITransferResponse {
     shippedAt?: Date | undefined;
     receivedAt?: Date | undefined;
     notes?: string | undefined;
+    fromBranchName?: string | undefined;
+    toBranchName?: string | undefined;
+    fromLocationName?: string | undefined;
+    toLocationName?: string | undefined;
 
     constructor(data?: ITransferResponse) {
         if (data) {
@@ -12029,6 +12109,10 @@ export class TransferResponse implements ITransferResponse {
             this.shippedAt = _data["shippedAt"] ? new Date(_data["shippedAt"].toString()) : undefined as any;
             this.receivedAt = _data["receivedAt"] ? new Date(_data["receivedAt"].toString()) : undefined as any;
             this.notes = _data["notes"];
+            this.fromBranchName = _data["fromBranchName"];
+            this.toBranchName = _data["toBranchName"];
+            this.fromLocationName = _data["fromLocationName"];
+            this.toLocationName = _data["toLocationName"];
         }
     }
 
@@ -12052,6 +12136,10 @@ export class TransferResponse implements ITransferResponse {
         data["shippedAt"] = this.shippedAt ? this.shippedAt.toISOString() : undefined as any;
         data["receivedAt"] = this.receivedAt ? this.receivedAt.toISOString() : undefined as any;
         data["notes"] = this.notes;
+        data["fromBranchName"] = this.fromBranchName;
+        data["toBranchName"] = this.toBranchName;
+        data["fromLocationName"] = this.fromLocationName;
+        data["toLocationName"] = this.toLocationName;
         return data;
     }
 }
@@ -12068,6 +12156,10 @@ export interface ITransferResponse {
     shippedAt?: Date | undefined;
     receivedAt?: Date | undefined;
     notes?: string | undefined;
+    fromBranchName?: string | undefined;
+    toBranchName?: string | undefined;
+    fromLocationName?: string | undefined;
+    toLocationName?: string | undefined;
 }
 
 export class TransferResponseApiResponse implements ITransferResponseApiResponse {
@@ -12614,6 +12706,7 @@ export class VehicleResponse implements IVehicleResponse {
     model?: string | undefined;
     year?: number | undefined;
     customerId?: string;
+    customerName?: string | undefined;
 
     constructor(data?: IVehicleResponse) {
         if (data) {
@@ -12632,6 +12725,7 @@ export class VehicleResponse implements IVehicleResponse {
             this.model = _data["model"];
             this.year = _data["year"];
             this.customerId = _data["customerId"];
+            this.customerName = _data["customerName"];
         }
     }
 
@@ -12650,6 +12744,7 @@ export class VehicleResponse implements IVehicleResponse {
         data["model"] = this.model;
         data["year"] = this.year;
         data["customerId"] = this.customerId;
+        data["customerName"] = this.customerName;
         return data;
     }
 }
@@ -12661,6 +12756,7 @@ export interface IVehicleResponse {
     model?: string | undefined;
     year?: number | undefined;
     customerId?: string;
+    customerName?: string | undefined;
 }
 
 export class VehicleResponseApiResponse implements IVehicleResponseApiResponse {
@@ -12893,6 +12989,8 @@ export class WagePayResponse implements IWagePayResponse {
     paidAt?: Date;
     paidByUserId?: string;
     notes?: string | undefined;
+    employeeName?: string | undefined;
+    branchName?: string | undefined;
 
     constructor(data?: IWagePayResponse) {
         if (data) {
@@ -12914,6 +13012,8 @@ export class WagePayResponse implements IWagePayResponse {
             this.paidAt = _data["paidAt"] ? new Date(_data["paidAt"].toString()) : undefined as any;
             this.paidByUserId = _data["paidByUserId"];
             this.notes = _data["notes"];
+            this.employeeName = _data["employeeName"];
+            this.branchName = _data["branchName"];
         }
     }
 
@@ -12935,6 +13035,8 @@ export class WagePayResponse implements IWagePayResponse {
         data["paidAt"] = this.paidAt ? this.paidAt.toISOString() : undefined as any;
         data["paidByUserId"] = this.paidByUserId;
         data["notes"] = this.notes;
+        data["employeeName"] = this.employeeName;
+        data["branchName"] = this.branchName;
         return data;
     }
 }
@@ -12949,6 +13051,8 @@ export interface IWagePayResponse {
     paidAt?: Date;
     paidByUserId?: string;
     notes?: string | undefined;
+    employeeName?: string | undefined;
+    branchName?: string | undefined;
 }
 
 export class WagePayResponseApiResponse implements IWagePayResponseApiResponse {
@@ -13165,6 +13269,7 @@ export class WorkStationResponse implements IWorkStationResponse {
     code?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
+    branchName?: string | undefined;
 
     constructor(data?: IWorkStationResponse) {
         if (data) {
@@ -13182,6 +13287,7 @@ export class WorkStationResponse implements IWorkStationResponse {
             this.code = _data["code"];
             this.name = _data["name"];
             this.isActive = _data["isActive"];
+            this.branchName = _data["branchName"];
         }
     }
 
@@ -13199,6 +13305,7 @@ export class WorkStationResponse implements IWorkStationResponse {
         data["code"] = this.code;
         data["name"] = this.name;
         data["isActive"] = this.isActive;
+        data["branchName"] = this.branchName;
         return data;
     }
 }
@@ -13209,6 +13316,7 @@ export interface IWorkStationResponse {
     code?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
+    branchName?: string | undefined;
 }
 
 export class WorkStationResponseApiResponse implements IWorkStationResponseApiResponse {
@@ -13406,4 +13514,3 @@ export class ApiException extends Error {
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
     throw new ApiException(message, status, response, headers, result);
 }
-export const apiClient = new Client();
