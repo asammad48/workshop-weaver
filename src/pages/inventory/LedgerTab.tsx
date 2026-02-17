@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { inventoryRepo } from '@/api/repositories/inventoryRepo';
+import { LedgerRowResponse } from '@/api/generated/apiClient';
 import { Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/Button';
@@ -42,7 +43,7 @@ export function LedgerTab({ search, page, setPage }: LedgerTabProps) {
           {items.length === 0 ? (
             <EmptyState message="No movements found" />
           ) : (
-            items.map((item: any) => (
+            items.map((item: LedgerRowResponse) => (
               <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
                 <td style={{ padding: '16px' }}>{item.performedAt ? format(new Date(item.performedAt), 'yyyy-MM-dd HH:mm') : '—'}</td>
                 <td style={{ padding: '16px' }}>
@@ -57,10 +58,14 @@ export function LedgerTab({ search, page, setPage }: LedgerTabProps) {
                     {item.movementType}
                   </span>
                 </td>
-                <td style={{ padding: '16px' }}>{item.partName || item.partId}</td>
-                <td style={{ padding: '16px' }}>{item.locationName || item.locationId}</td>
-                <td style={{ padding: '16px', color: item.qtyDelta < 0 ? 'var(--c-danger)' : 'var(--c-success)', fontWeight: 500 }}>
-                  {item.qtyDelta > 0 ? '+' : ''}{item.qtyDelta}
+                <td style={{ padding: '16px' }}>
+                  {item.partSku && item.partName ? `${item.partSku} — ${item.partName}` : item.partName || item.partSku || item.partId}
+                </td>
+                <td style={{ padding: '16px' }}>
+                  {item.locationCode && item.locationName ? `${item.locationCode} — ${item.locationName}` : item.locationName || item.locationCode || item.locationId}
+                </td>
+                <td style={{ padding: '16px', color: (item.quantityDelta || 0) < 0 ? 'var(--c-danger)' : 'var(--c-success)', fontWeight: 500 }}>
+                  {(item.quantityDelta || 0) > 0 ? '+' : ''}{item.quantityDelta}
                 </td>
                 <td style={{ padding: '16px' }}>{item.unitCost ? `$${item.unitCost.toFixed(2)}` : '—'}</td>
                 <td style={{ padding: '16px', fontSize: '13px', color: 'var(--c-muted)' }}>{item.notes || '—'}</td>

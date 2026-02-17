@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { inventoryRepo } from '@/api/repositories/inventoryRepo';
+import { StockItemResponse } from '@/api/generated/apiClient';
 import { Button } from '@/components/ui/Button';
 import { Loader2, Settings2 } from 'lucide-react';
 import { openModal, closeModal, toast } from '@/state/uiStore';
@@ -59,10 +60,14 @@ export function StockTab({ search, page, setPage }: StockTabProps) {
           {items.length === 0 ? (
             <EmptyState message="No stock found" />
           ) : (
-            items.map((item: any, idx: number) => (
+            items.map((item: StockItemResponse, idx: number) => (
               <tr key={`${item.partId}-${item.locationId}-${idx}`} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                <td style={{ padding: '16px' }}>{item.partName || item.partId}</td>
-                <td style={{ padding: '16px' }}>{item.locationName || item.locationId}</td>
+                <td style={{ padding: '16px' }}>
+                  {item.partSku && item.partName ? `${item.partSku} — ${item.partName}` : item.partName || item.partSku || item.partId}
+                </td>
+                <td style={{ padding: '16px' }}>
+                  {item.locationCode && item.locationName ? `${item.locationCode} — ${item.locationName}` : item.locationName || item.locationCode || item.locationId}
+                </td>
                 <td style={{ padding: '16px' }}>{item.qtyOnHand}</td>
                 {canAdjust && (
                   <td style={{ padding: '16px', textAlign: 'right' }}>

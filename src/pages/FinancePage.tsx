@@ -422,7 +422,7 @@ function WagesTab() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Employee ID</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Staff / Branch</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Amount</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Paid At</th>
                 <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Period</th>
@@ -451,7 +451,10 @@ function WagesTab() {
               ) : (
                 items.map((item) => (
                   <tr key={item.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                    <td style={{ padding: '16px' }}>{item.employeeUserId || '—'}</td>
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ fontWeight: 500 }}>{item.employeeName || item.employeeUserId || '—'}</div>
+                      <div style={{ fontSize: 12, color: 'var(--c-muted)' }}>{item.branchName || '—'}</div>
+                    </td>
                     <td style={{ padding: '16px', fontWeight: 500 }}>{item.amount?.toLocaleString()}</td>
                     <td style={{ padding: '16px' }}>{item.paidAt ? new Date(item.paidAt).toLocaleString() : '—'}</td>
                     <td style={{ padding: '16px' }}>
