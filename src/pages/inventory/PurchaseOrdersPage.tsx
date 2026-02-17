@@ -16,7 +16,8 @@ import {
   PurchaseOrderCreateRequest, 
   PurchaseOrderItemCreate, 
   PurchaseOrderReceiveRequest,
-  ReceiveItem
+  ReceiveItem,
+  PurchaseOrderResponse
 } from '@/api/generated/apiClient';
 
 export default function PurchaseOrdersPage() {
@@ -114,10 +115,10 @@ export default function PurchaseOrdersPage() {
               {items.length === 0 ? (
                 <tr><td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>No purchase orders found</td></tr>
               ) : (
-                items.map((po: any) => (
+                items.map((po: PurchaseOrderResponse) => (
                   <tr key={po.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
                     <td style={{ padding: '16px', fontWeight: 500 }}>{po.orderNo}</td>
-                    <td style={{ padding: '16px' }}>{po.supplierName}</td>
+                    <td style={{ padding: '16px' }}>{po.supplierName || '-'}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ 
                         fontSize: '12px', 

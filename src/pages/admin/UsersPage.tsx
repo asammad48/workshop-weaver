@@ -422,7 +422,7 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td style={{ padding: '16px' }}>
-                      {user.branchId ? branchMap[user.branchId]?.name ?? user.branchName ?? '—' : '—'}
+                      {user.branchName || '-'}
                     </td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ 

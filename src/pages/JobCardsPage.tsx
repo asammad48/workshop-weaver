@@ -314,6 +314,26 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
+                  Branch
+                </th>
+                <th
+                  style={{
+                    padding: "16px",
+                    color: "var(--c-muted)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
+                  Station
+                </th>
+                <th
+                  style={{
+                    padding: "16px",
+                    color: "var(--c-muted)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   Status
                 </th>
                 <th
@@ -363,7 +383,7 @@ const JobCardsPage = () => {
               {isLoading ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={9}
                     style={{ padding: "48px", textAlign: "center" }}
                   >
                     <Loader2
@@ -376,7 +396,7 @@ const JobCardsPage = () => {
               ) : isError ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={9}
                     style={{
                       padding: "48px",
                       textAlign: "center",
@@ -390,7 +410,7 @@ const JobCardsPage = () => {
               ) : items.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={9}
                     style={{
                       padding: "48px",
                       textAlign: "center",
@@ -415,10 +435,16 @@ const JobCardsPage = () => {
                     style={{ borderBottom: "1px solid var(--c-border)" }}
                   >
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {item.plate}
+                      {item.vehiclePlate || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {item.customerName}
+                      {item.customerName || "-"}
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
+                      {item.branchName || "-"}
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
+                      {item.currentStationName || item.currentStationCode || "-"}
                     </td>
                     <td style={{ padding: "16px" }}>
                       <span

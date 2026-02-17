@@ -157,9 +157,9 @@ export default function AuditPage() {
                     </td>
                     <td style={{ padding: '16px', fontSize: '14px' }}>
                       <div style={{ fontWeight: 500 }}>{log.actorEmail || 'System'}</div>
-                      {log.branchId && (
+                      {(log.branchName || log.branchId) && (
                         <div style={{ fontSize: '12px', color: 'var(--c-muted)' }}>
-                          {branchMap[log.branchId]?.name || 'Unknown Branch'}
+                          {log.branchName || (log.branchId ? branchMap[log.branchId]?.name : null) || 'Unknown Branch'}
                         </div>
                       )}
                     </td>

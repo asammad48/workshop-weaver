@@ -173,8 +173,14 @@ export default function TransfersPage() {
                         {t.status}
                       </span>
                     </td>
-                    <td style={{ padding: '16px' }}>{t.fromLocation?.name}</td>
-                    <td style={{ padding: '16px' }}>{t.toLocation?.name}</td>
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ fontSize: "14px", fontWeight: 500 }}>{t.fromBranchName || "-"}</div>
+                      <div style={{ fontSize: "12px", color: "var(--c-muted)" }}>{t.fromLocationName || "-"}</div>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ fontSize: "14px", fontWeight: 500 }}>{t.toBranchName || "-"}</div>
+                      <div style={{ fontSize: "12px", color: "var(--c-muted)" }}>{t.toLocationName || "-"}</div>
+                    </td>
                     <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
                       {t.requestedAt ? new Date(t.requestedAt).toLocaleDateString() : '—'}
                     </td>
