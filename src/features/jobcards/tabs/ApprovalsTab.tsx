@@ -215,10 +215,12 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovalType</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Status</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Requested At</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Approved At</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>RequestedAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>RequestedBy</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovedAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovedBy</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Note</th>
                 <th style={{ padding: "16px", textAlign: "right", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Actions</th>
               </tr>
@@ -226,13 +228,13 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: "48px", textAlign: "center" }}>
+                  <td colSpan={8} style={{ padding: "48px", textAlign: "center" }}>
                     <Loader2 size={24} className="animate-spin" style={{ margin: "0 auto", color: "var(--c-primary)" }} />
                   </td>
                 </tr>
               ) : approvals.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
+                  <td colSpan={8} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
                     No approvals found
                   </td>
                 </tr>
@@ -255,9 +257,11 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
                       {app.requestedAt ? new Date(app.requestedAt).toLocaleString() : "-"}
                     </td>
+                    <td style={{ padding: "16px" }}>{app.requestedByEmail ?? "-"}</td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
                       {app.approvedAt ? new Date(app.approvedAt).toLocaleString() : "-"}
                     </td>
+                    <td style={{ padding: "16px" }}>{app.approvedByEmail ?? "-"}</td>
                     <td style={{ padding: "16px" }}>{app.note}</td>
                     <td style={{ padding: "16px", textAlign: "right" }}>
                       {app.status === "Pending" && (

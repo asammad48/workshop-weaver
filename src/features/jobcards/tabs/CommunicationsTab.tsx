@@ -168,21 +168,22 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Channel</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Sent At</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>MessageType</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>SentAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Created By</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Notes</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center" }}>
+                  <td colSpan={5} style={{ padding: "48px", textAlign: "center" }}>
                     <Loader2 size={24} className="animate-spin" style={{ margin: "0 auto", color: "var(--c-primary)" }} />
                   </td>
                 </tr>
               ) : comms.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
+                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
                     No logs found
                   </td>
                 </tr>
@@ -203,6 +204,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
                       {new Date(log.sentAt).toLocaleString()}
                     </td>
+                    <td style={{ padding: "16px" }}>{log.createdByEmail ?? "-"}</td>
                     <td style={{ padding: "16px" }}>{log.notes}</td>
                   </tr>
                 ))

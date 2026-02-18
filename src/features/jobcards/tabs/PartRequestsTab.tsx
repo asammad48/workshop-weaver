@@ -97,7 +97,9 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Part</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Supplier</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Qty</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Station</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Status</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>Dates</th>
                 <th style={{ padding: "16px", textAlign: "right", color: "var(--c-muted)", fontSize: "14px" }}>Actions</th>
@@ -106,15 +108,19 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
             <tbody>
               {requests.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
+                  <td colSpan={7} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
                     No part requests found
                   </td>
                 </tr>
               ) : (
                 requests.map((req: any) => (
                   <tr key={req.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
-                    <td style={{ padding: "16px" }}>{req.partName || req.partId}</td>
+                    <td style={{ padding: "16px" }}>
+                      {req.partSku || req.partName ? `${req.partSku ?? ""} — ${req.partName ?? ""}` : req.partId}
+                    </td>
+                    <td style={{ padding: "16px" }}>{req.supplierName ?? "-"}</td>
                     <td style={{ padding: "16px" }}>{req.qty}</td>
+                    <td style={{ padding: "16px" }}>{req.workStationName ?? req.stationCode ?? "-"}</td>
                     <td style={{ padding: "16px" }}>
                       <span style={{ 
                         padding: '2px 8px', borderRadius: '4px', fontSize: '12px',
@@ -126,6 +132,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
                         <span style={{ color: 'var(--c-muted)' }}>Req:</span> <span>{req.requestedAt ? new Date(req.requestedAt).toLocaleDateString() : '-'}</span>
                         {req.orderedAt && <><span style={{ color: 'var(--c-muted)' }}>Ord:</span> <span>{new Date(req.orderedAt).toLocaleDateString()}</span></>}
                         {req.arrivedAt && <><span style={{ color: 'var(--c-muted)' }}>Arr:</span> <span>{new Date(req.arrivedAt).toLocaleDateString()}</span></>}
+                        {req.signedAt && <><span style={{ color: 'var(--c-muted)' }}>Sign:</span> <span>{new Date(req.signedAt).toLocaleDateString()}</span></>}
                       </div>
                     </td>
                     <td style={{ padding: "16px", textAlign: "right" }}>

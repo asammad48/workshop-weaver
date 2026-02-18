@@ -203,66 +203,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                   textAlign: "left",
                 }}
               >
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Station
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Title
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Status
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Started
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Ended
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  Mins
-                </th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Station</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Title</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Assigned To</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Status</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>StartedAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>EndedAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>TotalMinutes</th>
                 <th
                   style={{
                     padding: "16px",
@@ -292,12 +239,10 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                 </tr>
               ) : (
                 tasks.map((task: any) => (
-                  <tr
-                    key={task.id}
-                    style={{ borderBottom: "1px solid var(--c-border)" }}
-                  >
-                    <td style={{ padding: "16px" }}>{task.stationCode}</td>
+                  <tr key={task.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
+                    <td style={{ padding: "16px" }}>{task.workStationName ?? task.stationCode ?? "-"}</td>
                     <td style={{ padding: "16px" }}>{task.title}</td>
+                    <td style={{ padding: "16px" }}>{task.assignedToEmail ?? "-"}</td>
                     <td style={{ padding: "16px" }}>
                       <span
                         style={{
@@ -322,19 +267,9 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                           task.status}
                       </span>
                     </td>
-                    <td style={{ padding: "16px" }}>
-                      {task.startedAt
-                        ? new Date(task.startedAt).toLocaleString()
-                        : "-"}
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      {task.endedAt
-                        ? new Date(task.endedAt).toLocaleString()
-                        : "-"}
-                    </td>
-                    <td style={{ padding: "16px" }}>
-                      {task.totalMinutes || 0}
-                    </td>
+                    <td style={{ padding: "16px" }}>{task.startedAt ? new Date(task.startedAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "16px" }}>{task.endedAt ? new Date(task.endedAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "16px" }}>{task.totalMinutes ?? 0}</td>
                     <td style={{ padding: "16px", textAlign: "right" }}>
                       <div
                         style={{
@@ -501,48 +436,13 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr
-                style={{
-                  borderBottom: "1px solid var(--c-border)",
-                  textAlign: "left",
-                }}
-              >
-                <th
-                  style={{
-                    padding: "12px",
-                    color: "var(--c-muted)",
-                    fontSize: "13px",
-                  }}
-                >
-                  Started
-                </th>
-                <th
-                  style={{
-                    padding: "12px",
-                    color: "var(--c-muted)",
-                    fontSize: "13px",
-                  }}
-                >
-                  Ended
-                </th>
-                <th
-                  style={{
-                    padding: "12px",
-                    color: "var(--c-muted)",
-                    fontSize: "13px",
-                  }}
-                >
-                  Mins
-                </th>
-                <th
-                  style={{
-                    padding: "12px",
-                    color: "var(--c-muted)",
-                    fontSize: "13px",
-                  }}
-                >
-                  By
-                </th>
+              <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>User</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Task</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Station</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>StartedAt</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>EndedAt</th>
+                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Minutes</th>
                 <th
                   style={{
                     padding: "12px",
@@ -593,24 +493,13 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
                 </tr>
               ) : (
                 timelogs.map((log: any) => (
-                  <tr
-                    key={log.id}
-                    style={{ borderBottom: "1px solid var(--c-border)" }}
-                  >
-                    <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.startAt
-                        ? new Date(log.startAt).toLocaleString()
-                        : "-"}
-                    </td>
-                    <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.endAt ? new Date(log.endAt).toLocaleString() : "-"}
-                    </td>
-                    <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.totalMinutes || 0}
-                    </td>
-                    <td style={{ padding: "12px", fontSize: "13px" }}>
-                      {log.createdBy}
-                    </td>
+                  <tr key={log.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.userEmail ?? "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.taskTitle ?? "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.workStationName ?? "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.startAt ? new Date(log.startAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.endAt ? new Date(log.endAt).toLocaleString() : "-"}</td>
+                    <td style={{ padding: "12px", fontSize: "13px" }}>{log.totalMinutes ?? 0}</td>
                     <td style={{ padding: "12px", textAlign: "right" }}>
                       {!log.endAt && (
                         <Button
