@@ -57,14 +57,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ApprovalResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApprovalResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ApprovalResponseApiResponse>(null as any);
@@ -107,14 +107,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ApprovalResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApprovalResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ApprovalResponseIReadOnlyListApiResponse>(null as any);
@@ -152,14 +152,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = AttachmentResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttachmentResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AttachmentResponseApiResponse>(null as any);
@@ -202,14 +202,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = AttachmentResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttachmentResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AttachmentResponseIReadOnlyListApiResponse>(null as any);
@@ -247,14 +247,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PresignResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PresignResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PresignResponseApiResponse>(null as any);
@@ -317,14 +317,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = AuditLogResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuditLogResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<AuditLogResponsePageResponseApiResponse>(null as any);
@@ -362,14 +362,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = LoginResponseDtoApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoginResponseDtoApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LoginResponseDtoApiResponse>(null as any);
@@ -407,14 +407,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -447,14 +447,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = MeResponseDtoApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MeResponseDtoApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<MeResponseDtoApiResponse>(null as any);
@@ -486,11 +486,11 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -522,11 +522,11 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -567,14 +567,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PaymentResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaymentResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PaymentResponseApiResponse>(null as any);
@@ -610,14 +610,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PaymentResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaymentResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PaymentResponseIReadOnlyListApiResponse>(null as any);
@@ -658,14 +658,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobLineItemResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobLineItemResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobLineItemResponseApiResponse>(null as any);
@@ -701,14 +701,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobLineItemResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobLineItemResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobLineItemResponseIReadOnlyListApiResponse>(null as any);
@@ -744,14 +744,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = BooleanApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooleanApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<BooleanApiResponse>(null as any);
@@ -789,14 +789,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = BranchResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BranchResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<BranchResponseApiResponse>(null as any);
@@ -854,14 +854,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = BranchResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BranchResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<BranchResponsePageResponseApiResponse>(null as any);
@@ -897,14 +897,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = BranchResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BranchResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<BranchResponseApiResponse>(null as any);
@@ -942,14 +942,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CommunicationLogResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommunicationLogResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CommunicationLogResponseApiResponse>(null as any);
@@ -985,14 +985,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CommunicationLogResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommunicationLogResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CommunicationLogResponseIReadOnlyListApiResponse>(null as any);
@@ -1030,14 +1030,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CustomerResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CustomerResponseApiResponse>(null as any);
@@ -1095,14 +1095,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CustomerResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CustomerResponsePageResponseApiResponse>(null as any);
@@ -1138,14 +1138,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CustomerResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CustomerResponseApiResponse>(null as any);
@@ -1183,14 +1183,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ExpenseResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ExpenseResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ExpenseResponseApiResponse>(null as any);
@@ -1258,14 +1258,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ExpenseResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ExpenseResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ExpenseResponsePageResponseApiResponse>(null as any);
@@ -1303,14 +1303,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = WagePayResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WagePayResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<WagePayResponseApiResponse>(null as any);
@@ -1378,14 +1378,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = WagePayResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WagePayResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<WagePayResponsePageResponseApiResponse>(null as any);
@@ -1418,14 +1418,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -1463,14 +1463,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SupplierResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SupplierResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SupplierResponseApiResponse>(null as any);
@@ -1528,14 +1528,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SupplierResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SupplierResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SupplierResponsePageResponseApiResponse>(null as any);
@@ -1573,14 +1573,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PartResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PartResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PartResponseApiResponse>(null as any);
@@ -1638,14 +1638,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PartResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PartResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PartResponsePageResponseApiResponse>(null as any);
@@ -1683,14 +1683,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = LocationResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LocationResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LocationResponseApiResponse>(null as any);
@@ -1748,14 +1748,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = LocationResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LocationResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LocationResponsePageResponseApiResponse>(null as any);
@@ -1823,14 +1823,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StockItemResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StockItemResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StockItemResponsePageResponseApiResponse>(null as any);
@@ -1868,14 +1868,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -1933,14 +1933,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = LedgerRowResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LedgerRowResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<LedgerRowResponsePageResponseApiResponse>(null as any);
@@ -1981,14 +1981,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardPartUsageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardPartUsageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardPartUsageResponseApiResponse>(null as any);
@@ -2024,14 +2024,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardPartUsageResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardPartUsageResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardPartUsageResponseIReadOnlyListApiResponse>(null as any);
@@ -2069,14 +2069,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2134,14 +2134,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponsePageResponseApiResponse>(null as any);
@@ -2177,14 +2177,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2220,14 +2220,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2263,14 +2263,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2311,14 +2311,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2359,14 +2359,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardResponseApiResponse>(null as any);
@@ -2407,14 +2407,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardStationHistoryResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardStationHistoryResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardStationHistoryResponseApiResponse>(null as any);
@@ -2450,14 +2450,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardStationHistoryResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardStationHistoryResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardStationHistoryResponseIReadOnlyListApiResponse>(null as any);
@@ -2498,14 +2498,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardApprovalResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardApprovalResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardApprovalResponseApiResponse>(null as any);
@@ -2546,14 +2546,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardApprovalResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardApprovalResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardApprovalResponseApiResponse>(null as any);
@@ -2589,14 +2589,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobCardApprovalResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardApprovalResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobCardApprovalResponseIReadOnlyListApiResponse>(null as any);
@@ -2637,14 +2637,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TimeLogResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TimeLogResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TimeLogResponseApiResponse>(null as any);
@@ -2685,14 +2685,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TimeLogResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TimeLogResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TimeLogResponseApiResponse>(null as any);
@@ -2728,14 +2728,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TimeLogResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TimeLogResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TimeLogResponseIReadOnlyListApiResponse>(null as any);
@@ -2776,14 +2776,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = InvoiceResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InvoiceResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<InvoiceResponseApiResponse>(null as any);
@@ -2819,14 +2819,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = InvoiceResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InvoiceResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<InvoiceResponseApiResponse>(null as any);
@@ -2864,14 +2864,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobTaskResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobTaskResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobTaskResponseApiResponse>(null as any);
@@ -2907,14 +2907,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobTaskResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobTaskResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobTaskResponseApiResponse>(null as any);
@@ -2950,14 +2950,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobTaskResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobTaskResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobTaskResponseApiResponse>(null as any);
@@ -2993,14 +2993,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobTaskResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobTaskResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobTaskResponseIReadOnlyListApiResponse>(null as any);
@@ -3041,14 +3041,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseApiResponse>(null as any);
@@ -3084,14 +3084,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseIReadOnlyListApiResponse>(null as any);
@@ -3127,14 +3127,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseApiResponse>(null as any);
@@ -3170,14 +3170,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseApiResponse>(null as any);
@@ -3213,14 +3213,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseApiResponse>(null as any);
@@ -3256,14 +3256,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobPartRequestResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<JobPartRequestResponseApiResponse>(null as any);
@@ -3301,14 +3301,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PurchaseOrderResponseApiResponse>(null as any);
@@ -3366,14 +3366,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PurchaseOrderResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PurchaseOrderResponsePageResponseApiResponse>(null as any);
@@ -3409,14 +3409,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PurchaseOrderResponseApiResponse>(null as any);
@@ -3457,14 +3457,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PurchaseOrderResponseApiResponse>(null as any);
@@ -3500,14 +3500,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PurchaseOrderResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PurchaseOrderResponseApiResponse>(null as any);
@@ -3550,14 +3550,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SummaryReportResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SummaryReportResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SummaryReportResponseApiResponse>(null as any);
@@ -3590,14 +3590,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StuckVehicleResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StuckVehicleResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StuckVehicleResponseIReadOnlyListApiResponse>(null as any);
@@ -3640,14 +3640,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RoadblockerAgingResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoadblockerAgingResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RoadblockerAgingResponseIReadOnlyListApiResponse>(null as any);
@@ -3690,14 +3690,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StationTimeResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StationTimeResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StationTimeResponseIReadOnlyListApiResponse>(null as any);
@@ -3735,14 +3735,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RoadblockerResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoadblockerResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RoadblockerResponseApiResponse>(null as any);
@@ -3778,14 +3778,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RoadblockerResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoadblockerResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RoadblockerResponseApiResponse>(null as any);
@@ -3821,14 +3821,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RoadblockerResponseIReadOnlyListApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RoadblockerResponseIReadOnlyListApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<RoadblockerResponseIReadOnlyListApiResponse>(null as any);
@@ -3866,14 +3866,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TransferResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransferResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TransferResponseApiResponse>(null as any);
@@ -3931,14 +3931,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TransferResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransferResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TransferResponsePageResponseApiResponse>(null as any);
@@ -3974,14 +3974,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TransferResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransferResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TransferResponseApiResponse>(null as any);
@@ -4017,14 +4017,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TransferResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransferResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TransferResponseApiResponse>(null as any);
@@ -4060,14 +4060,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = TransferResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransferResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<TransferResponseApiResponse>(null as any);
@@ -4105,14 +4105,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UserDtoApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDtoApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserDtoApiResponse>(null as any);
@@ -4170,14 +4170,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UserDtoPageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDtoPageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserDtoPageResponseApiResponse>(null as any);
@@ -4213,14 +4213,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UserDtoApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDtoApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserDtoApiResponse>(null as any);
@@ -4261,14 +4261,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = UserDtoApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDtoApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<UserDtoApiResponse>(null as any);
@@ -4309,14 +4309,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -4352,14 +4352,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -4395,14 +4395,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -4443,14 +4443,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = StringApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StringApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<StringApiResponse>(null as any);
@@ -4488,14 +4488,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = VehicleResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VehicleResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<VehicleResponseApiResponse>(null as any);
@@ -4553,14 +4553,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = VehicleResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VehicleResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<VehicleResponsePageResponseApiResponse>(null as any);
@@ -4596,14 +4596,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = VehicleResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VehicleResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<VehicleResponseApiResponse>(null as any);
@@ -4641,14 +4641,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = WorkStationResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkStationResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<WorkStationResponseApiResponse>(null as any);
@@ -4706,14 +4706,14 @@ export class Client {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = WorkStationResponsePageResponseApiResponse.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkStationResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<WorkStationResponsePageResponseApiResponse>(null as any);
@@ -4782,6 +4782,8 @@ export class ApprovalResponse implements IApprovalResponse {
     approvedAt?: Date;
     note?: string | undefined;
     status?: ApprovalStatus;
+    requestedByEmail?: string | undefined;
+    approvedByEmail?: string | undefined;
 
     constructor(data?: IApprovalResponse) {
         if (data) {
@@ -4803,6 +4805,8 @@ export class ApprovalResponse implements IApprovalResponse {
             this.approvedAt = _data["approvedAt"] ? new Date(_data["approvedAt"].toString()) : undefined as any;
             this.note = _data["note"];
             this.status = _data["status"];
+            this.requestedByEmail = _data["requestedByEmail"];
+            this.approvedByEmail = _data["approvedByEmail"];
         }
     }
 
@@ -4824,6 +4828,8 @@ export class ApprovalResponse implements IApprovalResponse {
         data["approvedAt"] = this.approvedAt ? this.approvedAt.toISOString() : undefined as any;
         data["note"] = this.note;
         data["status"] = this.status;
+        data["requestedByEmail"] = this.requestedByEmail;
+        data["approvedByEmail"] = this.approvedByEmail;
         return data;
     }
 }
@@ -4838,6 +4844,8 @@ export interface IApprovalResponse {
     approvedAt?: Date;
     note?: string | undefined;
     status?: ApprovalStatus;
+    requestedByEmail?: string | undefined;
+    approvedByEmail?: string | undefined;
 }
 
 export class ApprovalResponseApiResponse implements IApprovalResponseApiResponse {
@@ -5077,6 +5085,8 @@ export class AttachmentResponse implements IAttachmentResponse {
     provider?: StorageProvider;
     uploadedAt?: Date;
     uploadedByUserId?: string;
+    uploadedByEmail?: string | undefined;
+    ownerDisplay?: string | undefined;
 
     constructor(data?: IAttachmentResponse) {
         if (data) {
@@ -5099,6 +5109,8 @@ export class AttachmentResponse implements IAttachmentResponse {
             this.provider = _data["provider"];
             this.uploadedAt = _data["uploadedAt"] ? new Date(_data["uploadedAt"].toString()) : undefined as any;
             this.uploadedByUserId = _data["uploadedByUserId"];
+            this.uploadedByEmail = _data["uploadedByEmail"];
+            this.ownerDisplay = _data["ownerDisplay"];
         }
     }
 
@@ -5121,6 +5133,8 @@ export class AttachmentResponse implements IAttachmentResponse {
         data["provider"] = this.provider;
         data["uploadedAt"] = this.uploadedAt ? this.uploadedAt.toISOString() : undefined as any;
         data["uploadedByUserId"] = this.uploadedByUserId;
+        data["uploadedByEmail"] = this.uploadedByEmail;
+        data["ownerDisplay"] = this.ownerDisplay;
         return data;
     }
 }
@@ -5136,6 +5150,8 @@ export interface IAttachmentResponse {
     provider?: StorageProvider;
     uploadedAt?: Date;
     uploadedByUserId?: string;
+    uploadedByEmail?: string | undefined;
+    ownerDisplay?: string | undefined;
 }
 
 export class AttachmentResponseApiResponse implements IAttachmentResponseApiResponse {
@@ -5863,6 +5879,8 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
     sentAt?: Date;
     notes?: string | undefined;
     sentByUserId?: string;
+    createdByEmail?: string | undefined;
+    jobCardPlate?: string | undefined;
 
     constructor(data?: ICommunicationLogResponse) {
         if (data) {
@@ -5883,6 +5901,8 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
             this.sentAt = _data["sentAt"] ? new Date(_data["sentAt"].toString()) : undefined as any;
             this.notes = _data["notes"];
             this.sentByUserId = _data["sentByUserId"];
+            this.createdByEmail = _data["createdByEmail"];
+            this.jobCardPlate = _data["jobCardPlate"];
         }
     }
 
@@ -5903,6 +5923,8 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
         data["sentAt"] = this.sentAt ? this.sentAt.toISOString() : undefined as any;
         data["notes"] = this.notes;
         data["sentByUserId"] = this.sentByUserId;
+        data["createdByEmail"] = this.createdByEmail;
+        data["jobCardPlate"] = this.jobCardPlate;
         return data;
     }
 }
@@ -5916,6 +5938,8 @@ export interface ICommunicationLogResponse {
     sentAt?: Date;
     notes?: string | undefined;
     sentByUserId?: string;
+    createdByEmail?: string | undefined;
+    jobCardPlate?: string | undefined;
 }
 
 export class CommunicationLogResponseApiResponse implements ICommunicationLogResponseApiResponse {
@@ -6815,6 +6839,8 @@ export class JobCardApprovalResponse implements IJobCardApprovalResponse {
     approvedByUserId?: string;
     approvedAt?: Date;
     notes?: string | undefined;
+    requestedByEmail?: string | undefined;
+    approvedByEmail?: string | undefined;
 
     constructor(data?: IJobCardApprovalResponse) {
         if (data) {
@@ -6833,6 +6859,8 @@ export class JobCardApprovalResponse implements IJobCardApprovalResponse {
             this.approvedByUserId = _data["approvedByUserId"];
             this.approvedAt = _data["approvedAt"] ? new Date(_data["approvedAt"].toString()) : undefined as any;
             this.notes = _data["notes"];
+            this.requestedByEmail = _data["requestedByEmail"];
+            this.approvedByEmail = _data["approvedByEmail"];
         }
     }
 
@@ -6851,6 +6879,8 @@ export class JobCardApprovalResponse implements IJobCardApprovalResponse {
         data["approvedByUserId"] = this.approvedByUserId;
         data["approvedAt"] = this.approvedAt ? this.approvedAt.toISOString() : undefined as any;
         data["notes"] = this.notes;
+        data["requestedByEmail"] = this.requestedByEmail;
+        data["approvedByEmail"] = this.approvedByEmail;
         return data;
     }
 }
@@ -6862,6 +6892,8 @@ export interface IJobCardApprovalResponse {
     approvedByUserId?: string;
     approvedAt?: Date;
     notes?: string | undefined;
+    requestedByEmail?: string | undefined;
+    approvedByEmail?: string | undefined;
 }
 
 export class JobCardApprovalResponseApiResponse implements IJobCardApprovalResponseApiResponse {
@@ -7073,6 +7105,10 @@ export class JobCardPartUsageResponse implements IJobCardPartUsageResponse {
     unitPrice?: number | undefined;
     usedAt?: Date;
     performedByUserId?: string;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
 
     constructor(data?: IJobCardPartUsageResponse) {
         if (data) {
@@ -7093,6 +7129,10 @@ export class JobCardPartUsageResponse implements IJobCardPartUsageResponse {
             this.unitPrice = _data["unitPrice"];
             this.usedAt = _data["usedAt"] ? new Date(_data["usedAt"].toString()) : undefined as any;
             this.performedByUserId = _data["performedByUserId"];
+            this.partSku = _data["partSku"];
+            this.partName = _data["partName"];
+            this.locationCode = _data["locationCode"];
+            this.locationName = _data["locationName"];
         }
     }
 
@@ -7113,6 +7153,10 @@ export class JobCardPartUsageResponse implements IJobCardPartUsageResponse {
         data["unitPrice"] = this.unitPrice;
         data["usedAt"] = this.usedAt ? this.usedAt.toISOString() : undefined as any;
         data["performedByUserId"] = this.performedByUserId;
+        data["partSku"] = this.partSku;
+        data["partName"] = this.partName;
+        data["locationCode"] = this.locationCode;
+        data["locationName"] = this.locationName;
         return data;
     }
 }
@@ -7126,6 +7170,10 @@ export interface IJobCardPartUsageResponse {
     unitPrice?: number | undefined;
     usedAt?: Date;
     performedByUserId?: string;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationCode?: string | undefined;
+    locationName?: string | undefined;
 }
 
 export class JobCardPartUsageResponseApiResponse implements IJobCardPartUsageResponseApiResponse {
@@ -8105,6 +8153,11 @@ export class JobPartRequestResponse implements IJobPartRequestResponse {
     status?: JobPartRequestStatus;
     supplierId?: string | undefined;
     purchaseOrderId?: string | undefined;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    supplierName?: string | undefined;
+    requestedByEmail?: string | undefined;
+    workStationName?: string | undefined;
 
     constructor(data?: IJobPartRequestResponse) {
         if (data) {
@@ -8131,6 +8184,11 @@ export class JobPartRequestResponse implements IJobPartRequestResponse {
             this.status = _data["status"];
             this.supplierId = _data["supplierId"];
             this.purchaseOrderId = _data["purchaseOrderId"];
+            this.partSku = _data["partSku"];
+            this.partName = _data["partName"];
+            this.supplierName = _data["supplierName"];
+            this.requestedByEmail = _data["requestedByEmail"];
+            this.workStationName = _data["workStationName"];
         }
     }
 
@@ -8157,6 +8215,11 @@ export class JobPartRequestResponse implements IJobPartRequestResponse {
         data["status"] = this.status;
         data["supplierId"] = this.supplierId;
         data["purchaseOrderId"] = this.purchaseOrderId;
+        data["partSku"] = this.partSku;
+        data["partName"] = this.partName;
+        data["supplierName"] = this.supplierName;
+        data["requestedByEmail"] = this.requestedByEmail;
+        data["workStationName"] = this.workStationName;
         return data;
     }
 }
@@ -8176,6 +8239,11 @@ export interface IJobPartRequestResponse {
     status?: JobPartRequestStatus;
     supplierId?: string | undefined;
     purchaseOrderId?: string | undefined;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    supplierName?: string | undefined;
+    requestedByEmail?: string | undefined;
+    workStationName?: string | undefined;
 }
 
 export class JobPartRequestResponseApiResponse implements IJobPartRequestResponseApiResponse {
@@ -8368,6 +8436,11 @@ export class JobTaskResponse implements IJobTaskResponse {
     status?: JobTaskStatus;
     createdAt?: Date;
     updatedAt?: Date;
+    workStationName?: string | undefined;
+    workStationCode?: string | undefined;
+    assignedToEmail?: string | undefined;
+    createdByEmail?: string | undefined;
+    jobCardPlate?: string | undefined;
 
     constructor(data?: IJobTaskResponse) {
         if (data) {
@@ -8393,6 +8466,11 @@ export class JobTaskResponse implements IJobTaskResponse {
             this.status = _data["status"];
             this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : undefined as any;
             this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : undefined as any;
+            this.workStationName = _data["workStationName"];
+            this.workStationCode = _data["workStationCode"];
+            this.assignedToEmail = _data["assignedToEmail"];
+            this.createdByEmail = _data["createdByEmail"];
+            this.jobCardPlate = _data["jobCardPlate"];
         }
     }
 
@@ -8418,6 +8496,11 @@ export class JobTaskResponse implements IJobTaskResponse {
         data["status"] = this.status;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : undefined as any;
         data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : undefined as any;
+        data["workStationName"] = this.workStationName;
+        data["workStationCode"] = this.workStationCode;
+        data["assignedToEmail"] = this.assignedToEmail;
+        data["createdByEmail"] = this.createdByEmail;
+        data["jobCardPlate"] = this.jobCardPlate;
         return data;
     }
 }
@@ -8436,6 +8519,11 @@ export interface IJobTaskResponse {
     status?: JobTaskStatus;
     createdAt?: Date;
     updatedAt?: Date;
+    workStationName?: string | undefined;
+    workStationCode?: string | undefined;
+    assignedToEmail?: string | undefined;
+    createdByEmail?: string | undefined;
+    jobCardPlate?: string | undefined;
 }
 
 export class JobTaskResponseApiResponse implements IJobTaskResponseApiResponse {
@@ -11801,6 +11889,9 @@ export class TimeLogResponse implements ITimeLogResponse {
     startAt?: Date;
     endAt?: Date | undefined;
     totalMinutes?: number;
+    userEmail?: string | undefined;
+    taskTitle?: string | undefined;
+    workStationName?: string | undefined;
 
     constructor(data?: ITimeLogResponse) {
         if (data) {
@@ -11819,6 +11910,9 @@ export class TimeLogResponse implements ITimeLogResponse {
             this.startAt = _data["startAt"] ? new Date(_data["startAt"].toString()) : undefined as any;
             this.endAt = _data["endAt"] ? new Date(_data["endAt"].toString()) : undefined as any;
             this.totalMinutes = _data["totalMinutes"];
+            this.userEmail = _data["userEmail"];
+            this.taskTitle = _data["taskTitle"];
+            this.workStationName = _data["workStationName"];
         }
     }
 
@@ -11837,6 +11931,9 @@ export class TimeLogResponse implements ITimeLogResponse {
         data["startAt"] = this.startAt ? this.startAt.toISOString() : undefined as any;
         data["endAt"] = this.endAt ? this.endAt.toISOString() : undefined as any;
         data["totalMinutes"] = this.totalMinutes;
+        data["userEmail"] = this.userEmail;
+        data["taskTitle"] = this.taskTitle;
+        data["workStationName"] = this.workStationName;
         return data;
     }
 }
@@ -11848,6 +11945,9 @@ export interface ITimeLogResponse {
     startAt?: Date;
     endAt?: Date | undefined;
     totalMinutes?: number;
+    userEmail?: string | undefined;
+    taskTitle?: string | undefined;
+    workStationName?: string | undefined;
 }
 
 export class TimeLogResponseApiResponse implements ITimeLogResponseApiResponse {
