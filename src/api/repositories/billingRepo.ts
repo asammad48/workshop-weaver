@@ -1,21 +1,40 @@
 import { Client } from "../generated/apiClient";
-import { apiClient } from "../generated/apiClient"; // Assuming apiClient is an instance of Client exported elsewhere, but if it's missing, we need to fix it.
+import { createClient } from "./_repoBase";
+import { normalizeError } from "./_errors";
+
+const client = createClient(Client);
 
 export const billingRepo = {
   getInvoice: async (id: string) => {
-    const response = await apiClient.invoiceGET(id);
-    return response.data;
+    try {
+      const response = await client.invoiceGET(id);
+      return response.data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
   createInvoice: async (id: string, data: any) => {
-    const response = await apiClient.invoicePOST(id, data);
-    return response.data;
+    try {
+      const response = await client.invoicePOST(id, data);
+      return response.data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
   getPayments: async (invoiceId: string) => {
-    const response = await apiClient.paymentsGET(invoiceId);
-    return response.data;
+    try {
+      const response = await client.paymentsGET(invoiceId);
+      return response.data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
   addPayment: async (invoiceId: string, data: any) => {
-    const response = await apiClient.paymentsPOST(invoiceId, data);
-    return response.data;
+    try {
+      const response = await client.paymentsPOST(invoiceId, data);
+      return response.data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   }
 };

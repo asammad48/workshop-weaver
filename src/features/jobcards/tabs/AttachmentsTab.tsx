@@ -127,22 +127,24 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>File Name</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>FileName</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ContentType</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Size</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Created At</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Uploaded By</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Owner</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>CreatedAt</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center" }}>
+                  <td colSpan={6} style={{ padding: "48px", textAlign: "center" }}>
                     <Loader2 size={24} className="animate-spin" style={{ margin: "0 auto", color: "var(--c-primary)" }} />
                   </td>
                 </tr>
               ) : attachments.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
+                  <td colSpan={6} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
                     No attachments found
                   </td>
                 </tr>
@@ -163,6 +165,8 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
                       {(file.sizeBytes / 1024).toFixed(2)} KB
                     </td>
+                    <td style={{ padding: "16px" }}>{file.uploadedByEmail ?? "-"}</td>
+                    <td style={{ padding: "16px" }}>{file.ownerDisplay ?? "-"}</td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
                       {new Date(file.createdAt).toLocaleString()}
                     </td>
