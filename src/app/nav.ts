@@ -101,7 +101,7 @@ const roleAccess: Record<UserRole, { groups: string[]; readOnlyGroups?: string[]
     groups: ['Main', 'Operations', 'Inventory', 'Purchasing', 'Transfers', 'Finance', 'Reports', 'Admin', 'Profile'],
   },
   BRANCH_MANAGER: {
-    groups: ['Main', 'Operations', 'Finance', 'Reports', 'Profile'],
+      groups: ['Main', 'Operations', 'Inventory', 'Purchasing', 'Transfers', 'Finance', 'Reports', 'Profile'],
   },
   STOREKEEPER: {
     groups: ['Main', 'Inventory', 'Purchasing', 'Transfers', 'Reports', 'Profile'],
