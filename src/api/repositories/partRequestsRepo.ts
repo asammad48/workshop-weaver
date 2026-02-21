@@ -30,7 +30,7 @@ export const partRequestsRepo = {
 
   async markOrdered(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await client.markOrdered(id);
+      return await (client as any).partRequestsMarkOrderedPOST(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -38,7 +38,7 @@ export const partRequestsRepo = {
 
   async markArrived(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await client.markArrived(id);
+      return await (client as any).partRequestsMarkArrivedPOST(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -46,7 +46,7 @@ export const partRequestsRepo = {
 
   async stationSign(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await client.stationSign(id);
+      return await (client as any).partRequestsStationSignPOST(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -54,7 +54,7 @@ export const partRequestsRepo = {
 
   async officeSign(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await client.officeSign(id);
+      return await (client as any).partRequestsOfficeSignPOST(id);
     } catch (error) {
       throw normalizeError(error);
     }

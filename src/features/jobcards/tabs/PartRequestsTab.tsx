@@ -176,8 +176,6 @@ const CreateRequestModal: React.FC<{ jobCardId: string; onSubmit: (data: any) =>
     qty: 1,
     workStationId: "",
     note: "",
-    requireApproval: false,
-    approvalRole: 1, // Supervisor
   });
 
   const { data: parts } = useQuery({ queryKey: ["parts"], queryFn: getPartsOnce });
@@ -188,13 +186,6 @@ const CreateRequestModal: React.FC<{ jobCardId: string; onSubmit: (data: any) =>
       ...formData,
       jobCardId,
     };
-    
-    if (formData.requireApproval) {
-      // In a real app, we might create the request then create an approval
-      // For now, we'll just send it as is if the API supports it, 
-      // or we can wrap it in an approval flow
-      console.log("Creating request with approval", requestData);
-    }
     
     onSubmit(requestData);
   };
@@ -217,7 +208,7 @@ const CreateRequestModal: React.FC<{ jobCardId: string; onSubmit: (data: any) =>
           placeholder="Select part"
           value={formData.partId}
           options={(parts || []).map((p: any) => ({ value: p.id, label: p.name }))}
-          onChange={(val) => setFormData(prev => ({ ...prev, partId: val as unknown as string }))}
+          onChange={(e) => setFormData(prev => ({ ...prev, partId: e.target.value }))}
         />
         <Input
           label="Quantity *"
@@ -232,30 +223,8 @@ const CreateRequestModal: React.FC<{ jobCardId: string; onSubmit: (data: any) =>
           placeholder="Select station"
           value={formData.workStationId}
           options={(workstations || []).map((w: any) => ({ value: w.id, label: `${w.code} - ${w.name}` }))}
-          onChange={(val) => setFormData(prev => ({ ...prev, workStationId: val as unknown as string }))}
+          onChange={(e) => setFormData(prev => ({ ...prev, workStationId: e.target.value }))}
         />
-        
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-          <input 
-            type="checkbox" 
-            id="requireApproval"
-            checked={formData.requireApproval}
-            onChange={(e) => setFormData(prev => ({ ...prev, requireApproval: e.target.checked }))}
-          />
-          <label htmlFor="requireApproval" style={{ fontSize: "14px", fontWeight: 500 }}>Require Approval</label>
-        </div>
-
-        {formData.requireApproval && (
-          <Select
-            label="Approval Role"
-            value={formData.approvalRole.toString()}
-            options={[
-              { value: "1", label: "Supervisor" },
-              { value: "2", label: "Cashier" },
-            ]}
-            onChange={(val) => setFormData(prev => ({ ...prev, approvalRole: parseInt(val as unknown as string) }))}
-          />
-        )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <label style={{ fontSize: "14px", fontWeight: 500 }}>Notes</label>
