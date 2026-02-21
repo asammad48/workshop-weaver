@@ -73,3 +73,47 @@ export const USER_ROLE_OPTIONS = Object.entries(USER_ROLE_LABELS).map(
 export function requireBranchForRole(role: number): boolean {
   return role !== UserRole.HQ_ADMIN;
 }
+
+export enum RoadblockerType {
+  PARTS = 1,
+  CUSTOMER = 2,
+  TECHNICAL = 3,
+  WORKSTATION = 4,
+  OTHER = 99,
+}
+
+export const ROADBLOCKER_TYPE_LABELS: Record<number, string> = {
+  [RoadblockerType.PARTS]: "Parts",
+  [RoadblockerType.CUSTOMER]: "Customer",
+  [RoadblockerType.TECHNICAL]: "Technical",
+  [RoadblockerType.WORKSTATION]: "Workstation",
+  [RoadblockerType.OTHER]: "Other",
+};
+
+export const ROADBLOCKER_TYPE_OPTIONS = Object.entries(ROADBLOCKER_TYPE_LABELS).map(
+  ([value, label]) => ({
+    value: Number(value),
+    label,
+  }),
+);
+
+export enum PaymentMethod {
+  CASH = 1,
+  CARD = 2,
+  TRANSFER = 3,
+  CHEQUE = 4,
+}
+
+export const PAYMENT_METHOD_LABELS: Record<number, string> = {
+  [PaymentMethod.CASH]: "Cash",
+  [PaymentMethod.CARD]: "Card",
+  [PaymentMethod.TRANSFER]: "Transfer",
+  [PaymentMethod.CHEQUE]: "Cheque",
+};
+
+export const PAYMENT_METHOD_OPTIONS = Object.entries(PAYMENT_METHOD_LABELS).map(
+  ([value, label]) => ({
+    value: Number(value),
+    label,
+  }),
+);
