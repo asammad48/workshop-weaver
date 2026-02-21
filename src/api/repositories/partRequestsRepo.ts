@@ -30,7 +30,7 @@ export const partRequestsRepo = {
 
   async markOrdered(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await (client as any).partRequestsMarkOrderedPOST(id);
+      return await client.markOrdered(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -38,7 +38,7 @@ export const partRequestsRepo = {
 
   async markArrived(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await (client as any).partRequestsMarkArrivedPOST(id);
+      return await client.markArrived(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -46,7 +46,7 @@ export const partRequestsRepo = {
 
   async stationSign(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await (client as any).partRequestsStationSignPOST(id);
+      return await client.stationSign(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -54,7 +54,7 @@ export const partRequestsRepo = {
 
   async officeSign(id: string): Promise<JobPartRequestResponseApiResponse> {
     try {
-      return await (client as any).partRequestsOfficeSignPOST(id);
+      return await client.officeSign(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -62,12 +62,7 @@ export const partRequestsRepo = {
 
   async use(jobCardId: string, body: JobCardPartUseRequest): Promise<JobCardPartUsageResponseApiResponse> {
     try {
-      // Find the 'use' method - often named jobCardPartUsagePOST or similar in generated client
-      if ((client as any).jobCardPartUsagePOST) {
-        return await (client as any).jobCardPartUsagePOST(jobCardId, body);
-      }
-      // Fallback/Guess based on usual NSwag naming if I can't find it exactly without more grepping
-      throw new Error("API method for 'use part' not found in client");
+      return await client.use(jobCardId, body);
     } catch (error) {
       throw normalizeError(error);
     }
