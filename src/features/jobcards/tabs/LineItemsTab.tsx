@@ -126,7 +126,7 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
                        item.itemType === 2 ? "Ordered Part" :
                        item.itemType === 3 ? "Misc" : "Unknown"}
                     </td>
-                    <td style={{ padding: "16px" }}>{item.description}</td>
+                    <td style={{ padding: "16px" }}>{item.notes || item.title || item.description || "-"}</td>
                     <td style={{ padding: "16px" }}>{item.qty}</td>
                     <td style={{ padding: "16px" }}>{item.unitPrice?.toLocaleString()}</td>
                     <td style={{ padding: "16px" }}>{item.total?.toLocaleString()}</td>
@@ -211,6 +211,7 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
             const submissionData = {
               type: formData.itemType,
               title: formData.description,
+              notes: formData.description,
               qty: formData.quantity,
               unitPrice: formData.unitPrice,
               partId: formData.partId || undefined,

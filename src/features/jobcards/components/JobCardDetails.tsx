@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { JobCardHeader } from "./JobCardHeader";
+import { JOB_CARD_STATUS_LABELS } from "@/constants/enums";
 import { TasksTab } from "../tabs/TasksTab";
 import { StationTab } from "../tabs/StationTab";
 import { LineItemsTab } from "../tabs/LineItemsTab";
@@ -91,9 +92,9 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
                     padding: '2px 8px', 
                     borderRadius: '4px', 
                     fontSize: '12px',
-                    backgroundColor: jobCard.status === 2 ? 'rgba(34, 197, 94, 0.1)' : jobCard.status === 1 ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                    color: jobCard.status === 2 ? 'rgb(34, 197, 94)' : jobCard.status === 1 ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
-                  }}>{jobCard.statusName || jobCard.status}</span>
+                    backgroundColor: jobCard.status === 7 ? 'rgba(34, 197, 94, 0.1)' : (jobCard.status === 4 || jobCard.status === 1) ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                    color: jobCard.status === 7 ? 'rgb(34, 197, 94)' : (jobCard.status === 4 || jobCard.status === 1) ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                  }}>{jobCard.statusName || JOB_CARD_STATUS_LABELS[jobCard.status] || jobCard.status}</span>
                 </div>
               </div>
             </div>
