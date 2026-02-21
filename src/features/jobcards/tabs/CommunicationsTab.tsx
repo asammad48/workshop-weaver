@@ -25,7 +25,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
     queryFn: () => commsRepo.listByJobCard(jobCardId), // Note: repo might need pagination/search update, but keeping it simple for style
   });
 
-  const comms = Array.isArray(commsData) ? commsData : [];
+  const comms = commsData?.data || [];
   const totalItems = comms.length;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
@@ -196,12 +196,21 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                     <td style={{ padding: "16px" }}>
                       <span className="flex items-center gap-2">
                         <MessageSquare size={14} className="text-gray-400" />
-                        {log.channel}
+                        {log.channel === 1 ? "WhatsApp" :
+                         log.channel === 2 ? "SMS" :
+                         log.channel === 3 ? "Call" :
+                         log.channel === 4 ? "Email" :
+                         log.channel === 5 ? "In Person" : log.channel}
                       </span>
                     </td>
                     <td style={{ padding: "16px" }}>
                       <span style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "12px", background: "var(--c-bg-alt)", border: "1px solid var(--c-border)" }}>
-                        {log.messageType}
+                        {log.messageType === 1 ? "Diagnosis" :
+                         log.messageType === 2 ? "Estimate" :
+                         log.messageType === 3 ? "Update" :
+                         log.messageType === 4 ? "Ready For Pickup" :
+                         log.messageType === 5 ? "Payment Reminder" :
+                         log.messageType === 6 ? "Other" : log.messageType}
                       </span>
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
