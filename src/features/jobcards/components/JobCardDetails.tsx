@@ -71,11 +71,19 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
                   <span style={{ color: 'var(--c-muted)' }}>Customer</span>
-                  <span style={{ fontWeight: 500 }}>{jobCard.customerName}</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.customerName || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
                   <span style={{ color: 'var(--c-muted)' }}>Plate Number</span>
-                  <span style={{ fontWeight: 500 }}>{jobCard.plate}</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.vehiclePlate || jobCard.plate || "-"}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Branch</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.branchName || "-"}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Station</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.currentStationName || jobCard.currentStationCode || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
                   <span style={{ color: 'var(--c-muted)' }}>Status</span>
@@ -83,9 +91,9 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
                     padding: '2px 8px', 
                     borderRadius: '4px', 
                     fontSize: '12px',
-                    backgroundColor: jobCard.status === 'COMPLETED' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                    color: jobCard.status === 'COMPLETED' ? 'rgb(34, 197, 94)' : 'rgb(59, 130, 246)'
-                  }}>{jobCard.status}</span>
+                    backgroundColor: jobCard.status === 2 ? 'rgba(34, 197, 94, 0.1)' : jobCard.status === 1 ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                    color: jobCard.status === 2 ? 'rgb(34, 197, 94)' : jobCard.status === 1 ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                  }}>{jobCard.statusName || jobCard.status}</span>
                 </div>
               </div>
             </div>

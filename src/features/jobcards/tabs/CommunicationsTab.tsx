@@ -52,8 +52,8 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
   };
 
   const openCreateModal = () => {
-    let channel = "WhatsApp";
-    let messageType = "Estimate";
+    let channel = "1";
+    let messageType = "2";
     let sentAt = new Date().toISOString().slice(0, 16);
     let notes = "";
 
@@ -67,8 +67,8 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
               <Button onClick={() => {
                 createMutation.mutate({
                   jobCardId,
-                  channel,
-                  messageType,
+                  channel: parseInt(channel as string),
+                  messageType: parseInt(messageType as string),
                   sentAt: new Date(sentAt).toISOString(),
                   notes,
                 });
@@ -83,10 +83,11 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             <Select 
               label="Channel"
               options={[
-                { value: "WhatsApp", label: "WhatsApp" },
-                { value: "Email", label: "Email" },
-                { value: "SMS", label: "SMS" },
-                { value: "Phone", label: "Phone" },
+                { value: "1", label: "WhatsApp" },
+                { value: "2", label: "SMS" },
+                { value: "3", label: "Call" },
+                { value: "4", label: "Email" },
+                { value: "5", label: "InPerson" },
               ]}
               defaultValue={channel}
               onChange={(e) => {
@@ -97,10 +98,12 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             <Select 
               label="Message Type"
               options={[
-                { value: "Estimate", label: "Estimate" },
-                { value: "Update", label: "Update" },
-                { value: "Reminder", label: "Reminder" },
-                { value: "Feedback", label: "Feedback" },
+                { value: "1", label: "Diagnosis" },
+                { value: "2", label: "Estimate" },
+                { value: "3", label: "Update" },
+                { value: "4", label: "ReadyForPickup" },
+                { value: "5", label: "PaymentReminder" },
+                { value: "6", label: "Other" },
               ]}
               defaultValue={messageType}
               onChange={(e) => {

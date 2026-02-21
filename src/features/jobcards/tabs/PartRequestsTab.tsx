@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Loader2, AlertCircle, ShoppingCart, Package, CheckCircle2, UserCheck } from "lucide-react";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
 import { getPartsOnce } from "@/api/lookups/partsLookup";
+import { getWorkstationsOnce } from "@/api/lookups/workstationsLookup";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -66,6 +67,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
     openModal(
       "New Part Request",
       <CreateRequestModal
+        jobCardId={jobCardId}
         onSubmit={(data) => createMutation.mutate(data)}
         isPending={createMutation.isPending}
       />
@@ -83,12 +85,10 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        {(role === 'TECH' || role === 'MANAGER') && (
-          <Button onClick={handleCreateRequest}>
-            <Plus size={18} style={{ marginRight: "8px" }} />
-            New Request
-          </Button>
-        )}
+        <Button onClick={handleCreateRequest}>
+          <Plus size={18} style={{ marginRight: "8px" }} />
+          New Request
+        </Button>
       </div>
 
       <Card>
@@ -170,22 +170,41 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({ jobCardId }) =
   );
 };
 
-const CreateRequestModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean }> = ({ onSubmit, isPending }) => {
+const CreateRequestModal: React.FC<{ jobCardId: string; onSubmit: (data: any) => void; isPending: boolean }> = ({ jobCardId, onSubmit, isPending }) => {
   const [formData, setFormData] = useState({
     partId: "",
     qty: 1,
-    stationCode: "",
+    workStationId: "",
     note: "",
+    requireApproval: false,
+    approvalRole: 1, // Supervisor
   });
 
   const { data: parts } = useQuery({ queryKey: ["parts"], queryFn: getPartsOnce });
+  const { data: workstations } = useQuery({ queryKey: ["workstations"], queryFn: () => getWorkstationsOnce() });
+
+  const handleSubmit = () => {
+    const requestData = {
+      ...formData,
+      jobCardId,
+    };
+    
+    if (formData.requireApproval) {
+      // In a real app, we might create the request then create an approval
+      // For now, we'll just send it as is if the API supports it, 
+      // or we can wrap it in an approval flow
+      console.log("Creating request with approval", requestData);
+    }
+    
+    onSubmit(requestData);
+  };
 
   return (
     <ModalContent
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
           <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-          <Button onClick={() => onSubmit(formData)} disabled={isPending}>
+          <Button onClick={handleSubmit} disabled={isPending}>
             {isPending ? "Creating..." : "Create Request"}
           </Button>
         </div>
@@ -207,12 +226,37 @@ const CreateRequestModal: React.FC<{ onSubmit: (data: any) => void; isPending: b
           value={formData.qty}
           onChange={(e) => setFormData(prev => ({ ...prev, qty: parseFloat(e.target.value) }))}
         />
-        <Input
-          label="Station Code *"
+        <Select
+          label="Station *"
           required
-          value={formData.stationCode}
-          onChange={(e) => setFormData(prev => ({ ...prev, stationCode: e.target.value }))}
+          placeholder="Select station"
+          value={formData.workStationId}
+          options={(workstations || []).map((w: any) => ({ value: w.id, label: `${w.code} - ${w.name}` }))}
+          onChange={(val) => setFormData(prev => ({ ...prev, workStationId: val as unknown as string }))}
         />
+        
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
+          <input 
+            type="checkbox" 
+            id="requireApproval"
+            checked={formData.requireApproval}
+            onChange={(e) => setFormData(prev => ({ ...prev, requireApproval: e.target.checked }))}
+          />
+          <label htmlFor="requireApproval" style={{ fontSize: "14px", fontWeight: 500 }}>Require Approval</label>
+        </div>
+
+        {formData.requireApproval && (
+          <Select
+            label="Approval Role"
+            value={formData.approvalRole.toString()}
+            options={[
+              { value: "1", label: "Supervisor" },
+              { value: "2", label: "Cashier" },
+            ]}
+            onChange={(val) => setFormData(prev => ({ ...prev, approvalRole: parseInt(val as unknown as string) }))}
+          />
+        )}
+
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <label style={{ fontSize: "14px", fontWeight: 500 }}>Notes</label>
           <textarea

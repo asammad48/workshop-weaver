@@ -146,7 +146,7 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
 
 const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean }> = ({ onSubmit, isPending }) => {
   const [formData, setFormData] = useState({
-    itemType: 1, // Default to Part
+    itemType: 1, // Default to StockPart
     description: "",
     quantity: 1,
     unitPrice: 0,
@@ -158,8 +158,8 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
     queryFn: getPartsOnce,
   });
 
-  const handlePartChange = (partId: string) => {
-    const part = parts?.find((p: any) => p.id === partId);
+  const handlePartChange = (val: string) => {
+    const part = parts?.find((p: any) => p.id === val);
     if (part) {
       setFormData(prev => ({
         ...prev,
@@ -167,6 +167,8 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
         description: part.name,
         unitPrice: part.sellingPrice || 0,
       }));
+    } else {
+      setFormData(prev => ({ ...prev, partId: val }));
     }
   };
 
@@ -187,14 +189,15 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
           required
           value={formData.itemType.toString()}
           options={[
-            { value: "1", label: "Part" },
-            { value: "2", label: "Labor" },
-            { value: "3", label: "Other" },
+            { value: "0", label: "Labor" },
+            { value: "1", label: "Stock Part" },
+            { value: "2", label: "Ordered Part" },
+            { value: "3", label: "Misc" },
           ]}
           onChange={(val) => setFormData(prev => ({ ...prev, itemType: parseInt(val as unknown as string) }))}
         />
 
-        {formData.itemType === 1 && (
+        {(formData.itemType === 1 || formData.itemType === 2) && (
           <Select
             label="Part"
             placeholder="Select a part (optional)"

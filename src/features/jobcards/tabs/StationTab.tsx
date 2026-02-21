@@ -74,10 +74,12 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
         toast.error("Please select a target station");
         return;
       }
-      console.log(formData);
+      
       moveMutation.mutate({
+        jobCardId,
         workStationId: formData.workStationId,
         notes: formData.notes,
+        movedAt: new Date().toISOString(),
       } as any);
     };
 
@@ -192,7 +194,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  From Station
+                  ID
                 </th>
                 <th
                   style={{
@@ -202,7 +204,17 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  To Station
+                  JobCardID
+                </th>
+                <th
+                  style={{
+                    padding: "16px",
+                    color: "var(--c-muted)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
+                  Station
                 </th>
                 <th
                   style={{
@@ -240,7 +252,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
               {history.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={6}
                     style={{
                       padding: "48px",
                       textAlign: "center",
@@ -274,11 +286,14 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                       (e.currentTarget.style.backgroundColor = "transparent")
                     }
                   >
-                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {(item as any).fromStationName || "-"}
+                    <td style={{ padding: "16px", color: "var(--c-text)", fontSize: "12px" }}>
+                      {item.id || "-"}
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)", fontSize: "12px" }}>
+                      {item.jobCardId || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {(item as any).toStationName || "-"}
+                      {item.workStationName || item.workStationId || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.movedAt
@@ -286,7 +301,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                         : "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {(item as any).movedByName || "-"}
+                      {item.movedByName || item.movedByUserId || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.notes || "-"}

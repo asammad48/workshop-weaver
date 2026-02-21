@@ -74,8 +74,8 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
   };
 
   const openCreateModal = () => {
-    let targetType = "JobCard";
-    let approvalType = "";
+    let targetType = "JOB_CARD";
+    let approvalType = 1; // Supervisor
     let note = "";
 
     const renderModal = () => openModal(
@@ -91,7 +91,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                   targetId: jobCardId,
                   approvalType,
                   note,
-                });
+                } as any);
               }} disabled={createMutation.isPending}>
                 {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Submit Request
@@ -101,24 +101,14 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
         >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <Select 
-            label="Target Type"
+            label="Approval Role"
             options={[
-              { value: "JobCard", label: "Job Card" },
-              { value: "Estimate", label: "Estimate" },
+              { value: "1", label: "Supervisor" },
+              { value: "2", label: "Cashier" },
             ]}
-            defaultValue={targetType}
-            onChange={(e) => {
-              targetType = e.target.value;
-              renderModal();
-            }}
-          />
-          <Input 
-            label="Approval Type" 
-            required 
-            placeholder="e.g. Parts, Discount" 
-            defaultValue={approvalType}
-            onChange={(e) => {
-              approvalType = e.target.value;
+            defaultValue={approvalType.toString()}
+            onChange={(val) => {
+              approvalType = parseInt(val as unknown as string);
               renderModal();
             }}
           />
