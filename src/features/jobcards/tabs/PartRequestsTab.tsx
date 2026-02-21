@@ -286,25 +286,24 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                           gap: "8px",
                         }}
                       >
-                        {String(userRoleId) === Roles.STOREKEEPER &&
-                          !req.orderedAt && (
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() =>
-                                actionMutation.mutate({
-                                  type: "ordered",
-                                  id: req.id,
-                                })
-                              }
-                            >
-                              <ShoppingCart
-                                size={14}
-                                style={{ marginRight: "4px" }}
-                              />{" "}
-                              Order
-                            </Button>
-                          )}
+                        {userRoleId === Roles.STOREKEEPER && !req.orderedAt && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() =>
+                              actionMutation.mutate({
+                                type: "ordered",
+                                id: req.id,
+                              })
+                            }
+                          >
+                            <ShoppingCart
+                              size={14}
+                              style={{ marginRight: "4px" }}
+                            />{" "}
+                            Order
+                          </Button>
+                        )}
                         {String(userRoleId) === Roles.STOREKEEPER &&
                           req.orderedAt &&
                           !req.arrivedAt && (

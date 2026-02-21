@@ -1,17 +1,17 @@
-import { UserRole as ApiUserRole } from '@/api/generated/apiClient';
+import { UserRole as ApiUserRole } from "@/api/generated/apiClient";
 
 export enum JobTaskStatus {
   PENDING = 1,
   IN_PROGRESS = 2,
   DONE = 3,
-  BLOCKED = 4
+  BLOCKED = 4,
 }
 
 export const JOB_TASK_STATUS_LABELS: Record<number, string> = {
-  [JobTaskStatus.PENDING]: 'Pending',
-  [JobTaskStatus.IN_PROGRESS]: 'In Progress',
-  [JobTaskStatus.DONE]: 'Done',
-  [JobTaskStatus.BLOCKED]: 'Blocked',
+  [JobTaskStatus.PENDING]: "Pending",
+  [JobTaskStatus.IN_PROGRESS]: "In Progress",
+  [JobTaskStatus.DONE]: "Done",
+  [JobTaskStatus.BLOCKED]: "Blocked",
 };
 
 export enum JobCardStatus {
@@ -22,27 +22,27 @@ export enum JobCardStatus {
   EN_PROCESO = 4,
   CLIENTE_INFORMADO = 5,
   LISTO_PARA_RECOGER = 6,
-  PAGADO = 7
+  PAGADO = 7,
 }
 
 export const JOB_CARD_STATUS_LABELS: Record<number, string> = {
-  [JobCardStatus.NUEVA_SOLICITUD]: 'New Request',
-  [JobCardStatus.PEDIDO_REALIZADO]: 'Order Placed',
-  [JobCardStatus.PEDIDO_RECIBIDO]: 'Order Received',
-  [JobCardStatus.ESPERANDO_APROBACION]: 'Awaiting Approval',
-  [JobCardStatus.EN_PROCESO]: 'In Progress',
-  [JobCardStatus.CLIENTE_INFORMADO]: 'Client Informed',
-  [JobCardStatus.LISTO_PARA_RECOGER]: 'Ready for Pickup',
-  [JobCardStatus.PAGADO]: 'Paid',
+  [JobCardStatus.NUEVA_SOLICITUD]: "New Request",
+  [JobCardStatus.PEDIDO_REALIZADO]: "Order Placed",
+  [JobCardStatus.PEDIDO_RECIBIDO]: "Order Received",
+  [JobCardStatus.ESPERANDO_APROBACION]: "Awaiting Approval",
+  [JobCardStatus.EN_PROCESO]: "In Progress",
+  [JobCardStatus.CLIENTE_INFORMADO]: "Client Informed",
+  [JobCardStatus.LISTO_PARA_RECOGER]: "Ready for Pickup",
+  [JobCardStatus.PAGADO]: "Paid",
 };
 
 export class Roles {
-  static readonly HQ_ADMIN = "1";
-  static readonly BRANCH_MANAGER = "2";
-  static readonly STOREKEEPER = "3";
-  static readonly CASHIER = "4";
-  static readonly TECHNICIAN = "5";
-  static readonly RECEPTIONIST = "6";
+  static readonly HQ_ADMIN = "HQ_ADMIN";
+  static readonly BRANCH_MANAGER = "BRANCH_MANAGER";
+  static readonly STOREKEEPER = "STOREKEEPER";
+  static readonly CASHIER = "CASHIER";
+  static readonly TECHNICIAN = "TECHNICIAN";
+  static readonly RECEPTIONIST = "RECEPTIONIST";
 }
 
 export enum UserRole {
@@ -55,18 +55,20 @@ export enum UserRole {
 }
 
 export const USER_ROLE_LABELS: Record<number, string> = {
-  [UserRole.HQ_ADMIN]: 'HQ Admin',
-  [UserRole.BRANCH_MANAGER]: 'Branch Manager',
-  [UserRole.STOREKEEPER]: 'Storekeeper',
-  [UserRole.CASHIER]: 'Cashier',
-  [UserRole.TECHNICIAN]: 'Technician',
-  [UserRole.RECEPTIONIST]: 'Receptionist',
+  [UserRole.HQ_ADMIN]: "HQ Admin",
+  [UserRole.BRANCH_MANAGER]: "Branch Manager",
+  [UserRole.STOREKEEPER]: "Storekeeper",
+  [UserRole.CASHIER]: "Cashier",
+  [UserRole.TECHNICIAN]: "Technician",
+  [UserRole.RECEPTIONIST]: "Receptionist",
 };
 
-export const USER_ROLE_OPTIONS = Object.entries(USER_ROLE_LABELS).map(([value, label]) => ({
-  value: Number(value),
-  label,
-}));
+export const USER_ROLE_OPTIONS = Object.entries(USER_ROLE_LABELS).map(
+  ([value, label]) => ({
+    value: Number(value),
+    label,
+  }),
+);
 
 export function requireBranchForRole(role: number): boolean {
   return role !== UserRole.HQ_ADMIN;
