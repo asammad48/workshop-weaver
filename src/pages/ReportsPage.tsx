@@ -11,7 +11,9 @@ import {
   Users,
   Car,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { stationsRepo } from '@/api/repositories/stationsRepo';
@@ -63,8 +65,18 @@ export default function ReportsPage() {
   });
 
   const summary = summaryData?.data;
+  const [agingPage, setAgingPage] = useState(1);
+  const [stuckPage, setStuckPage] = useState(1);
+  const pageSize = 10;
+
   const agingItems = (agingData as any)?.data || [];
   const stuckItems = (stuckData as any)?.data || [];
+
+  const totalAgingPages = Math.ceil(agingItems.length / pageSize) || 1;
+  const paginatedAging = agingItems.slice((agingPage - 1) * pageSize, agingPage * pageSize);
+
+  const totalStuckPages = Math.ceil(stuckItems.length / pageSize) || 1;
+  const paginatedStuck = stuckItems.slice((stuckPage - 1) * pageSize, stuckPage * pageSize);
 
   const SummaryCard = ({ title, value, icon: Icon, color }: any) => (
     <Card>
@@ -189,25 +201,36 @@ export default function ReportsPage() {
                   <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Type</th>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Description</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Created</th>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days Open</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Job Card</th>
                   </tr>
                 </thead>
                 <tbody>
                   {agingLoading ? (
-                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center' }}>Loading...</td></tr>
+                    <tr><td colSpan={5} style={{ padding: '48px', textAlign: 'center' }}><Loader2 className="animate-spin" size={24} style={{ margin: '0 auto', color: 'var(--c-primary)' }} /></td></tr>
                   ) : agingItems.length === 0 ? (
-                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No aging roadblockers</td></tr>
+                    <tr><td colSpan={5} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No aging roadblockers</td></tr>
                   ) : (
-                    agingItems.map((item: any, idx) => (
+                    paginatedAging.map((item: any, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px solid var(--c-border)' }}>
                         <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.type}</td>
                         <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.description}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--c-muted)' }}>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}</td>
                         <td style={{ padding: '12px 16px', fontSize: '14px', color: item.daysOpen > 3 ? 'var(--c-danger)' : 'inherit' }}>{item.daysOpen}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.jobCardId?.slice(-8) || '-'}</td>
                       </tr>
                     ))
                   )}
                 </tbody>
               </table>
+            </div>
+            <div style={{ padding: '12px 16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>Page {agingPage} of {totalAgingPages}</span>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <Button variant="secondary" size="sm" disabled={agingPage <= 1} onClick={() => setAgingPage(p => p - 1)}><ChevronLeft size={14} /></Button>
+                <Button variant="secondary" size="sm" disabled={agingPage >= totalAgingPages} onClick={() => setAgingPage(p => p + 1)}><ChevronRight size={14} /></Button>
+              </div>
             </div>
           </Card>
 
@@ -220,19 +243,29 @@ export default function ReportsPage() {
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Plate</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Customer</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Status</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Entry At</th>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Station</th>
                     <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stuckLoading ? (
-                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center' }}>Loading...</td></tr>
+                    <tr><td colSpan={6} style={{ padding: '48px', textAlign: 'center' }}><Loader2 className="animate-spin" size={24} style={{ margin: '0 auto', color: 'var(--c-primary)' }} /></td></tr>
                   ) : stuckItems.length === 0 ? (
-                    <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No stuck vehicles</td></tr>
+                    <tr><td colSpan={6} style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)' }}>No stuck vehicles</td></tr>
                   ) : (
-                    stuckItems.map((item: any, idx) => (
+                    paginatedStuck.map((item: any, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px solid var(--c-border)' }}>
                         <td style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 500 }}>{item.plate}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.customerName || '-'}</td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px' }}>
+                          <span style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '10px', background: 'var(--c-bg-alt)', border: '1px solid var(--c-border)' }}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px 16px', fontSize: '14px', color: 'var(--c-muted)' }}>{item.entryAt ? new Date(item.entryAt).toLocaleDateString() : '-'}</td>
                         <td style={{ padding: '12px 16px', fontSize: '14px' }}>{item.currentStation}</td>
                         <td style={{ padding: '12px 16px', fontSize: '14px', color: item.daysInShop > 5 ? 'var(--c-danger)' : 'inherit' }}>{item.daysInShop}</td>
                       </tr>
@@ -240,6 +273,13 @@ export default function ReportsPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+            <div style={{ padding: '12px 16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>Page {stuckPage} of {totalStuckPages}</span>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <Button variant="secondary" size="sm" disabled={stuckPage <= 1} onClick={() => setStuckPage(p => p - 1)}><ChevronLeft size={14} /></Button>
+                <Button variant="secondary" size="sm" disabled={stuckPage >= totalStuckPages} onClick={() => setStuckPage(p => p + 1)}><ChevronRight size={14} /></Button>
+              </div>
             </div>
           </Card>
         </div>

@@ -2,22 +2,140 @@ import React, { useState, useEffect } from "react";
 import { billingRepo } from "@/api/repositories/billingRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ModalHost as Modal } from "@/components/ui/Modal";
-import { ConfirmDialogHost as ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { toast } from "@/components/ui/Toast";
-import { Plus, Receipt, History } from "lucide-react";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/forms/Select";
+import { ModalContent } from "@/components/ui/Modal";
+import { toast, openModal, closeModal } from "@/state/uiStore";
+import { PAYMENT_METHOD_LABELS, PAYMENT_METHOD_OPTIONS, PaymentMethod } from "@/constants/enums";
+import { Plus, Receipt, History, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface InvoiceTabProps {
   jobCardId: string;
 }
+
+const InvoiceCreateModalContent: React.FC<{ jobCardId: string; onCreated: () => void }> = ({ jobCardId, onCreated }) => {
+  const [discount, setDiscount] = useState(0);
+  const [taxPercent, setTaxPercent] = useState(0);
+  const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      await billingRepo.createInvoice(jobCardId, {
+        discount,
+        taxPercent,
+        notes
+      });
+      toast.success("Invoice created successfully");
+      closeModal();
+      onCreated();
+    } catch (err) {
+      toast.error("Failed to create invoice");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ModalContent
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onClick={closeModal} disabled={loading}>Cancel</Button>
+          <Button onClick={handleSubmit} loading={loading}>Generate Invoice</Button>
+        </div>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <Input label="Discount ($)" type="number" step="0.01" value={discount} onChange={(e) => setDiscount(Number(e.target.value))} />
+          <Input label="Tax (%)" type="number" step="0.01" value={taxPercent} onChange={(e) => setTaxPercent(Number(e.target.value))} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label style={{ fontSize: '13px', fontWeight: 500 }}>Notes</label>
+          <textarea
+            rows={3}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)', color: 'var(--c-text)', resize: 'none' }}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </div>
+      </div>
+    </ModalContent>
+  );
+};
+
+const PaymentAddModalContent: React.FC<{ invoice: any; onAdded: () => void }> = ({ invoice, onAdded }) => {
+  const [amount, setAmount] = useState(invoice.balance || 0);
+  const [method, setMethod] = useState(PaymentMethod.CASH);
+  const [paidAt, setPaidAt] = useState(new Date().toISOString().slice(0, 16));
+  const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (amount <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+    setLoading(true);
+    try {
+      await billingRepo.addPayment(invoice.id, {
+        amount,
+        method,
+        paidAt: new Date(paidAt).toISOString(),
+        notes
+      });
+      toast.success("Payment added successfully");
+      closeModal();
+      onAdded();
+    } catch (err) {
+      toast.error("Failed to add payment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ModalContent
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onClick={closeModal} disabled={loading}>Cancel</Button>
+          <Button onClick={handleSubmit} loading={loading}>Record Payment</Button>
+        </div>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <Input label="Amount ($) *" type="number" step="0.01" required value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
+          <Select
+            label="Method *"
+            options={PAYMENT_METHOD_OPTIONS}
+            value={method}
+            onChange={(e) => setMethod(Number(e.target.value))}
+          />
+        </div>
+        <Input label="Payment Date *" type="datetime-local" required value={paidAt} onChange={(e) => setPaidAt(e.target.value)} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <label style={{ fontSize: '13px', fontWeight: 500 }}>Notes</label>
+          <textarea
+            rows={3}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)', color: 'var(--c-text)', resize: 'none' }}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </div>
+      </div>
+    </ModalContent>
+  );
+};
 
 export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   const fetchData = async () => {
     setLoading(true);
@@ -30,7 +148,6 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
         setPayments(pms || []);
       }
     } catch (err: any) {
-      // If 404, it might just mean no invoice exists yet
       if (err.status !== 404) {
         setError("Failed to load billing information.");
       }
@@ -43,44 +160,16 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
     fetchData();
   }, [jobCardId]);
 
-  const handleCreateInvoice = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      discount: Number(formData.get("discount")) || 0,
-      taxPercent: Number(formData.get("taxPercent")) || 0,
-      notes: formData.get("notes") as string,
-    };
+  const totalPages = Math.ceil(payments.length / pageSize) || 1;
+  const paginatedPayments = payments.slice((page - 1) * pageSize, page * pageSize);
 
-    try {
-      await billingRepo.createInvoice(jobCardId, data);
-      toast.success("Invoice created successfully");
-      setIsInvoiceModalOpen(false);
-      fetchData();
-    } catch (err) {
-      toast.error("Failed to create invoice");
-    }
+  const handleCreateInvoiceModal = () => {
+    openModal('Create Invoice', <InvoiceCreateModalContent jobCardId={jobCardId} onCreated={fetchData} />);
   };
 
-  const handleAddPayment = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleAddPaymentModal = () => {
     if (!invoice) return;
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      amount: Number(formData.get("amount")),
-      method: formData.get("method") as string,
-      paidAt: new Date(formData.get("paidAt") as string).toISOString(),
-      notes: formData.get("notes") as string,
-    };
-
-    try {
-      await billingRepo.addPayment(invoice.id, data);
-      toast.success("Payment added successfully");
-      setIsPaymentModalOpen(false);
-      fetchData();
-    } catch (err) {
-      toast.error("Failed to add payment");
-    }
+    openModal('Record Payment', <PaymentAddModalContent invoice={invoice} onAdded={fetchData} />);
   };
 
   if (loading) return <div style={{ padding: '24px', textAlign: 'center' }}>Loading billing info...</div>;
@@ -95,7 +184,7 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
             <h3 style={{ fontSize: '18px', fontWeight: 600 }}>No Invoice Generated</h3>
             <p style={{ color: 'var(--c-muted)', marginTop: '4px' }}>Generate an invoice to start accepting payments for this job card.</p>
           </div>
-          <Button onClick={() => setIsInvoiceModalOpen(true)}>
+          <Button onClick={handleCreateInvoiceModal}>
             <Plus size={18} style={{ marginRight: '8px' }} />
             Create Invoice
           </Button>
@@ -129,7 +218,7 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
                 <History size={18} style={{ color: 'var(--c-muted)' }} />
                 <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Payment History</h3>
               </div>
-              <Button size="sm" onClick={() => setIsPaymentModalOpen(true)} disabled={invoice.balance <= 0}>
+              <Button size="sm" onClick={handleAddPaymentModal} disabled={invoice.balance <= 0}>
                 <Plus size={16} style={{ marginRight: '6px' }} />
                 Add Payment
               </Button>
@@ -149,10 +238,10 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
                     <td colSpan={4} style={{ textAlign: 'center', padding: '32px', color: 'var(--c-muted)' }}>No payments recorded yet.</td>
                   </tr>
                 ) : (
-                  payments.map((p) => (
+                  paginatedPayments.map((p) => (
                     <tr key={p.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
-                      <td style={{ padding: '12px 20px', fontSize: '14px' }}>{new Date(p.paidAt).toLocaleDateString()}</td>
-                      <td style={{ padding: '12px 20px', fontSize: '14px' }}>{p.method}</td>
+                      <td style={{ padding: '12px 20px', fontSize: '14px' }}>{p.paidAt ? new Date(p.paidAt).toLocaleDateString() : '-'}</td>
+                      <td style={{ padding: '12px 20px', fontSize: '14px' }}>{PAYMENT_METHOD_LABELS[p.method] || p.method}</td>
                       <td style={{ padding: '12px 20px', fontSize: '14px', color: 'var(--c-muted)' }}>{p.notes || '-'}</td>
                       <td style={{ padding: '12px 20px', fontSize: '14px', fontWeight: 500, textAlign: 'right' }}>${p.amount?.toLocaleString()}</td>
                     </tr>
@@ -160,72 +249,23 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
                 )}
               </tbody>
             </table>
+
+            <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
+                Page {page} of {totalPages}
+              </span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
+                  <ChevronLeft size={16} />
+                </Button>
+                <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>
+                  <ChevronRight size={16} />
+                </Button>
+              </div>
+            </div>
           </Card>
         </>
       )}
-
-      <Modal
-        isOpen={isInvoiceModalOpen}
-        onClose={() => setIsInvoiceModalOpen(false)}
-        title="Create Invoice"
-      >
-        <form onSubmit={handleCreateInvoice} style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 500 }}>Discount Amount ($)</label>
-              <input name="discount" type="number" step="0.01" defaultValue="0" style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 500 }}>Tax Percent (%)</label>
-              <input name="taxPercent" type="number" step="0.01" defaultValue="0" style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)' }} />
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 500 }}>Notes</label>
-            <textarea name="notes" rows={3} style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)', resize: 'none' }} />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
-            <Button type="button" variant="secondary" onClick={() => setIsInvoiceModalOpen(false)}>Cancel</Button>
-            <Button type="submit">Generate Invoice</Button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        title="Record Payment"
-      >
-        <form onSubmit={handleAddPayment} style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 500 }}>Amount ($) *</label>
-              <input name="amount" type="number" step="0.01" required defaultValue={invoice?.balance || 0} style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 500 }}>Method *</label>
-              <select name="method" required style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)' }}>
-                <option value="CASH">Cash</option>
-                <option value="CARD">Card</option>
-                <option value="TRANSFER">Transfer</option>
-                <option value="CHEQUE">Cheque</option>
-              </select>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 500 }}>Payment Date *</label>
-            <input name="paidAt" type="datetime-local" required defaultValue={new Date().toISOString().slice(0, 16)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 500 }}>Notes</label>
-            <textarea name="notes" rows={3} style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--c-border)', backgroundColor: 'var(--c-bg)', resize: 'none' }} />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '8px' }}>
-            <Button type="button" variant="secondary" onClick={() => setIsPaymentModalOpen(false)}>Cancel</Button>
-            <Button type="submit">Record Payment</Button>
-          </div>
-        </form>
-      </Modal>
     </div>
   );
 };
