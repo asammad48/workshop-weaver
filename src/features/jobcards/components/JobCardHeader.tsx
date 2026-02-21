@@ -278,7 +278,7 @@ const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean
           placeholder="Select part"
           value={formData.partId}
           options={(parts || []).map((p: any) => ({ value: p.id, label: p.name }))}
-          onChange={(val) => setFormData(prev => ({ ...prev, partId: val as unknown as string }))}
+          onChange={(e) => setFormData(prev => ({ ...prev, partId: e.target.value }))}
         />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
           <Input
@@ -294,7 +294,7 @@ const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean
             placeholder="Select location"
             value={formData.locationId}
             options={(locations || []).map((l: any) => ({ value: l.id, label: l.name }))}
-            onChange={(val) => setFormData(prev => ({ ...prev, locationId: val as unknown as string }))}
+            onChange={(e) => setFormData(prev => ({ ...prev, locationId: e.target.value }))}
           />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
