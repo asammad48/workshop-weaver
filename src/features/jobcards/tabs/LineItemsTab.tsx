@@ -120,7 +120,12 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
               ) : (
                 lineItems.map((item: any) => (
                   <tr key={item.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
-                    <td style={{ padding: "16px" }}>{item.itemType === 1 ? "Part" : item.itemType === 2 ? "Labor" : item.itemType === 3 ? "Other" : "Unknown"}</td>
+                    <td style={{ padding: "16px" }}>
+                      {item.itemType === 0 ? "Labor" :
+                       item.itemType === 1 ? "Stock Part" :
+                       item.itemType === 2 ? "Ordered Part" :
+                       item.itemType === 3 ? "Misc" : "Unknown"}
+                    </td>
                     <td style={{ padding: "16px" }}>{item.description}</td>
                     <td style={{ padding: "16px" }}>{item.qty}</td>
                     <td style={{ padding: "16px" }}>{item.unitPrice?.toLocaleString()}</td>
@@ -169,7 +174,6 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
 
   const handlePartChange = (val: string) => {
     const part = parts?.find((p: any) => p.id === val);
-    console.log("handlePartChange val:", val, "found part:", part);
     if (part) {
       setFormData(prev => ({
         ...prev,
@@ -179,6 +183,22 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
       }));
     } else {
       setFormData(prev => ({ ...prev, partId: val }));
+    }
+  };
+
+  const handlePartRequestChange = (val: string) => {
+    const pr = partRequests?.data?.find((p: any) => p.id === val);
+    if (pr) {
+      setFormData(prev => ({
+        ...prev,
+        partRequestId: pr.id,
+        partId: pr.partId || prev.partId,
+        description: pr.partName || prev.description,
+        quantity: pr.qty || pr.quantity || prev.quantity,
+        unitPrice: pr.unitPrice || prev.unitPrice
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, partRequestId: val }));
     }
   };
 
@@ -214,11 +234,21 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
             { value: "2", label: "Ordered Part" },
             { value: "3", label: "Misc" },
           ]}
-          onChange={(val) => setFormData(prev => ({ ...prev, itemType: parseInt(val as unknown as string) }))}
+          onChange={(e) => setFormData(prev => ({ ...prev, itemType: parseInt(e.target.value) }))}
         />
 
         {(formData.itemType === 1 || formData.itemType === 2) && (
           <>
+            <Select
+              label="Part Request"
+              placeholder="Link to part request (optional)"
+              value={formData.partRequestId || ""}
+              options={(partRequests?.data || []).map((pr: any) => ({
+                value: pr.id,
+                label: `${pr.partSku || ''} ${pr.partName} (${pr.qty || pr.quantity})`,
+              }))}
+              onChange={(e) => handlePartRequestChange(e.target.value)}
+            />
             <Select
               label="Part"
               placeholder="Select a part (optional)"
@@ -227,20 +257,7 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
                 value: p.id,
                 label: p.name,
               }))}
-              onChange={(val) => handlePartChange(val as unknown as string)}
-            />
-            <Select
-              label="Part Request"
-              placeholder="Link to part request (optional)"
-              value={formData.partRequestId || ""}
-              options={(partRequests?.data || []).map((pr: any) => ({
-                value: pr.id,
-                label: `${pr.partName} (${pr.quantity})`,
-              }))}
-              onChange={(val) => {
-                const selectedId = val as unknown as string;
-                setFormData(prev => ({ ...prev, partRequestId: selectedId }));
-              }}
+              onChange={(e) => handlePartChange(e.target.value)}
             />
           </>
         )}
