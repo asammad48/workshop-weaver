@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Loader2, AlertCircle, Trash2 } from "lucide-react";
 import { lineItemsRepo } from "@/api/repositories/lineItemsRepo";
+import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { getPartsOnce } from "@/api/lookups/partsLookup";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -63,6 +64,7 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
     openModal(
       "Add Line Item",
       <AddLineItemModal
+        jobCardId={jobCardId}
         onSubmit={(data) => createMutation.mutate(data)}
         isPending={createMutation.isPending}
       />
@@ -144,13 +146,14 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
   );
 };
 
-const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean }> = ({ onSubmit, isPending }) => {
+const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => void; isPending: boolean }> = ({ jobCardId, onSubmit, isPending }) => {
   const [formData, setFormData] = useState({
     itemType: 1, // Default to StockPart
     description: "",
     quantity: 1,
     unitPrice: 0,
     partId: "" as string | undefined,
+    partRequestId: "" as string | undefined,
   });
 
   const { data: parts } = useQuery({
@@ -158,8 +161,15 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
     queryFn: getPartsOnce,
   });
 
+  const { data: partRequests } = useQuery({
+    queryKey: ["partRequests", jobCardId],
+    queryFn: () => jobCardsRepo.getPartRequests(jobCardId),
+    enabled: !!jobCardId && typeof jobCardsRepo.getPartRequests === 'function',
+  });
+
   const handlePartChange = (val: string) => {
     const part = parts?.find((p: any) => p.id === val);
+    console.log("handlePartChange val:", val, "found part:", part);
     if (part) {
       setFormData(prev => ({
         ...prev,
@@ -177,7 +187,17 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
           <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-          <Button onClick={() => onSubmit(formData)} disabled={isPending}>
+          <Button onClick={() => {
+            const submissionData = {
+              type: formData.itemType,
+              title: formData.description,
+              qty: formData.quantity,
+              unitPrice: formData.unitPrice,
+              partId: formData.partId || undefined,
+              jobPartRequestId: formData.partRequestId || undefined,
+            };
+            onSubmit(submissionData);
+          }} disabled={isPending}>
             {isPending ? "Adding..." : "Add"}
           </Button>
         </div>
@@ -198,16 +218,31 @@ const AddLineItemModal: React.FC<{ onSubmit: (data: any) => void; isPending: boo
         />
 
         {(formData.itemType === 1 || formData.itemType === 2) && (
-          <Select
-            label="Part"
-            placeholder="Select a part (optional)"
-            value={formData.partId || ""}
-            options={(parts || []).map((p: any) => ({
-              value: p.id,
-              label: p.name,
-            }))}
-            onChange={(val) => handlePartChange(val as unknown as string)}
-          />
+          <>
+            <Select
+              label="Part"
+              placeholder="Select a part (optional)"
+              value={formData.partId || ""}
+              options={(parts || []).map((p: any) => ({
+                value: p.id,
+                label: p.name,
+              }))}
+              onChange={(val) => handlePartChange(val as unknown as string)}
+            />
+            <Select
+              label="Part Request"
+              placeholder="Link to part request (optional)"
+              value={formData.partRequestId || ""}
+              options={(partRequests?.data || []).map((pr: any) => ({
+                value: pr.id,
+                label: `${pr.partName} (${pr.quantity})`,
+              }))}
+              onChange={(val) => {
+                const selectedId = val as unknown as string;
+                setFormData(prev => ({ ...prev, partRequestId: selectedId }));
+              }}
+            />
+          </>
         )}
 
         <Input
