@@ -36,6 +36,15 @@ export const JOB_CARD_STATUS_LABELS: Record<number, string> = {
   [JobCardStatus.PAGADO]: 'Paid',
 };
 
+export class Roles {
+  static readonly HQ_ADMIN = "1";
+  static readonly BRANCH_MANAGER = "2";
+  static readonly STOREKEEPER = "3";
+  static readonly CASHIER = "4";
+  static readonly TECHNICIAN = "5";
+  static readonly RECEPTIONIST = "6";
+}
+
 export enum UserRole {
   HQ_ADMIN = ApiUserRole._1,
   BRANCH_MANAGER = ApiUserRole._2,

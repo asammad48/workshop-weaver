@@ -19,7 +19,7 @@ import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { useAuth } from "@/hooks/useAuth";
-import { UserRole } from "@/constants/enums";
+import { UserRole, Roles } from "@/constants/enums";
 
 interface PartRequestsTabProps {
   jobCardId: string;
@@ -286,7 +286,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                           gap: "8px",
                         }}
                       >
-                        {userRoleId === UserRole.STOREKEEPER &&
+                        {String(userRoleId) === Roles.STOREKEEPER &&
                           !req.orderedAt && (
                             <Button
                               variant="secondary"
@@ -305,7 +305,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                               Order
                             </Button>
                           )}
-                        {userRoleId === UserRole.STOREKEEPER &&
+                        {String(userRoleId) === Roles.STOREKEEPER &&
                           req.orderedAt &&
                           !req.arrivedAt && (
                             <Button
@@ -325,7 +325,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                               Arrive
                             </Button>
                           )}
-                        {userRoleId === UserRole.TECHNICIAN &&
+                        {String(userRoleId) === Roles.TECHNICIAN &&
                           req.arrivedAt &&
                           !req.stationSignedAt && (
                             <Button
@@ -345,8 +345,8 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                               Station Sign
                             </Button>
                           )}
-                        {(userRoleId === UserRole.BRANCH_MANAGER ||
-                          userRoleId === UserRole.RECEPTIONIST) &&
+                        {(String(userRoleId) === Roles.BRANCH_MANAGER ||
+                          String(userRoleId) === Roles.RECEPTIONIST) &&
                           req.arrivedAt &&
                           !req.officeSignedAt && (
                             <Button
