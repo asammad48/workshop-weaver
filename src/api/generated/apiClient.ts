@@ -1454,6 +1454,281 @@ export class Client {
     }
 
     /**
+     * @param branchId (optional) 
+     * @param from (optional) 
+     * @param to (optional) 
+     * @param tz (optional) 
+     * @return Success
+     */
+    overview(branchId?: string | undefined, from?: Date | undefined, to?: Date | undefined, tz?: string | undefined, signal?: AbortSignal): Promise<DashboardOverviewResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/dashboard/overview?";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "BranchId=" + encodeURIComponent("" + branchId) + "&";
+        if (from === null)
+            throw new globalThis.Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "From=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
+        if (to === null)
+            throw new globalThis.Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "To=" + encodeURIComponent(to ? "" + to.toISOString() : "") + "&";
+        if (tz === null)
+            throw new globalThis.Error("The parameter 'tz' cannot be null.");
+        else if (tz !== undefined)
+            url_ += "Tz=" + encodeURIComponent("" + tz) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processOverview(_response));
+        });
+    }
+
+    protected processOverview(response: Response): Promise<DashboardOverviewResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DashboardOverviewResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DashboardOverviewResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param branchId (optional) 
+     * @param status (optional) 
+     * @param minDaysInShop (optional) 
+     * @param hasRoadblocker (optional) 
+     * @param requiresApprovalRole (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return Success
+     */
+    jobcardsGET(branchId?: string | undefined, status?: string | undefined, minDaysInShop?: number | undefined, hasRoadblocker?: boolean | undefined, requiresApprovalRole?: ApprovalRole | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<JobCardAlertRowPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/dashboard/jobcards?";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "status=" + encodeURIComponent("" + status) + "&";
+        if (minDaysInShop === null)
+            throw new globalThis.Error("The parameter 'minDaysInShop' cannot be null.");
+        else if (minDaysInShop !== undefined)
+            url_ += "minDaysInShop=" + encodeURIComponent("" + minDaysInShop) + "&";
+        if (hasRoadblocker === null)
+            throw new globalThis.Error("The parameter 'hasRoadblocker' cannot be null.");
+        else if (hasRoadblocker !== undefined)
+            url_ += "hasRoadblocker=" + encodeURIComponent("" + hasRoadblocker) + "&";
+        if (requiresApprovalRole === null)
+            throw new globalThis.Error("The parameter 'requiresApprovalRole' cannot be null.");
+        else if (requiresApprovalRole !== undefined)
+            url_ += "requiresApprovalRole=" + encodeURIComponent("" + requiresApprovalRole) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET(_response));
+        });
+    }
+
+    protected processJobcardsGET(response: Response): Promise<JobCardAlertRowPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardAlertRowPageResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<JobCardAlertRowPageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param branchId (optional) 
+     * @param belowReorderOnly (optional) 
+     * @param pendingPoOnly (optional) 
+     * @param pendingTransfersOnly (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return Success
+     */
+    inventory(branchId?: string | undefined, belowReorderOnly?: boolean | undefined, pendingPoOnly?: boolean | undefined, pendingTransfersOnly?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<InventoryDashboardResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/dashboard/inventory?";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
+        if (belowReorderOnly === null)
+            throw new globalThis.Error("The parameter 'belowReorderOnly' cannot be null.");
+        else if (belowReorderOnly !== undefined)
+            url_ += "belowReorderOnly=" + encodeURIComponent("" + belowReorderOnly) + "&";
+        if (pendingPoOnly === null)
+            throw new globalThis.Error("The parameter 'pendingPoOnly' cannot be null.");
+        else if (pendingPoOnly !== undefined)
+            url_ += "pendingPoOnly=" + encodeURIComponent("" + pendingPoOnly) + "&";
+        if (pendingTransfersOnly === null)
+            throw new globalThis.Error("The parameter 'pendingTransfersOnly' cannot be null.");
+        else if (pendingTransfersOnly !== undefined)
+            url_ += "pendingTransfersOnly=" + encodeURIComponent("" + pendingTransfersOnly) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processInventory(_response));
+        });
+    }
+
+    protected processInventory(response: Response): Promise<InventoryDashboardResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InventoryDashboardResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InventoryDashboardResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param branchId (optional) 
+     * @param from (optional) 
+     * @param to (optional) 
+     * @param employeeUserId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return Success
+     */
+    kpi(branchId?: string | undefined, from?: Date | undefined, to?: Date | undefined, employeeUserId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<EmployeeKpiRowPageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/dashboard/employees/kpi?";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
+        if (from === null)
+            throw new globalThis.Error("The parameter 'from' cannot be null.");
+        else if (from !== undefined)
+            url_ += "from=" + encodeURIComponent(from ? "" + from.toISOString() : "") + "&";
+        if (to === null)
+            throw new globalThis.Error("The parameter 'to' cannot be null.");
+        else if (to !== undefined)
+            url_ += "to=" + encodeURIComponent(to ? "" + to.toISOString() : "") + "&";
+        if (employeeUserId === null)
+            throw new globalThis.Error("The parameter 'employeeUserId' cannot be null.");
+        else if (employeeUserId !== undefined)
+            url_ += "employeeUserId=" + encodeURIComponent("" + employeeUserId) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processKpi(_response));
+        });
+    }
+
+    protected processKpi(response: Response): Promise<EmployeeKpiRowPageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EmployeeKpiRowPageResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<EmployeeKpiRowPageResponseApiResponse>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -2392,7 +2667,7 @@ export class Client {
      * @param sortDirection (optional) 
      * @return Success
      */
-    jobcardsGET(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, signal?: AbortSignal): Promise<JobCardResponsePageResponseApiResponse> {
+    jobcardsGET2(pageNumber?: number | undefined, pageSize?: number | undefined, search?: string | undefined, sortBy?: string | undefined, sortDirection?: string | undefined, signal?: AbortSignal): Promise<JobCardResponsePageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobcards?";
         if (pageNumber === null)
             throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
@@ -2427,11 +2702,11 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET2(_response));
         });
     }
 
-    protected processJobcardsGET(response: Response): Promise<JobCardResponsePageResponseApiResponse> {
+    protected processJobcardsGET2(response: Response): Promise<JobCardResponsePageResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2452,7 +2727,7 @@ export class Client {
     /**
      * @return Success
      */
-    jobcardsGET2(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
+    jobcardsGET3(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobcards/{id}";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -2470,11 +2745,11 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET2(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET3(_response));
         });
     }
 
-    protected processJobcardsGET2(response: Response): Promise<JobCardResponseApiResponse> {
+    protected processJobcardsGET3(response: Response): Promise<JobCardResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -3306,6 +3581,109 @@ export class Client {
             });
         }
         return Promise.resolve<JobTaskResponseIReadOnlyListApiResponse>(null as any);
+    }
+
+    /**
+     * @param unreadOnly (optional) 
+     * @param type (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return Success
+     */
+    notifications(unreadOnly?: boolean | undefined, type?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<NotificationResponsePageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/notifications?";
+        if (unreadOnly === null)
+            throw new globalThis.Error("The parameter 'unreadOnly' cannot be null.");
+        else if (unreadOnly !== undefined)
+            url_ += "unreadOnly=" + encodeURIComponent("" + unreadOnly) + "&";
+        if (type === null)
+            throw new globalThis.Error("The parameter 'type' cannot be null.");
+        else if (type !== undefined)
+            url_ += "type=" + encodeURIComponent("" + type) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processNotifications(_response));
+        });
+    }
+
+    protected processNotifications(response: Response): Promise<NotificationResponsePageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NotificationResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<NotificationResponsePageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    read(id: string, signal?: AbortSignal): Promise<BooleanApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/notifications/{id}/read";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processRead(_response));
+        });
+    }
+
+    protected processRead(response: Response): Promise<BooleanApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = BooleanApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BooleanApiResponse>(null as any);
     }
 
     /**
@@ -5276,6 +5654,7 @@ export enum ApprovalRole {
 }
 
 export enum ApprovalStatus {
+    _0 = 0,
     _1 = 1,
     _2 = 2,
 }
@@ -6030,6 +6409,7 @@ export enum AttendanceStatus {
     _2 = 2,
     _3 = 3,
     _4 = 4,
+    _5 = 5,
 }
 
 export class AttendanceUpsertStatusRequest implements IAttendanceUpsertStatusRequest {
@@ -6628,6 +7008,98 @@ export interface IChangePasswordDto {
     newPassword?: string | undefined;
 }
 
+export class ChartPointDto implements IChartPointDto {
+    date?: Date;
+    value?: number;
+
+    constructor(data?: IChartPointDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : undefined as any;
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ChartPointDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChartPointDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["date"] = this.date ? formatDate(this.date) : undefined as any;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IChartPointDto {
+    date?: Date;
+    value?: number;
+}
+
+export class ChartSeriesDto implements IChartSeriesDto {
+    key?: string | undefined;
+    label?: string | undefined;
+    points?: ChartPointDto[] | undefined;
+
+    constructor(data?: IChartSeriesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"];
+            this.label = _data["label"];
+            if (Array.isArray(_data["points"])) {
+                this.points = [] as any;
+                for (let item of _data["points"])
+                    this.points!.push(ChartPointDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ChartSeriesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChartSeriesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key;
+        data["label"] = this.label;
+        if (Array.isArray(this.points)) {
+            data["points"] = [];
+            for (let item of this.points)
+                data["points"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IChartSeriesDto {
+    key?: string | undefined;
+    label?: string | undefined;
+    points?: ChartPointDto[] | undefined;
+}
+
 export enum CommunicationChannel {
     _1 = 1,
     _2 = 2,
@@ -7201,6 +7673,458 @@ export interface ICustomerResponsePageResponseApiResponse {
     errors?: string[] | undefined;
 }
 
+export class DashboardAlertsDto implements IDashboardAlertsDto {
+    jobCardsOverdueCount?: number;
+    roadblockersOpenCount?: number;
+    approvalsPendingCount?: number;
+    lowStockCount?: number;
+    pendingPoCount?: number;
+    pendingTransferCount?: number;
+    tasksOverdueCount?: number;
+    topJobCardAlerts?: JobCardAlertRow[] | undefined;
+    topNotifications?: NotificationResponse[] | undefined;
+
+    constructor(data?: IDashboardAlertsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobCardsOverdueCount = _data["jobCardsOverdueCount"];
+            this.roadblockersOpenCount = _data["roadblockersOpenCount"];
+            this.approvalsPendingCount = _data["approvalsPendingCount"];
+            this.lowStockCount = _data["lowStockCount"];
+            this.pendingPoCount = _data["pendingPoCount"];
+            this.pendingTransferCount = _data["pendingTransferCount"];
+            this.tasksOverdueCount = _data["tasksOverdueCount"];
+            if (Array.isArray(_data["topJobCardAlerts"])) {
+                this.topJobCardAlerts = [] as any;
+                for (let item of _data["topJobCardAlerts"])
+                    this.topJobCardAlerts!.push(JobCardAlertRow.fromJS(item));
+            }
+            if (Array.isArray(_data["topNotifications"])) {
+                this.topNotifications = [] as any;
+                for (let item of _data["topNotifications"])
+                    this.topNotifications!.push(NotificationResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DashboardAlertsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardAlertsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobCardsOverdueCount"] = this.jobCardsOverdueCount;
+        data["roadblockersOpenCount"] = this.roadblockersOpenCount;
+        data["approvalsPendingCount"] = this.approvalsPendingCount;
+        data["lowStockCount"] = this.lowStockCount;
+        data["pendingPoCount"] = this.pendingPoCount;
+        data["pendingTransferCount"] = this.pendingTransferCount;
+        data["tasksOverdueCount"] = this.tasksOverdueCount;
+        if (Array.isArray(this.topJobCardAlerts)) {
+            data["topJobCardAlerts"] = [];
+            for (let item of this.topJobCardAlerts)
+                data["topJobCardAlerts"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.topNotifications)) {
+            data["topNotifications"] = [];
+            for (let item of this.topNotifications)
+                data["topNotifications"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IDashboardAlertsDto {
+    jobCardsOverdueCount?: number;
+    roadblockersOpenCount?: number;
+    approvalsPendingCount?: number;
+    lowStockCount?: number;
+    pendingPoCount?: number;
+    pendingTransferCount?: number;
+    tasksOverdueCount?: number;
+    topJobCardAlerts?: JobCardAlertRow[] | undefined;
+    topNotifications?: NotificationResponse[] | undefined;
+}
+
+export class DashboardOverviewResponse implements IDashboardOverviewResponse {
+    role?: string | undefined;
+    branchId?: string | undefined;
+    from?: Date;
+    to?: Date;
+    cards?: KpiCardDto[] | undefined;
+    series?: ChartSeriesDto[] | undefined;
+    alerts?: DashboardAlertsDto;
+    quickActions?: DashboardQuickActionsDto;
+
+    constructor(data?: IDashboardOverviewResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"];
+            this.branchId = _data["branchId"];
+            this.from = _data["from"] ? new Date(_data["from"].toString()) : undefined as any;
+            this.to = _data["to"] ? new Date(_data["to"].toString()) : undefined as any;
+            if (Array.isArray(_data["cards"])) {
+                this.cards = [] as any;
+                for (let item of _data["cards"])
+                    this.cards!.push(KpiCardDto.fromJS(item));
+            }
+            if (Array.isArray(_data["series"])) {
+                this.series = [] as any;
+                for (let item of _data["series"])
+                    this.series!.push(ChartSeriesDto.fromJS(item));
+            }
+            this.alerts = _data["alerts"] ? DashboardAlertsDto.fromJS(_data["alerts"]) : undefined as any;
+            this.quickActions = _data["quickActions"] ? DashboardQuickActionsDto.fromJS(_data["quickActions"]) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): DashboardOverviewResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardOverviewResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role;
+        data["branchId"] = this.branchId;
+        data["from"] = this.from ? formatDate(this.from) : undefined as any;
+        data["to"] = this.to ? formatDate(this.to) : undefined as any;
+        if (Array.isArray(this.cards)) {
+            data["cards"] = [];
+            for (let item of this.cards)
+                data["cards"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.series)) {
+            data["series"] = [];
+            for (let item of this.series)
+                data["series"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["alerts"] = this.alerts ? this.alerts.toJSON() : undefined as any;
+        data["quickActions"] = this.quickActions ? this.quickActions.toJSON() : undefined as any;
+        return data;
+    }
+}
+
+export interface IDashboardOverviewResponse {
+    role?: string | undefined;
+    branchId?: string | undefined;
+    from?: Date;
+    to?: Date;
+    cards?: KpiCardDto[] | undefined;
+    series?: ChartSeriesDto[] | undefined;
+    alerts?: DashboardAlertsDto;
+    quickActions?: DashboardQuickActionsDto;
+}
+
+export class DashboardOverviewResponseApiResponse implements IDashboardOverviewResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: DashboardOverviewResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IDashboardOverviewResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? DashboardOverviewResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DashboardOverviewResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardOverviewResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDashboardOverviewResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: DashboardOverviewResponse;
+    errors?: string[] | undefined;
+}
+
+export class DashboardQuickActionsDto implements IDashboardQuickActionsDto {
+    canCreateJobCard?: boolean;
+    canCreatePurchaseOrder?: boolean;
+    canCreateTransfer?: boolean;
+    canCreateInvoice?: boolean;
+    canMarkAttendance?: boolean;
+
+    constructor(data?: IDashboardQuickActionsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.canCreateJobCard = _data["canCreateJobCard"];
+            this.canCreatePurchaseOrder = _data["canCreatePurchaseOrder"];
+            this.canCreateTransfer = _data["canCreateTransfer"];
+            this.canCreateInvoice = _data["canCreateInvoice"];
+            this.canMarkAttendance = _data["canMarkAttendance"];
+        }
+    }
+
+    static fromJS(data: any): DashboardQuickActionsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardQuickActionsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canCreateJobCard"] = this.canCreateJobCard;
+        data["canCreatePurchaseOrder"] = this.canCreatePurchaseOrder;
+        data["canCreateTransfer"] = this.canCreateTransfer;
+        data["canCreateInvoice"] = this.canCreateInvoice;
+        data["canMarkAttendance"] = this.canMarkAttendance;
+        return data;
+    }
+}
+
+export interface IDashboardQuickActionsDto {
+    canCreateJobCard?: boolean;
+    canCreatePurchaseOrder?: boolean;
+    canCreateTransfer?: boolean;
+    canCreateInvoice?: boolean;
+    canMarkAttendance?: boolean;
+}
+
+export class EmployeeKpiRow implements IEmployeeKpiRow {
+    employeeUserId?: string;
+    employeeEmail?: string | undefined;
+    tasksCompleted?: number;
+    tasksOverdue?: number;
+    avgTaskMinutes?: number;
+    jobCardsHandled?: number;
+    comebackRatePercent?: number;
+    attendancePresentDays?: number;
+    attendanceLateCount?: number;
+
+    constructor(data?: IEmployeeKpiRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeUserId = _data["employeeUserId"];
+            this.employeeEmail = _data["employeeEmail"];
+            this.tasksCompleted = _data["tasksCompleted"];
+            this.tasksOverdue = _data["tasksOverdue"];
+            this.avgTaskMinutes = _data["avgTaskMinutes"];
+            this.jobCardsHandled = _data["jobCardsHandled"];
+            this.comebackRatePercent = _data["comebackRatePercent"];
+            this.attendancePresentDays = _data["attendancePresentDays"];
+            this.attendanceLateCount = _data["attendanceLateCount"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeKpiRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeKpiRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeUserId"] = this.employeeUserId;
+        data["employeeEmail"] = this.employeeEmail;
+        data["tasksCompleted"] = this.tasksCompleted;
+        data["tasksOverdue"] = this.tasksOverdue;
+        data["avgTaskMinutes"] = this.avgTaskMinutes;
+        data["jobCardsHandled"] = this.jobCardsHandled;
+        data["comebackRatePercent"] = this.comebackRatePercent;
+        data["attendancePresentDays"] = this.attendancePresentDays;
+        data["attendanceLateCount"] = this.attendanceLateCount;
+        return data;
+    }
+}
+
+export interface IEmployeeKpiRow {
+    employeeUserId?: string;
+    employeeEmail?: string | undefined;
+    tasksCompleted?: number;
+    tasksOverdue?: number;
+    avgTaskMinutes?: number;
+    jobCardsHandled?: number;
+    comebackRatePercent?: number;
+    attendancePresentDays?: number;
+    attendanceLateCount?: number;
+}
+
+export class EmployeeKpiRowPageResponse implements IEmployeeKpiRowPageResponse {
+    items?: EmployeeKpiRow[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+
+    constructor(data?: IEmployeeKpiRowPageResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(EmployeeKpiRow.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+            this.pageNumber = _data["pageNumber"];
+            this.pageSize = _data["pageSize"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeKpiRowPageResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeKpiRowPageResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["totalCount"] = this.totalCount;
+        data["pageNumber"] = this.pageNumber;
+        data["pageSize"] = this.pageSize;
+        return data;
+    }
+}
+
+export interface IEmployeeKpiRowPageResponse {
+    items?: EmployeeKpiRow[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export class EmployeeKpiRowPageResponseApiResponse implements IEmployeeKpiRowPageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: EmployeeKpiRowPageResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IEmployeeKpiRowPageResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? EmployeeKpiRowPageResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): EmployeeKpiRowPageResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeKpiRowPageResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IEmployeeKpiRowPageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: EmployeeKpiRowPageResponse;
+    errors?: string[] | undefined;
+}
+
 export enum ExpenseCategory {
     _1 = 1,
     _2 = 2,
@@ -7486,6 +8410,146 @@ export interface IExpenseResponsePageResponseApiResponse {
     errors?: string[] | undefined;
 }
 
+export class InventoryDashboardResponse implements IInventoryDashboardResponse {
+    branchId?: string | undefined;
+    lowStockCount?: number;
+    pendingPoCount?: number;
+    pendingTransfersCount?: number;
+    lowStockTop?: LowStockRow[] | undefined;
+    pendingPoTop?: PurchaseOrderRow[] | undefined;
+    pendingTransfersTop?: TransferRow[] | undefined;
+
+    constructor(data?: IInventoryDashboardResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.branchId = _data["branchId"];
+            this.lowStockCount = _data["lowStockCount"];
+            this.pendingPoCount = _data["pendingPoCount"];
+            this.pendingTransfersCount = _data["pendingTransfersCount"];
+            if (Array.isArray(_data["lowStockTop"])) {
+                this.lowStockTop = [] as any;
+                for (let item of _data["lowStockTop"])
+                    this.lowStockTop!.push(LowStockRow.fromJS(item));
+            }
+            if (Array.isArray(_data["pendingPoTop"])) {
+                this.pendingPoTop = [] as any;
+                for (let item of _data["pendingPoTop"])
+                    this.pendingPoTop!.push(PurchaseOrderRow.fromJS(item));
+            }
+            if (Array.isArray(_data["pendingTransfersTop"])) {
+                this.pendingTransfersTop = [] as any;
+                for (let item of _data["pendingTransfersTop"])
+                    this.pendingTransfersTop!.push(TransferRow.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): InventoryDashboardResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new InventoryDashboardResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["lowStockCount"] = this.lowStockCount;
+        data["pendingPoCount"] = this.pendingPoCount;
+        data["pendingTransfersCount"] = this.pendingTransfersCount;
+        if (Array.isArray(this.lowStockTop)) {
+            data["lowStockTop"] = [];
+            for (let item of this.lowStockTop)
+                data["lowStockTop"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.pendingPoTop)) {
+            data["pendingPoTop"] = [];
+            for (let item of this.pendingPoTop)
+                data["pendingPoTop"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.pendingTransfersTop)) {
+            data["pendingTransfersTop"] = [];
+            for (let item of this.pendingTransfersTop)
+                data["pendingTransfersTop"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IInventoryDashboardResponse {
+    branchId?: string | undefined;
+    lowStockCount?: number;
+    pendingPoCount?: number;
+    pendingTransfersCount?: number;
+    lowStockTop?: LowStockRow[] | undefined;
+    pendingPoTop?: PurchaseOrderRow[] | undefined;
+    pendingTransfersTop?: TransferRow[] | undefined;
+}
+
+export class InventoryDashboardResponseApiResponse implements IInventoryDashboardResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: InventoryDashboardResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IInventoryDashboardResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? InventoryDashboardResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): InventoryDashboardResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new InventoryDashboardResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IInventoryDashboardResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: InventoryDashboardResponse;
+    errors?: string[] | undefined;
+}
+
 export class InvoiceCreateRequest implements IInvoiceCreateRequest {
     subtotal?: number;
     discount?: number;
@@ -7643,6 +8707,202 @@ export interface IInvoiceResponseApiResponse {
     success?: boolean;
     message?: string | undefined;
     data?: InvoiceResponse;
+    errors?: string[] | undefined;
+}
+
+export class JobCardAlertRow implements IJobCardAlertRow {
+    jobCardId?: string;
+    plate?: string | undefined;
+    customerName?: string | undefined;
+    status?: string | undefined;
+    entryAt?: Date | undefined;
+    exitAt?: Date | undefined;
+    daysInShop?: number;
+    hasRoadblocker?: boolean;
+    roadblockerSummary?: string | undefined;
+    requiresApproval?: boolean;
+    requiredApprovalRole?: string | undefined;
+    estimatedTotal?: number | undefined;
+    dueAmount?: number | undefined;
+
+    constructor(data?: IJobCardAlertRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobCardId = _data["jobCardId"];
+            this.plate = _data["plate"];
+            this.customerName = _data["customerName"];
+            this.status = _data["status"];
+            this.entryAt = _data["entryAt"] ? new Date(_data["entryAt"].toString()) : undefined as any;
+            this.exitAt = _data["exitAt"] ? new Date(_data["exitAt"].toString()) : undefined as any;
+            this.daysInShop = _data["daysInShop"];
+            this.hasRoadblocker = _data["hasRoadblocker"];
+            this.roadblockerSummary = _data["roadblockerSummary"];
+            this.requiresApproval = _data["requiresApproval"];
+            this.requiredApprovalRole = _data["requiredApprovalRole"];
+            this.estimatedTotal = _data["estimatedTotal"];
+            this.dueAmount = _data["dueAmount"];
+        }
+    }
+
+    static fromJS(data: any): JobCardAlertRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardAlertRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobCardId"] = this.jobCardId;
+        data["plate"] = this.plate;
+        data["customerName"] = this.customerName;
+        data["status"] = this.status;
+        data["entryAt"] = this.entryAt ? this.entryAt.toISOString() : undefined as any;
+        data["exitAt"] = this.exitAt ? this.exitAt.toISOString() : undefined as any;
+        data["daysInShop"] = this.daysInShop;
+        data["hasRoadblocker"] = this.hasRoadblocker;
+        data["roadblockerSummary"] = this.roadblockerSummary;
+        data["requiresApproval"] = this.requiresApproval;
+        data["requiredApprovalRole"] = this.requiredApprovalRole;
+        data["estimatedTotal"] = this.estimatedTotal;
+        data["dueAmount"] = this.dueAmount;
+        return data;
+    }
+}
+
+export interface IJobCardAlertRow {
+    jobCardId?: string;
+    plate?: string | undefined;
+    customerName?: string | undefined;
+    status?: string | undefined;
+    entryAt?: Date | undefined;
+    exitAt?: Date | undefined;
+    daysInShop?: number;
+    hasRoadblocker?: boolean;
+    roadblockerSummary?: string | undefined;
+    requiresApproval?: boolean;
+    requiredApprovalRole?: string | undefined;
+    estimatedTotal?: number | undefined;
+    dueAmount?: number | undefined;
+}
+
+export class JobCardAlertRowPageResponse implements IJobCardAlertRowPageResponse {
+    items?: JobCardAlertRow[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+
+    constructor(data?: IJobCardAlertRowPageResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(JobCardAlertRow.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+            this.pageNumber = _data["pageNumber"];
+            this.pageSize = _data["pageSize"];
+        }
+    }
+
+    static fromJS(data: any): JobCardAlertRowPageResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardAlertRowPageResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["totalCount"] = this.totalCount;
+        data["pageNumber"] = this.pageNumber;
+        data["pageSize"] = this.pageSize;
+        return data;
+    }
+}
+
+export interface IJobCardAlertRowPageResponse {
+    items?: JobCardAlertRow[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export class JobCardAlertRowPageResponseApiResponse implements IJobCardAlertRowPageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardAlertRowPageResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IJobCardAlertRowPageResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? JobCardAlertRowPageResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): JobCardAlertRowPageResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardAlertRowPageResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IJobCardAlertRowPageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardAlertRowPageResponse;
     errors?: string[] | undefined;
 }
 
@@ -9467,6 +10727,66 @@ export enum JobTaskStatus {
     _4 = 4,
 }
 
+export class KpiCardDto implements IKpiCardDto {
+    key?: string | undefined;
+    title?: string | undefined;
+    value?: number;
+    unit?: string | undefined;
+    deltaValue?: number | undefined;
+    deltaPercent?: number | undefined;
+    trend?: string | undefined;
+
+    constructor(data?: IKpiCardDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"];
+            this.title = _data["title"];
+            this.value = _data["value"];
+            this.unit = _data["unit"];
+            this.deltaValue = _data["deltaValue"];
+            this.deltaPercent = _data["deltaPercent"];
+            this.trend = _data["trend"];
+        }
+    }
+
+    static fromJS(data: any): KpiCardDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new KpiCardDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key;
+        data["title"] = this.title;
+        data["value"] = this.value;
+        data["unit"] = this.unit;
+        data["deltaValue"] = this.deltaValue;
+        data["deltaPercent"] = this.deltaPercent;
+        data["trend"] = this.trend;
+        return data;
+    }
+}
+
+export interface IKpiCardDto {
+    key?: string | undefined;
+    title?: string | undefined;
+    value?: number;
+    unit?: string | undefined;
+    deltaValue?: number | undefined;
+    deltaPercent?: number | undefined;
+    trend?: string | undefined;
+}
+
 export class LedgerRowResponse implements ILedgerRowResponse {
     id?: string;
     branchId?: string;
@@ -10083,6 +11403,62 @@ export interface ILoginResponseDtoApiResponse {
     errors?: string[] | undefined;
 }
 
+export class LowStockRow implements ILowStockRow {
+    partId?: string;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationName?: string | undefined;
+    quantityOnHand?: number;
+    reorderLevel?: number;
+
+    constructor(data?: ILowStockRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.partId = _data["partId"];
+            this.partSku = _data["partSku"];
+            this.partName = _data["partName"];
+            this.locationName = _data["locationName"];
+            this.quantityOnHand = _data["quantityOnHand"];
+            this.reorderLevel = _data["reorderLevel"];
+        }
+    }
+
+    static fromJS(data: any): LowStockRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new LowStockRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["partId"] = this.partId;
+        data["partSku"] = this.partSku;
+        data["partName"] = this.partName;
+        data["locationName"] = this.locationName;
+        data["quantityOnHand"] = this.quantityOnHand;
+        data["reorderLevel"] = this.reorderLevel;
+        return data;
+    }
+}
+
+export interface ILowStockRow {
+    partId?: string;
+    partSku?: string | undefined;
+    partName?: string | undefined;
+    locationName?: string | undefined;
+    quantityOnHand?: number;
+    reorderLevel?: number;
+}
+
 export class MeResponseDto implements IMeResponseDto {
     id?: string;
     email?: string | undefined;
@@ -10225,6 +11601,182 @@ export class MoveJobCardRequest implements IMoveJobCardRequest {
 export interface IMoveJobCardRequest {
     workStationId?: string;
     notes?: string | undefined;
+}
+
+export class NotificationResponse implements INotificationResponse {
+    id?: string;
+    type?: string | undefined;
+    title?: string | undefined;
+    message?: string | undefined;
+    refType?: string | undefined;
+    refId?: string | undefined;
+    isRead?: boolean;
+    createdAt?: Date;
+
+    constructor(data?: INotificationResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.type = _data["type"];
+            this.title = _data["title"];
+            this.message = _data["message"];
+            this.refType = _data["refType"];
+            this.refId = _data["refId"];
+            this.isRead = _data["isRead"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): NotificationResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["message"] = this.message;
+        data["refType"] = this.refType;
+        data["refId"] = this.refId;
+        data["isRead"] = this.isRead;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface INotificationResponse {
+    id?: string;
+    type?: string | undefined;
+    title?: string | undefined;
+    message?: string | undefined;
+    refType?: string | undefined;
+    refId?: string | undefined;
+    isRead?: boolean;
+    createdAt?: Date;
+}
+
+export class NotificationResponsePageResponse implements INotificationResponsePageResponse {
+    items?: NotificationResponse[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+
+    constructor(data?: INotificationResponsePageResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(NotificationResponse.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+            this.pageNumber = _data["pageNumber"];
+            this.pageSize = _data["pageSize"];
+        }
+    }
+
+    static fromJS(data: any): NotificationResponsePageResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationResponsePageResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["totalCount"] = this.totalCount;
+        data["pageNumber"] = this.pageNumber;
+        data["pageSize"] = this.pageSize;
+        return data;
+    }
+}
+
+export interface INotificationResponsePageResponse {
+    items?: NotificationResponse[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export class NotificationResponsePageResponseApiResponse implements INotificationResponsePageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: NotificationResponsePageResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: INotificationResponsePageResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? NotificationResponsePageResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): NotificationResponsePageResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new NotificationResponsePageResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface INotificationResponsePageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: NotificationResponsePageResponse;
+    errors?: string[] | undefined;
 }
 
 export class PartCreateRequest implements IPartCreateRequest {
@@ -11122,6 +12674,62 @@ export interface IPurchaseOrderResponsePageResponseApiResponse {
     message?: string | undefined;
     data?: PurchaseOrderResponsePageResponse;
     errors?: string[] | undefined;
+}
+
+export class PurchaseOrderRow implements IPurchaseOrderRow {
+    purchaseOrderId?: string;
+    orderNo?: string | undefined;
+    supplierName?: string | undefined;
+    status?: string | undefined;
+    orderedAt?: Date;
+    daysPending?: number;
+
+    constructor(data?: IPurchaseOrderRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.purchaseOrderId = _data["purchaseOrderId"];
+            this.orderNo = _data["orderNo"];
+            this.supplierName = _data["supplierName"];
+            this.status = _data["status"];
+            this.orderedAt = _data["orderedAt"] ? new Date(_data["orderedAt"].toString()) : undefined as any;
+            this.daysPending = _data["daysPending"];
+        }
+    }
+
+    static fromJS(data: any): PurchaseOrderRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new PurchaseOrderRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["purchaseOrderId"] = this.purchaseOrderId;
+        data["orderNo"] = this.orderNo;
+        data["supplierName"] = this.supplierName;
+        data["status"] = this.status;
+        data["orderedAt"] = this.orderedAt ? this.orderedAt.toISOString() : undefined as any;
+        data["daysPending"] = this.daysPending;
+        return data;
+    }
+}
+
+export interface IPurchaseOrderRow {
+    purchaseOrderId?: string;
+    orderNo?: string | undefined;
+    supplierName?: string | undefined;
+    status?: string | undefined;
+    orderedAt?: Date;
+    daysPending?: number;
 }
 
 export enum PurchaseOrderStatus {
@@ -13102,6 +14710,66 @@ export interface ITransferResponsePageResponseApiResponse {
     message?: string | undefined;
     data?: TransferResponsePageResponse;
     errors?: string[] | undefined;
+}
+
+export class TransferRow implements ITransferRow {
+    transferId?: string;
+    transferNo?: string | undefined;
+    status?: string | undefined;
+    fromBranch?: string | undefined;
+    toBranch?: string | undefined;
+    requestedAt?: Date;
+    daysPending?: number;
+
+    constructor(data?: ITransferRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.transferId = _data["transferId"];
+            this.transferNo = _data["transferNo"];
+            this.status = _data["status"];
+            this.fromBranch = _data["fromBranch"];
+            this.toBranch = _data["toBranch"];
+            this.requestedAt = _data["requestedAt"] ? new Date(_data["requestedAt"].toString()) : undefined as any;
+            this.daysPending = _data["daysPending"];
+        }
+    }
+
+    static fromJS(data: any): TransferRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransferRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transferId"] = this.transferId;
+        data["transferNo"] = this.transferNo;
+        data["status"] = this.status;
+        data["fromBranch"] = this.fromBranch;
+        data["toBranch"] = this.toBranch;
+        data["requestedAt"] = this.requestedAt ? this.requestedAt.toISOString() : undefined as any;
+        data["daysPending"] = this.daysPending;
+        return data;
+    }
+}
+
+export interface ITransferRow {
+    transferId?: string;
+    transferNo?: string | undefined;
+    status?: string | undefined;
+    fromBranch?: string | undefined;
+    toBranch?: string | undefined;
+    requestedAt?: Date;
+    daysPending?: number;
 }
 
 export class UpdateRoleDto implements IUpdateRoleDto {
