@@ -221,7 +221,7 @@ export default function AttendanceAdminPage() {
   const todayTotalItems = todayData?.totalCount || 0;
   const todayTotalPages = Math.ceil(todayTotalItems / pageSize) || 1;
 
-  const monthRecords = monthData?.records || [];
+  const monthRecords = monthData?.days || [];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
