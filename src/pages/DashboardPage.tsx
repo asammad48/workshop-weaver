@@ -1,69 +1,125 @@
-import { useNavigate } from 'react-router-dom';
-import { Card, CardHeader, CardBody } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { toast } from '@/components/ui/Toast';
-import { confirm } from '@/components/ui/ConfirmDialog';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import '@/styles/global.css';
+import { dashboardRepo } from '@/api/repositories/dashboardRepo';
+import { DashboardOverviewResponse } from '@/api/generated/apiClient';
+import { DateRangePicker } from '@/features/dashboard/components/DateRangePicker';
+import { Loader2, Calendar } from 'lucide-react';
+import { HqAdminDashboard } from '@/features/dashboard/HqAdminDashboard';
+import { ManagerDashboard } from '@/features/dashboard/ManagerDashboard';
+import { StoreDashboard } from '@/features/dashboard/StoreDashboard';
+import { CashierDashboard } from '@/features/dashboard/CashierDashboard';
+import { TechDashboard } from '@/features/dashboard/TechDashboard';
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const [data, setData] = useState<DashboardOverviewResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<{ from: Date, to: Date }>(() => {
+    const to = new Date();
+    const from = new Date();
+    from.setDate(from.getDate() - 30);
+    return { from, to };
+  });
 
-  const handleLogout = async () => {
-    const confirmed = await confirm({
-      title: 'Logout',
-      message: 'Are you sure you want to logout?',
-      confirmText: 'Logout',
-      cancelText: 'Cancel',
-    });
-
-    if (confirmed) {
-      logout();
-      toast.info('You have been logged out');
-      navigate('/login');
+  const fetchDashboard = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await dashboardRepo.overview({
+        branchId: user?.branchId,
+        from: dateRange.from,
+        to: dateRange.to,
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone
+      });
+      setData(res);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load dashboard');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleToastTest = () => {
-    toast.success('Success toast!');
-    setTimeout(() => toast.error('Error toast!'), 500);
-    setTimeout(() => toast.info('Info toast!'), 1000);
-    setTimeout(() => toast.warning('Warning toast!'), 1500);
+  useEffect(() => {
+    if (user) {
+      fetchDashboard();
+    }
+  }, [user, dateRange]);
+
+  const renderRoleDashboard = () => {
+    if (!data) return null;
+
+    const role = user?.role?.toUpperCase();
+
+    switch (role) {
+      case 'HQ_ADMIN':
+        return <HqAdminDashboard data={data} loading={loading} />;
+      case 'BRANCH_MANAGER':
+      case 'MANAGER': // just in case
+        return <ManagerDashboard data={data} loading={loading} />;
+      case 'STOREKEEPER':
+      case 'STORE':
+        return <StoreDashboard data={data} loading={loading} />;
+      case 'CASHIER':
+        return <CashierDashboard data={data} loading={loading} />;
+      case 'TECHNICIAN':
+      case 'TECH':
+        return <TechDashboard data={data} loading={loading} />;
+      default:
+        // Fallback to a basic view if role is unknown or RECEPTIONIST
+        return <HqAdminDashboard data={data} loading={loading} />;
+    }
   };
 
   return (
-    <div className="stack">
-      <Card>
-        <CardHeader>
-          <h2 style={{ margin: 0 }}>Dashboard</h2>
-        </CardHeader>
-        <CardBody>
-          <div className="stack">
-            <p>
-              Welcome, <strong>{user?.email || 'User'}</strong>!
-            </p>
-            <p className="muted">
-              This is your Workshop Management dashboard. Start building your
-              features in the <code>src/features/</code> directory.
-            </p>
+    <div style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
+        <div>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--c-text)', marginBottom: '4px' }}>Dashboard</h1>
+          <p style={{ color: 'var(--c-muted)', fontSize: '14px' }}>
+            Welcome back, {user?.email}
+          </p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 12px',
+            background: 'var(--c-card)',
+            border: '1px solid var(--c-border)',
+            borderRadius: '8px',
+            color: 'var(--c-muted)',
+            fontSize: '14px'
+          }}>
+            <Calendar size={16} />
+            Last 30 Days
           </div>
-        </CardBody>
-      </Card>
+          <DateRangePicker
+            from={dateRange.from}
+            to={dateRange.to}
+            onChange={setDateRange}
+          />
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <h3 style={{ margin: 0 }}>Test UI Components</h3>
-        </CardHeader>
-        <CardBody>
-          <div className="row">
-            <Button onClick={handleToastTest}>Test Toasts</Button>
-            <Button variant="danger" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
-        </CardBody>
-      </Card>
+      {loading && !data ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+          <Loader2 size={48} className="animate-spin" style={{ color: 'var(--c-primary)' }} />
+        </div>
+      ) : error ? (
+        <div style={{
+          padding: '24px',
+          backgroundColor: 'var(--c-danger-soft)',
+          color: 'var(--c-danger)',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          {error}
+        </div>
+      ) : (
+        renderRoleDashboard()
+      )}
     </div>
   );
 }

@@ -123,3 +123,4 @@ a:hover {
   justify-content: center;
   z-index: 1000;
 }
+.hover-bg:hover { background-color: var(--c-bg-alt); }

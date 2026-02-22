@@ -9,6 +9,7 @@ import MePage from '@/pages/auth/MePage';
 import DashboardPage from '@/pages/DashboardPage';
 import ThemePage from '@/pages/ThemePage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import NotificationsPage from '@/pages/NotificationsPage';
 
 // Operations
 import JobCardsPage from '@/pages/JobCardsPage';
@@ -46,6 +47,7 @@ export function AppRoutes() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/me" element={<MePage />} />
         <Route path="/theme" element={<ThemePage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
 
         {/* Operations */}
         <Route path="/jobcards" element={<JobCardsPage />} />
