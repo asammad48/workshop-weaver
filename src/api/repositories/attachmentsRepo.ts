@@ -4,7 +4,8 @@ import {
   PresignRequest,
   PresignResponseApiResponse,
   AttachmentCreateRequest,
-  AttachmentResponseApiResponse
+  AttachmentResponseApiResponse,
+  FileParameter
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
@@ -31,6 +32,23 @@ export const attachmentsRepo = {
   async saveMetadata(body: AttachmentCreateRequest): Promise<AttachmentResponseApiResponse> {
     try {
       return await client.metadata(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async upload(formData: FormData): Promise<AttachmentResponseApiResponse> {
+    try {
+      const ownerType = formData.get('ownerType') as string;
+      const ownerId = formData.get('ownerId') as string;
+      const note = formData.get('note') as string;
+      const file = formData.get('file') as File;
+
+      const fileParam: FileParameter = {
+        data: file,
+        fileName: file.name
+      };
+      return await client.upload(ownerType, ownerId, note, fileParam);
     } catch (error) {
       throw normalizeError(error);
     }
