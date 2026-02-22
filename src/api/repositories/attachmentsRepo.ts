@@ -4,11 +4,11 @@ import {
   PresignRequest,
   PresignResponseApiResponse,
   AttachmentCreateRequest,
-  AttachmentResponseApiResponse,
-  FileParameter
+  AttachmentResponseApiResponse
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
+import { getBaseUrl, getFetch } from '../clientFactory';
 
 const client = createClient(Client);
 
@@ -39,16 +39,17 @@ export const attachmentsRepo = {
 
   async upload(formData: FormData): Promise<AttachmentResponseApiResponse> {
     try {
-      const ownerType = formData.get('ownerType') as string;
-      const ownerId = formData.get('ownerId') as string;
-      const note = formData.get('note') as string;
-      const file = formData.get('file') as File;
-
-      const fileParam: FileParameter = {
-        data: file,
-        fileName: file.name
-      };
-      return await client.upload(ownerType, ownerId, note, fileParam);
+      const baseUrl = getBaseUrl();
+      const fetchApi = getFetch();
+      const response = await fetchApi(`${baseUrl}/api/v1/Attachments/upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      const result = await response.json();
+      return AttachmentResponseApiResponse.fromJS(result);
     } catch (error) {
       throw normalizeError(error);
     }
