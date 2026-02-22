@@ -8,6 +8,7 @@ import {
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
+import { getBaseUrl, getFetch } from '../clientFactory';
 
 const client = createClient(Client);
 
@@ -31,6 +32,24 @@ export const attachmentsRepo = {
   async saveMetadata(body: AttachmentCreateRequest): Promise<AttachmentResponseApiResponse> {
     try {
       return await client.metadata(body);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async upload(formData: FormData): Promise<AttachmentResponseApiResponse> {
+    try {
+      const baseUrl = getBaseUrl();
+      const fetchApi = getFetch();
+      const response = await fetchApi(`${baseUrl}/api/v1/Attachments/upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      const result = await response.json();
+      return AttachmentResponseApiResponse.fromJS(result);
     } catch (error) {
       throw normalizeError(error);
     }

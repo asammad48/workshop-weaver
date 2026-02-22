@@ -24,6 +24,10 @@ import TransfersPage from '@/pages/TransfersPage';
 import FinancePage from '@/pages/FinancePage';
 import ReportsPage from '@/pages/ReportsPage';
 
+// Attendance
+import MyAttendancePage from '@/pages/attendance/MyAttendancePage';
+import AttendanceAdminPage from '@/pages/attendance/AttendanceAdminPage';
+
 // Admin
 import UsersPage from '@/pages/admin/UsersPage';
 import BranchesPage from '@/pages/admin/BranchesPage';
@@ -56,6 +60,10 @@ export function AppRoutes() {
         {/* Finance & Reports */}
         <Route path="/finance" element={<FinancePage />} />
         <Route path="/reports" element={<ReportsPage />} />
+
+        {/* Attendance */}
+        <Route path="/attendance/me" element={<MyAttendancePage />} />
+        <Route path="/attendance" element={<AttendanceAdminPage />} />
 
         {/* Admin */}
         <Route path="/admin/users" element={<UsersPage />} />
