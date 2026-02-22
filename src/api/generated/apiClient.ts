@@ -409,21 +409,16 @@ export class Client {
 
     /**
      * @param branchId (optional) 
-     * @param employeeUserId (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @return Success
      */
-    today(branchId?: string | undefined, employeeUserId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponsePageResponseApiResponse> {
+    today(branchId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponsePageResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/Attendance/today?";
         if (branchId === null)
             throw new globalThis.Error("The parameter 'branchId' cannot be null.");
         else if (branchId !== undefined)
             url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
-        if (employeeUserId === null)
-            throw new globalThis.Error("The parameter 'employeeUserId' cannot be null.");
-        else if (employeeUserId !== undefined)
-            url_ += "employeeUserId=" + encodeURIComponent("" + employeeUserId) + "&";
         if (pageNumber === null)
             throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -473,11 +468,8 @@ export class Client {
      * @param branchId (optional) 
      * @return Success
      */
-    month(employeeUserId: string, year?: number | undefined, month?: number | undefined, branchId?: string | undefined, signal?: AbortSignal): Promise<AttendanceMonthResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/v1/Attendance/employee/{employeeUserId}/month?";
-        if (employeeUserId === undefined || employeeUserId === null)
-            throw new globalThis.Error("The parameter 'employeeUserId' must be defined.");
-        url_ = url_.replace("{employeeUserId}", encodeURIComponent("" + employeeUserId));
+    month(year?: number | undefined, month?: number | undefined, branchId?: string | undefined, signal?: AbortSignal): Promise<AttendanceMonthResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/employee/month?";
         if (year === null)
             throw new globalThis.Error("The parameter 'year' cannot be null.");
         else if (year !== undefined)
