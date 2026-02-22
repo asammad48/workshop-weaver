@@ -125,7 +125,7 @@ export class Client {
      * @return Success
      */
     metadata(body?: AttachmentCreateRequest | undefined, signal?: AbortSignal): Promise<AttachmentResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/v1/attachments/metadata";
+        let url_ = this.baseUrl + "/api/v1/Attachments/metadata";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -171,7 +171,7 @@ export class Client {
      * @return Success
      */
     attachments(ownerType?: string | undefined, ownerId?: string | undefined, signal?: AbortSignal): Promise<AttachmentResponseIReadOnlyListApiResponse> {
-        let url_ = this.baseUrl + "/api/v1/attachments?";
+        let url_ = this.baseUrl + "/api/v1/Attachments?";
         if (ownerType === null)
             throw new globalThis.Error("The parameter 'ownerType' cannot be null.");
         else if (ownerType !== undefined)
@@ -216,11 +216,113 @@ export class Client {
     }
 
     /**
+     * @param ownerType (optional) 
+     * @param ownerId (optional) 
+     * @param note (optional) 
+     * @param file (optional) 
+     * @return Success
+     */
+    upload(ownerType?: string | undefined, ownerId?: string | undefined, note?: string | undefined, file?: FileParameter | undefined, signal?: AbortSignal): Promise<AttachmentResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attachments/upload";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (ownerType === null || ownerType === undefined)
+            throw new globalThis.Error("The parameter 'ownerType' cannot be null.");
+        else
+            content_.append("ownerType", ownerType.toString());
+        if (ownerId === null || ownerId === undefined)
+            throw new globalThis.Error("The parameter 'ownerId' cannot be null.");
+        else
+            content_.append("ownerId", ownerId.toString());
+        if (note === null || note === undefined)
+            throw new globalThis.Error("The parameter 'note' cannot be null.");
+        else
+            content_.append("note", note.toString());
+        if (file === null || file === undefined)
+            throw new globalThis.Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processUpload(_response));
+        });
+    }
+
+    protected processUpload(response: Response): Promise<AttachmentResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttachmentResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AttachmentResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    download(id: string, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/Attachments/{id}/download";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processDownload(_response));
+        });
+    }
+
+    protected processDownload(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
-    presign(body?: PresignRequest | undefined, signal?: AbortSignal): Promise<PresignResponseApiResponse> {
-        let url_ = this.baseUrl + "/api/v1/attachments/presign";
+    checkIn(body?: AttendanceCheckInRequest | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/check-in";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -238,18 +340,18 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processPresign(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processCheckIn(_response));
         });
     }
 
-    protected processPresign(response: Response): Promise<PresignResponseApiResponse> {
+    protected processCheckIn(response: Response): Promise<AttendanceRecordResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PresignResponseApiResponse.fromJS(resultData200);
+            result200 = AttendanceRecordResponseApiResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -257,7 +359,215 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<PresignResponseApiResponse>(null as any);
+        return Promise.resolve<AttendanceRecordResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    checkOut(body?: AttendanceCheckOutRequest | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/check-out";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processCheckOut(_response));
+        });
+    }
+
+    protected processCheckOut(response: Response): Promise<AttendanceRecordResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttendanceRecordResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AttendanceRecordResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param branchId (optional) 
+     * @param employeeUserId (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @return Success
+     */
+    today(branchId?: string | undefined, employeeUserId?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponsePageResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/today?";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
+        if (employeeUserId === null)
+            throw new globalThis.Error("The parameter 'employeeUserId' cannot be null.");
+        else if (employeeUserId !== undefined)
+            url_ += "employeeUserId=" + encodeURIComponent("" + employeeUserId) + "&";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processToday(_response));
+        });
+    }
+
+    protected processToday(response: Response): Promise<AttendanceRecordResponsePageResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttendanceRecordResponsePageResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AttendanceRecordResponsePageResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param year (optional) 
+     * @param month (optional) 
+     * @param branchId (optional) 
+     * @return Success
+     */
+    month(employeeUserId: string, year?: number | undefined, month?: number | undefined, branchId?: string | undefined, signal?: AbortSignal): Promise<AttendanceMonthResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/employee/{employeeUserId}/month?";
+        if (employeeUserId === undefined || employeeUserId === null)
+            throw new globalThis.Error("The parameter 'employeeUserId' must be defined.");
+        url_ = url_.replace("{employeeUserId}", encodeURIComponent("" + employeeUserId));
+        if (year === null)
+            throw new globalThis.Error("The parameter 'year' cannot be null.");
+        else if (year !== undefined)
+            url_ += "year=" + encodeURIComponent("" + year) + "&";
+        if (month === null)
+            throw new globalThis.Error("The parameter 'month' cannot be null.");
+        else if (month !== undefined)
+            url_ += "month=" + encodeURIComponent("" + month) + "&";
+        if (branchId === null)
+            throw new globalThis.Error("The parameter 'branchId' cannot be null.");
+        else if (branchId !== undefined)
+            url_ += "branchId=" + encodeURIComponent("" + branchId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processMonth(_response));
+        });
+    }
+
+    protected processMonth(response: Response): Promise<AttendanceMonthResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttendanceMonthResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AttendanceMonthResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    statusPUT(body?: AttendanceUpsertStatusRequest | undefined, signal?: AbortSignal): Promise<AttendanceRecordResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/Attendance/status";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processStatusPUT(_response));
+        });
+    }
+
+    protected processStatusPUT(response: Response): Promise<AttendanceRecordResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AttendanceRecordResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AttendanceRecordResponseApiResponse>(null as any);
     }
 
     /**
@@ -2193,7 +2503,7 @@ export class Client {
     /**
      * @return Success
      */
-    checkIn(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
+    checkIn2(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobcards/{id}/check-in";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -2211,11 +2521,11 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processCheckIn(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processCheckIn2(_response));
         });
     }
 
-    protected processCheckIn(response: Response): Promise<JobCardResponseApiResponse> {
+    protected processCheckIn2(response: Response): Promise<JobCardResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2236,7 +2546,7 @@ export class Client {
     /**
      * @return Success
      */
-    checkOut(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
+    checkOut2(id: string, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobcards/{id}/check-out";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -2254,11 +2564,11 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processCheckOut(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processCheckOut2(_response));
         });
     }
 
-    protected processCheckOut(response: Response): Promise<JobCardResponseApiResponse> {
+    protected processCheckOut2(response: Response): Promise<JobCardResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -2280,7 +2590,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    status(id: string, body?: JobCardStatusChangeRequest | undefined, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
+    statusPOST(id: string, body?: JobCardStatusChangeRequest | undefined, signal?: AbortSignal): Promise<JobCardResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobcards/{id}/status";
         if (id === undefined || id === null)
             throw new globalThis.Error("The parameter 'id' must be defined.");
@@ -2302,11 +2612,11 @@ export class Client {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processStatus(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processStatusPOST(_response));
         });
     }
 
-    protected processStatus(response: Response): Promise<JobCardResponseApiResponse> {
+    protected processStatusPOST(response: Response): Promise<JobCardResponseApiResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -5083,6 +5393,7 @@ export class AttachmentResponse implements IAttachmentResponse {
     sizeBytes?: number;
     storageKey?: string | undefined;
     provider?: StorageProvider;
+    note?: string | undefined;
     uploadedAt?: Date;
     uploadedByUserId?: string;
     uploadedByEmail?: string | undefined;
@@ -5107,6 +5418,7 @@ export class AttachmentResponse implements IAttachmentResponse {
             this.sizeBytes = _data["sizeBytes"];
             this.storageKey = _data["storageKey"];
             this.provider = _data["provider"];
+            this.note = _data["note"];
             this.uploadedAt = _data["uploadedAt"] ? new Date(_data["uploadedAt"].toString()) : undefined as any;
             this.uploadedByUserId = _data["uploadedByUserId"];
             this.uploadedByEmail = _data["uploadedByEmail"];
@@ -5131,6 +5443,7 @@ export class AttachmentResponse implements IAttachmentResponse {
         data["sizeBytes"] = this.sizeBytes;
         data["storageKey"] = this.storageKey;
         data["provider"] = this.provider;
+        data["note"] = this.note;
         data["uploadedAt"] = this.uploadedAt ? this.uploadedAt.toISOString() : undefined as any;
         data["uploadedByUserId"] = this.uploadedByUserId;
         data["uploadedByEmail"] = this.uploadedByEmail;
@@ -5148,6 +5461,7 @@ export interface IAttachmentResponse {
     sizeBytes?: number;
     storageKey?: string | undefined;
     provider?: StorageProvider;
+    note?: string | undefined;
     uploadedAt?: Date;
     uploadedByUserId?: string;
     uploadedByEmail?: string | undefined;
@@ -5272,6 +5586,514 @@ export interface IAttachmentResponseIReadOnlyListApiResponse {
     message?: string | undefined;
     data?: AttachmentResponse[] | undefined;
     errors?: string[] | undefined;
+}
+
+export class AttendanceCheckInRequest implements IAttendanceCheckInRequest {
+    employeeUserId?: string | undefined;
+    workDate?: Date | undefined;
+    note?: string | undefined;
+
+    constructor(data?: IAttendanceCheckInRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeUserId = _data["employeeUserId"];
+            this.workDate = _data["workDate"] ? new Date(_data["workDate"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): AttendanceCheckInRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceCheckInRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeUserId"] = this.employeeUserId;
+        data["workDate"] = this.workDate ? formatDate(this.workDate) : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IAttendanceCheckInRequest {
+    employeeUserId?: string | undefined;
+    workDate?: Date | undefined;
+    note?: string | undefined;
+}
+
+export class AttendanceCheckOutRequest implements IAttendanceCheckOutRequest {
+    employeeUserId?: string | undefined;
+    workDate?: Date | undefined;
+    note?: string | undefined;
+
+    constructor(data?: IAttendanceCheckOutRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeUserId = _data["employeeUserId"];
+            this.workDate = _data["workDate"] ? new Date(_data["workDate"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): AttendanceCheckOutRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceCheckOutRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeUserId"] = this.employeeUserId;
+        data["workDate"] = this.workDate ? formatDate(this.workDate) : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IAttendanceCheckOutRequest {
+    employeeUserId?: string | undefined;
+    workDate?: Date | undefined;
+    note?: string | undefined;
+}
+
+export class AttendanceMonthResponse implements IAttendanceMonthResponse {
+    employeeUserId?: string;
+    year?: number;
+    month?: number;
+    days?: AttendanceRecordResponse[] | undefined;
+
+    constructor(data?: IAttendanceMonthResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeUserId = _data["employeeUserId"];
+            this.year = _data["year"];
+            this.month = _data["month"];
+            if (Array.isArray(_data["days"])) {
+                this.days = [] as any;
+                for (let item of _data["days"])
+                    this.days!.push(AttendanceRecordResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AttendanceMonthResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceMonthResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeUserId"] = this.employeeUserId;
+        data["year"] = this.year;
+        data["month"] = this.month;
+        if (Array.isArray(this.days)) {
+            data["days"] = [];
+            for (let item of this.days)
+                data["days"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IAttendanceMonthResponse {
+    employeeUserId?: string;
+    year?: number;
+    month?: number;
+    days?: AttendanceRecordResponse[] | undefined;
+}
+
+export class AttendanceMonthResponseApiResponse implements IAttendanceMonthResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceMonthResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IAttendanceMonthResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? AttendanceMonthResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AttendanceMonthResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceMonthResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAttendanceMonthResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceMonthResponse;
+    errors?: string[] | undefined;
+}
+
+export class AttendanceRecordResponse implements IAttendanceRecordResponse {
+    id?: string;
+    branchId?: string | undefined;
+    employeeUserId?: string;
+    employeeEmail?: string | undefined;
+    workDate?: Date;
+    checkInAt?: Date | undefined;
+    checkOutAt?: Date | undefined;
+    status?: AttendanceStatus;
+    source?: AttendanceSource;
+    note?: string | undefined;
+
+    constructor(data?: IAttendanceRecordResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.branchId = _data["branchId"];
+            this.employeeUserId = _data["employeeUserId"];
+            this.employeeEmail = _data["employeeEmail"];
+            this.workDate = _data["workDate"] ? new Date(_data["workDate"].toString()) : undefined as any;
+            this.checkInAt = _data["checkInAt"] ? new Date(_data["checkInAt"].toString()) : undefined as any;
+            this.checkOutAt = _data["checkOutAt"] ? new Date(_data["checkOutAt"].toString()) : undefined as any;
+            this.status = _data["status"];
+            this.source = _data["source"];
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): AttendanceRecordResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceRecordResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["branchId"] = this.branchId;
+        data["employeeUserId"] = this.employeeUserId;
+        data["employeeEmail"] = this.employeeEmail;
+        data["workDate"] = this.workDate ? formatDate(this.workDate) : undefined as any;
+        data["checkInAt"] = this.checkInAt ? this.checkInAt.toISOString() : undefined as any;
+        data["checkOutAt"] = this.checkOutAt ? this.checkOutAt.toISOString() : undefined as any;
+        data["status"] = this.status;
+        data["source"] = this.source;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IAttendanceRecordResponse {
+    id?: string;
+    branchId?: string | undefined;
+    employeeUserId?: string;
+    employeeEmail?: string | undefined;
+    workDate?: Date;
+    checkInAt?: Date | undefined;
+    checkOutAt?: Date | undefined;
+    status?: AttendanceStatus;
+    source?: AttendanceSource;
+    note?: string | undefined;
+}
+
+export class AttendanceRecordResponseApiResponse implements IAttendanceRecordResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceRecordResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IAttendanceRecordResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? AttendanceRecordResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AttendanceRecordResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceRecordResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAttendanceRecordResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceRecordResponse;
+    errors?: string[] | undefined;
+}
+
+export class AttendanceRecordResponsePageResponse implements IAttendanceRecordResponsePageResponse {
+    items?: AttendanceRecordResponse[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+
+    constructor(data?: IAttendanceRecordResponsePageResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(AttendanceRecordResponse.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+            this.pageNumber = _data["pageNumber"];
+            this.pageSize = _data["pageSize"];
+        }
+    }
+
+    static fromJS(data: any): AttendanceRecordResponsePageResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceRecordResponsePageResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["totalCount"] = this.totalCount;
+        data["pageNumber"] = this.pageNumber;
+        data["pageSize"] = this.pageSize;
+        return data;
+    }
+}
+
+export interface IAttendanceRecordResponsePageResponse {
+    items?: AttendanceRecordResponse[] | undefined;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+}
+
+export class AttendanceRecordResponsePageResponseApiResponse implements IAttendanceRecordResponsePageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceRecordResponsePageResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IAttendanceRecordResponsePageResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? AttendanceRecordResponsePageResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AttendanceRecordResponsePageResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceRecordResponsePageResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAttendanceRecordResponsePageResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: AttendanceRecordResponsePageResponse;
+    errors?: string[] | undefined;
+}
+
+export enum AttendanceSource {
+    _1 = 1,
+    _2 = 2,
+}
+
+export enum AttendanceStatus {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+}
+
+export class AttendanceUpsertStatusRequest implements IAttendanceUpsertStatusRequest {
+    employeeUserId?: string;
+    workDate?: Date;
+    status?: AttendanceStatus;
+    checkInAt?: Date | undefined;
+    checkOutAt?: Date | undefined;
+    note?: string | undefined;
+
+    constructor(data?: IAttendanceUpsertStatusRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.employeeUserId = _data["employeeUserId"];
+            this.workDate = _data["workDate"] ? new Date(_data["workDate"].toString()) : undefined as any;
+            this.status = _data["status"];
+            this.checkInAt = _data["checkInAt"] ? new Date(_data["checkInAt"].toString()) : undefined as any;
+            this.checkOutAt = _data["checkOutAt"] ? new Date(_data["checkOutAt"].toString()) : undefined as any;
+            this.note = _data["note"];
+        }
+    }
+
+    static fromJS(data: any): AttendanceUpsertStatusRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AttendanceUpsertStatusRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employeeUserId"] = this.employeeUserId;
+        data["workDate"] = this.workDate ? formatDate(this.workDate) : undefined as any;
+        data["status"] = this.status;
+        data["checkInAt"] = this.checkInAt ? this.checkInAt.toISOString() : undefined as any;
+        data["checkOutAt"] = this.checkOutAt ? this.checkOutAt.toISOString() : undefined as any;
+        data["note"] = this.note;
+        return data;
+    }
+}
+
+export interface IAttendanceUpsertStatusRequest {
+    employeeUserId?: string;
+    workDate?: Date;
+    status?: AttendanceStatus;
+    checkInAt?: Date | undefined;
+    checkOutAt?: Date | undefined;
+    note?: string | undefined;
 }
 
 export class AuditLogResponse implements IAuditLogResponse {
@@ -9918,146 +10740,6 @@ export enum PaymentStatus {
     _3 = 3,
 }
 
-export class PresignRequest implements IPresignRequest {
-    fileName?: string | undefined;
-    contentType?: string | undefined;
-
-    constructor(data?: IPresignRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.fileName = _data["fileName"];
-            this.contentType = _data["contentType"];
-        }
-    }
-
-    static fromJS(data: any): PresignRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PresignRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["fileName"] = this.fileName;
-        data["contentType"] = this.contentType;
-        return data;
-    }
-}
-
-export interface IPresignRequest {
-    fileName?: string | undefined;
-    contentType?: string | undefined;
-}
-
-export class PresignResponse implements IPresignResponse {
-    uploadUrl?: string | undefined;
-    storageKey?: string | undefined;
-    provider?: StorageProvider;
-
-    constructor(data?: IPresignResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.uploadUrl = _data["uploadUrl"];
-            this.storageKey = _data["storageKey"];
-            this.provider = _data["provider"];
-        }
-    }
-
-    static fromJS(data: any): PresignResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new PresignResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["uploadUrl"] = this.uploadUrl;
-        data["storageKey"] = this.storageKey;
-        data["provider"] = this.provider;
-        return data;
-    }
-}
-
-export interface IPresignResponse {
-    uploadUrl?: string | undefined;
-    storageKey?: string | undefined;
-    provider?: StorageProvider;
-}
-
-export class PresignResponseApiResponse implements IPresignResponseApiResponse {
-    success?: boolean;
-    message?: string | undefined;
-    data?: PresignResponse;
-    errors?: string[] | undefined;
-
-    constructor(data?: IPresignResponseApiResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.success = _data["success"];
-            this.message = _data["message"];
-            this.data = _data["data"] ? PresignResponse.fromJS(_data["data"]) : undefined as any;
-            if (Array.isArray(_data["errors"])) {
-                this.errors = [] as any;
-                for (let item of _data["errors"])
-                    this.errors!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): PresignResponseApiResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new PresignResponseApiResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        data["message"] = this.message;
-        data["data"] = this.data ? this.data.toJSON() : undefined as any;
-        if (Array.isArray(this.errors)) {
-            data["errors"] = [];
-            for (let item of this.errors)
-                data["errors"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IPresignResponseApiResponse {
-    success?: boolean;
-    message?: string | undefined;
-    data?: PresignResponse;
-    errors?: string[] | undefined;
-}
-
 export class PurchaseOrderCreateRequest implements IPurchaseOrderCreateRequest {
     supplierId?: string;
     notes?: string | undefined;
@@ -13585,6 +14267,17 @@ export interface IWorkStationResponsePageResponseApiResponse {
     message?: string | undefined;
     data?: WorkStationResponsePageResponse;
     errors?: string[] | undefined;
+}
+
+function formatDate(d: Date) {
+    return d.getFullYear() + '-' + 
+        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
+        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {
