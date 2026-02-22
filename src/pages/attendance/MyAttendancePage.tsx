@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { attendanceRepo } from '@/api/repositories/attendanceRepo';
 import { useAuthStore } from '@/state/authStore';
@@ -20,17 +20,38 @@ export default function MyAttendancePage() {
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
 
-  const { data: monthData, isLoading: monthLoading } = useQuery({
-    queryKey: ['attendance', 'me', year, month],
-    queryFn: () => attendanceRepo.employeeMonth(user?.id || '', year, month),
-    enabled: !!user?.id,
-  });
+  const [transfers, setTransfers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadAttendance = async () => {
+    if (!user?.id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await attendanceRepo.employeeMonth(user.id, year, month);
+      if (res) {
+        setTransfers((res as any).records || []);
+      } else {
+        setError('Failed to load attendance records');
+      }
+    } catch (err: any) {
+      setError(err.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAttendance();
+  }, [user?.id, year, month]);
 
   const checkInMutation = useMutation({
     mutationFn: (req: AttendanceCheckInRequest) => attendanceRepo.checkIn(req),
     onSuccess: () => {
       toast.success('Checked in successfully');
       setNote('');
+      loadAttendance();
       queryClient.invalidateQueries({ queryKey: ['attendance'] });
     },
     onError: (err: any) => toast.error(err.message || 'Check-in failed'),
@@ -41,6 +62,7 @@ export default function MyAttendancePage() {
     onSuccess: () => {
       toast.success('Checked out successfully');
       setNote('');
+      loadAttendance();
       queryClient.invalidateQueries({ queryKey: ['attendance'] });
     },
     onError: (err: any) => toast.error(err.message || 'Check-out failed'),
@@ -62,13 +84,19 @@ export default function MyAttendancePage() {
     checkOutMutation.mutate(new AttendanceCheckOutRequest({ note }));
   };
 
-  const records = monthData?.records || [];
+  const records = transfers;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>My Attendance</h1>
       </div>
+
+      {error && (
+        <div style={{ padding: '12px', borderRadius: '6px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+          {error}
+        </div>
+      )}
 
       <Card>
         <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)' }}>
@@ -150,7 +178,7 @@ export default function MyAttendancePage() {
               </tr>
             </thead>
             <tbody>
-              {monthLoading ? (
+              {loading ? (
                 <tr>
                   <td colSpan={5} style={{ padding: '48px', textAlign: 'center' }}>
                     <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto', color: 'var(--c-primary)' }} />
