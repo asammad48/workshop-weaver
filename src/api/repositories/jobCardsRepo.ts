@@ -1,20 +1,32 @@
-import { 
-  Client, 
-  JobCardResponsePageResponseApiResponse, 
-  JobCardResponseApiResponse, 
+import {
+  Client,
+  JobCardResponsePageResponseApiResponse,
+  JobCardResponseApiResponse,
   JobCardCreateRequest,
   JobCardStatusChangeRequest,
-  JobCardDiagnosisUpdateRequest 
-} from '@/api/generated/apiClient';
-import { createClient } from './_repoBase';
-import { normalizeError } from './_errors';
+  JobCardDiagnosisUpdateRequest,
+} from "@/api/generated/apiClient";
+import { createClient } from "./_repoBase";
+import { normalizeError } from "./_errors";
 
 const client = createClient(Client);
 
 export const jobCardsRepo = {
-  async list(pageNumber?: number, pageSize?: number, search?: string, sortBy?: string, sortDirection?: string): Promise<JobCardResponsePageResponseApiResponse> {
+  async list(
+    pageNumber?: number,
+    pageSize?: number,
+    search?: string,
+    sortBy?: string,
+    sortDirection?: string,
+  ): Promise<JobCardResponsePageResponseApiResponse> {
     try {
-      return await client.jobcardsGET(pageNumber, pageSize, search, sortBy, sortDirection);
+      return await client.jobcardsGET2(
+        pageNumber,
+        pageSize,
+        search,
+        sortBy,
+        sortDirection,
+      );
     } catch (error) {
       throw normalizeError(error);
     }
@@ -22,13 +34,15 @@ export const jobCardsRepo = {
 
   async get(id: string): Promise<JobCardResponseApiResponse> {
     try {
-      return await client.jobcardsGET2(id);
+      return await client.jobcardsGET3(id);
     } catch (error) {
       throw normalizeError(error);
     }
   },
 
-  async create(body: JobCardCreateRequest): Promise<JobCardResponseApiResponse> {
+  async create(
+    body: JobCardCreateRequest,
+  ): Promise<JobCardResponseApiResponse> {
     try {
       return await client.jobcardsPOST(body);
     } catch (error) {
@@ -52,7 +66,10 @@ export const jobCardsRepo = {
     }
   },
 
-  async status(id: string, body?: JobCardStatusChangeRequest): Promise<JobCardResponseApiResponse> {
+  async status(
+    id: string,
+    body?: JobCardStatusChangeRequest,
+  ): Promise<JobCardResponseApiResponse> {
     try {
       return await client.status(id, body);
     } catch (error) {
@@ -60,7 +77,10 @@ export const jobCardsRepo = {
     }
   },
 
-  async diagnosis(id: string, body?: JobCardDiagnosisUpdateRequest): Promise<JobCardResponseApiResponse> {
+  async diagnosis(
+    id: string,
+    body?: JobCardDiagnosisUpdateRequest,
+  ): Promise<JobCardResponseApiResponse> {
     try {
       return await client.diagnosis(id, body);
     } catch (error) {
@@ -74,5 +94,5 @@ export const jobCardsRepo = {
     } catch (error) {
       throw normalizeError(error);
     }
-  }
+  },
 };
