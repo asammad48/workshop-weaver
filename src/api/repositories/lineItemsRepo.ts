@@ -19,7 +19,7 @@ export const lineItemsRepo = {
     }
   },
 
-  async create(jobCardId: string, body: JobLineItemCreateRequest): Promise<JobLineItemResponseApiResponse> {
+  async create(jobCardId: string, body: any): Promise<JobLineItemResponseApiResponse> {
     try {
       return await client.lineItemsPOST(jobCardId, body);
     } catch (error) {

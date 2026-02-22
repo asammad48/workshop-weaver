@@ -62,12 +62,7 @@ export const partRequestsRepo = {
 
   async use(jobCardId: string, body: JobCardPartUseRequest): Promise<JobCardPartUsageResponseApiResponse> {
     try {
-      // Find the 'use' method - often named jobCardPartUsagePOST or similar in generated client
-      if ((client as any).jobCardPartUsagePOST) {
-        return await (client as any).jobCardPartUsagePOST(jobCardId, body);
-      }
-      // Fallback/Guess based on usual NSwag naming if I can't find it exactly without more grepping
-      throw new Error("API method for 'use part' not found in client");
+      return await client.use(jobCardId, body);
     } catch (error) {
       throw normalizeError(error);
     }

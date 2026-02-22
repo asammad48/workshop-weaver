@@ -25,7 +25,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
     queryFn: () => commsRepo.listByJobCard(jobCardId), // Note: repo might need pagination/search update, but keeping it simple for style
   });
 
-  const comms = Array.isArray(commsData) ? commsData : [];
+  const comms = commsData?.data || [];
   const totalItems = comms.length;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
@@ -52,8 +52,8 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
   };
 
   const openCreateModal = () => {
-    let channel = "WhatsApp";
-    let messageType = "Estimate";
+    let channel = "1";
+    let messageType = "2";
     let sentAt = new Date().toISOString().slice(0, 16);
     let notes = "";
 
@@ -67,8 +67,8 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
               <Button onClick={() => {
                 createMutation.mutate({
                   jobCardId,
-                  channel,
-                  messageType,
+                  channel: parseInt(channel as string),
+                  messageType: parseInt(messageType as string),
                   sentAt: new Date(sentAt).toISOString(),
                   notes,
                 });
@@ -83,10 +83,11 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             <Select 
               label="Channel"
               options={[
-                { value: "WhatsApp", label: "WhatsApp" },
-                { value: "Email", label: "Email" },
-                { value: "SMS", label: "SMS" },
-                { value: "Phone", label: "Phone" },
+                { value: "1", label: "WhatsApp" },
+                { value: "2", label: "SMS" },
+                { value: "3", label: "Call" },
+                { value: "4", label: "Email" },
+                { value: "5", label: "InPerson" },
               ]}
               defaultValue={channel}
               onChange={(e) => {
@@ -97,10 +98,12 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
             <Select 
               label="Message Type"
               options={[
-                { value: "Estimate", label: "Estimate" },
-                { value: "Update", label: "Update" },
-                { value: "Reminder", label: "Reminder" },
-                { value: "Feedback", label: "Feedback" },
+                { value: "1", label: "Diagnosis" },
+                { value: "2", label: "Estimate" },
+                { value: "3", label: "Update" },
+                { value: "4", label: "ReadyForPickup" },
+                { value: "5", label: "PaymentReminder" },
+                { value: "6", label: "Other" },
               ]}
               defaultValue={messageType}
               onChange={(e) => {
@@ -193,12 +196,21 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                     <td style={{ padding: "16px" }}>
                       <span className="flex items-center gap-2">
                         <MessageSquare size={14} className="text-gray-400" />
-                        {log.channel}
+                        {log.channel === 1 ? "WhatsApp" :
+                         log.channel === 2 ? "SMS" :
+                         log.channel === 3 ? "Call" :
+                         log.channel === 4 ? "Email" :
+                         log.channel === 5 ? "In Person" : log.channel}
                       </span>
                     </td>
                     <td style={{ padding: "16px" }}>
                       <span style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "12px", background: "var(--c-bg-alt)", border: "1px solid var(--c-border)" }}>
-                        {log.messageType}
+                        {log.messageType === 1 ? "Diagnosis" :
+                         log.messageType === 2 ? "Estimate" :
+                         log.messageType === 3 ? "Update" :
+                         log.messageType === 4 ? "Ready For Pickup" :
+                         log.messageType === 5 ? "Payment Reminder" :
+                         log.messageType === 6 ? "Other" : log.messageType}
                       </span>
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>

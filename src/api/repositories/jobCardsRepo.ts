@@ -66,5 +66,13 @@ export const jobCardsRepo = {
     } catch (error) {
       throw normalizeError(error);
     }
+  },
+
+  async getPartRequests(jobCardId: string): Promise<any> {
+    try {
+      return await client.partRequestsGET(jobCardId);
+    } catch (error) {
+      throw normalizeError(error);
+    }
   }
 };

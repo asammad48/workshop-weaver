@@ -324,16 +324,6 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Station
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
                   Status
                 </th>
                 <th
@@ -442,9 +432,6 @@ const JobCardsPage = () => {
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.branchName || "-"}
-                    </td>
-                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {item.currentStationName || item.currentStationCode || "-"}
                     </td>
                     <td style={{ padding: "16px" }}>
                       <span

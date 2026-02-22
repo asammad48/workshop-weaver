@@ -1,10 +1,10 @@
-import { 
-  LayoutDashboard, 
-  Wrench, 
-  Users, 
-  Car, 
-  Package, 
-  ShoppingCart, 
+import {
+  LayoutDashboard,
+  Wrench,
+  Users,
+  Car,
+  Package,
+  ShoppingCart,
   ArrowLeftRight,
   DollarSign,
   BarChart3,
@@ -14,8 +14,8 @@ import {
   FileText,
   User,
   Palette,
-  LucideIcon
-} from 'lucide-react';
+  LucideIcon,
+} from "lucide-react";
 
 export interface NavItem {
   path: string;
@@ -29,107 +29,143 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-type UserRole = 'HQ_ADMIN' | 'BRANCH_MANAGER' | 'STOREKEEPER' | 'CASHIER' | 'TECHNICIAN' | 'RECEPTIONIST';
+type UserRole =
+  | "HQ_ADMIN"
+  | "BRANCH_MANAGER"
+  | "STOREKEEPER"
+  | "CASHIER"
+  | "TECHNICIAN"
+  | "RECEPTIONIST";
 
 // Full navigation structure
 const allNavGroups: NavGroup[] = [
   {
-    label: 'Main',
+    label: "Main",
+    items: [{ path: "/", label: "Dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Operations",
     items: [
-      { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+      { path: "/jobcards", label: "Job Cards", icon: Wrench },
+      { path: "/customers", label: "Customers", icon: Users },
+      { path: "/vehicles", label: "Vehicles", icon: Car },
     ],
   },
   {
-    label: 'Operations',
+    label: "Inventory",
+    items: [{ path: "/inventory", label: "Inventory", icon: Package }],
+  },
+  {
+    label: "Purchasing",
     items: [
-      { path: '/jobcards', label: 'Job Cards', icon: Wrench },
-      { path: '/customers', label: 'Customers', icon: Users },
-      { path: '/vehicles', label: 'Vehicles', icon: Car },
+      {
+        path: "/inventory/purchase-orders",
+        label: "Purchase Orders",
+        icon: ShoppingCart,
+      },
     ],
   },
   {
-    label: 'Inventory',
+    label: "Transfers",
     items: [
-      { path: '/inventory', label: 'Inventory', icon: Package },
+      {
+        path: "/inventory/transfers",
+        label: "Transfers",
+        icon: ArrowLeftRight,
+      },
     ],
   },
   {
-    label: 'Purchasing',
+    label: "Finance",
+    items: [{ path: "/finance", label: "Finance", icon: DollarSign }],
+  },
+  {
+    label: "Reports",
+    items: [{ path: "/reports", label: "Reports", icon: BarChart3 }],
+  },
+  {
+    label: "Admin",
     items: [
-      { path: '/inventory/purchase-orders', label: 'Purchase Orders', icon: ShoppingCart },
+      { path: "/admin/users", label: "Users", icon: UserCog },
+      { path: "/admin/branches", label: "Branches", icon: Building2 },
+      { path: "/admin/workstations", label: "Workstations", icon: Monitor },
+      { path: "/admin/audit", label: "Audit", icon: FileText },
     ],
   },
   {
-    label: 'Transfers',
+    label: "Profile",
     items: [
-      { path: '/inventory/transfers', label: 'Transfers', icon: ArrowLeftRight },
-    ],
-  },
-  {
-    label: 'Finance',
-    items: [
-      { path: '/finance', label: 'Finance', icon: DollarSign },
-    ],
-  },
-  {
-    label: 'Reports',
-    items: [
-      { path: '/reports', label: 'Reports', icon: BarChart3 },
-    ],
-  },
-  {
-    label: 'Admin',
-    items: [
-      { path: '/admin/users', label: 'Users', icon: UserCog },
-      { path: '/admin/branches', label: 'Branches', icon: Building2 },
-      { path: '/admin/workstations', label: 'Workstations', icon: Monitor },
-      { path: '/admin/audit', label: 'Audit', icon: FileText },
-    ],
-  },
-  {
-    label: 'Profile',
-    items: [
-      { path: '/me', label: 'Profile', icon: User },
-      { path: '/theme', label: 'Theme', icon: Palette },
+      { path: "/me", label: "Profile", icon: User },
+      { path: "/theme", label: "Theme", icon: Palette },
     ],
   },
 ];
 
 // Role-based access configuration
-const roleAccess: Record<UserRole, { groups: string[]; readOnlyGroups?: string[] }> = {
+const roleAccess: Record<
+  UserRole,
+  { groups: string[]; readOnlyGroups?: string[] }
+> = {
   HQ_ADMIN: {
-    groups: ['Main', 'Operations', 'Inventory', 'Purchasing', 'Transfers', 'Finance', 'Reports', 'Admin', 'Profile'],
+    groups: [
+      "Main",
+      "Operations",
+      "Inventory",
+      "Purchasing",
+      "Transfers",
+      "Finance",
+      "Reports",
+      "Admin",
+      "Profile",
+    ],
   },
   BRANCH_MANAGER: {
-      groups: ['Main', 'Operations', 'Inventory', 'Purchasing', 'Transfers', 'Finance', 'Reports', 'Profile'],
+    groups: [
+      "Main",
+      "Operations",
+      "Inventory",
+      "Purchasing",
+      "Transfers",
+      "Finance",
+      "Reports",
+      "Profile",
+    ],
   },
   STOREKEEPER: {
-    groups: ['Main', 'Inventory', 'Purchasing', 'Transfers', 'Reports', 'Profile'],
-    readOnlyGroups: ['Reports'],
+    groups: [
+      "Main",
+      "Operations",
+      "Inventory",
+      "Purchasing",
+      "Transfers",
+      "Reports",
+      "Profile",
+    ],
+    readOnlyGroups: ["Reports"],
   },
   CASHIER: {
-    groups: ['Main', 'Finance', 'Profile'],
-    readOnlyGroups: ['Reports'],
+    groups: ["Main", "Finance", "Profile"],
+    readOnlyGroups: ["Reports"],
   },
   TECHNICIAN: {
-    groups: ['Main', 'Profile'],
+    groups: ["Main", "Profile"],
   },
   RECEPTIONIST: {
-    groups: ['Main', 'Operations', 'Profile'],
+    groups: ["Main", "Operations", "Profile"],
   },
 };
 
 // Special item access for roles that need partial group access
 const roleSpecialItems: Partial<Record<UserRole, string[]>> = {
-  CASHIER: ['/jobcards', '/reports'],
-  TECHNICIAN: ['/jobcards'],
+  CASHIER: ["/jobcards", "/reports"],
+  TECHNICIAN: ["/jobcards"],
 };
 
 /**
  * Get navigation items filtered by user role
  */
 export function getNav(userRole: string | undefined): NavGroup[] {
-  const role = (userRole?.toUpperCase() as UserRole) || 'TECHNICIAN';
+  const role = (userRole?.toUpperCase() as UserRole) || "TECHNICIAN";
   const access = roleAccess[role] || roleAccess.TECHNICIAN;
   const specialItems = roleSpecialItems[role] || [];
 
@@ -153,7 +189,7 @@ export function getNav(userRole: string | undefined): NavGroup[] {
 
     // Check for special item access (partial group access)
     const accessibleItems = group.items.filter((item) =>
-      specialItems.includes(item.path)
+      specialItems.includes(item.path),
     );
 
     if (accessibleItems.length > 0) {
