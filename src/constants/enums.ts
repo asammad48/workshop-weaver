@@ -70,6 +70,27 @@ export const USER_ROLE_OPTIONS = Object.entries(USER_ROLE_LABELS).map(
   }),
 );
 
+export enum AttendanceStatus {
+  PRESENT = 1,
+  ABSENT = 2,
+  LATE = 3,
+  LEAVE = 4,
+}
+
+export const ATTENDANCE_STATUS_LABELS: Record<number, string> = {
+  [AttendanceStatus.PRESENT]: "Present",
+  [AttendanceStatus.ABSENT]: "Absent",
+  [AttendanceStatus.LATE]: "Late",
+  [AttendanceStatus.LEAVE]: "Leave",
+};
+
+export const ATTENDANCE_STATUS_OPTIONS = Object.entries(ATTENDANCE_STATUS_LABELS).map(
+  ([value, label]) => ({
+    value: Number(value),
+    label,
+  }),
+);
+
 export function requireBranchForRole(role: number): boolean {
   return role !== UserRole.HQ_ADMIN;
 }

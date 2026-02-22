@@ -14,6 +14,8 @@ import {
   FileText,
   User,
   Palette,
+  Clock,
+  CalendarCheck,
   LucideIcon,
 } from "lucide-react";
 
@@ -84,6 +86,13 @@ const allNavGroups: NavGroup[] = [
     items: [{ path: "/reports", label: "Reports", icon: BarChart3 }],
   },
   {
+    label: "Attendance",
+    items: [
+      { path: "/attendance/me", label: "My Attendance", icon: Clock },
+      { path: "/attendance", label: "Attendance", icon: CalendarCheck },
+    ],
+  },
+  {
     label: "Admin",
     items: [
       { path: "/admin/users", label: "Users", icon: UserCog },
@@ -114,6 +123,7 @@ const roleAccess: Record<
       "Purchasing",
       "Transfers",
       "Finance",
+      "Attendance",
       "Reports",
       "Admin",
       "Profile",
@@ -127,6 +137,7 @@ const roleAccess: Record<
       "Purchasing",
       "Transfers",
       "Finance",
+      "Attendance",
       "Reports",
       "Profile",
     ],
@@ -157,8 +168,10 @@ const roleAccess: Record<
 
 // Special item access for roles that need partial group access
 const roleSpecialItems: Partial<Record<UserRole, string[]>> = {
-  CASHIER: ["/jobcards", "/reports"],
-  TECHNICIAN: ["/jobcards"],
+  CASHIER: ["/jobcards", "/reports", "/attendance/me"],
+  TECHNICIAN: ["/jobcards", "/attendance/me"],
+  STOREKEEPER: ["/attendance/me"],
+  RECEPTIONIST: ["/attendance/me"],
 };
 
 /**

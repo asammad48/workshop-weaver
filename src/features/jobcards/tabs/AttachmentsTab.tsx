@@ -4,7 +4,7 @@ import { attachmentsRepo } from "@/api/repositories/attachmentsRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { useUIStore, toast } from "@/state/uiStore";
+import { toast } from "@/state/uiStore";
 import { Loader2, Plus, FileIcon, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface AttachmentsTabProps {
@@ -13,67 +13,46 @@ interface AttachmentsTabProps {
 
 export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => {
   const queryClient = useQueryClient();
-  const pushToast = useUIStore((s) => s.pushToast);
   const [isUploading, setIsUploading] = useState(false);
+  const [note, setNote] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const pageSize = 10;
 
   const { data: attachmentsData, isLoading, isError } = useQuery({
-    queryKey: ["attachments", jobCardId, page, search],
-    queryFn: () => attachmentsRepo.list("JobCard", jobCardId),
+    queryKey: ["attachments", jobCardId],
+    queryFn: () => attachmentsRepo.list("JOB_CARD", jobCardId),
   });
 
-  const attachments = Array.isArray(attachmentsData) ? attachmentsData : [];
+  const attachmentsRaw = attachmentsData?.data || [];
+  const attachments = Array.isArray(attachmentsRaw) ? attachmentsRaw : [];
   const totalItems = attachments.length;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
   const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const presignData = await attachmentsRepo.presign({
-        ownerType: "JobCard",
-        ownerId: jobCardId,
-        fileName: file.name,
-        contentType: file.type,
-        sizeBytes: file.size,
-      });
+    mutationFn: async () => {
+      if (!selectedFile) return;
+      const formData = new FormData();
+      formData.append("ownerType", "JOB_CARD");
+      formData.append("ownerId", jobCardId);
+      formData.append("note", note);
+      formData.append("file", selectedFile);
 
-      if (!presignData.success || !presignData.data) {
-        throw new Error(presignData.message || "Presign failed");
+      const res = await attachmentsRepo.upload(formData);
+      if (!res.success) {
+        throw new Error(res.message || "Upload failed");
       }
-
-      const { uploadUrl, method, headers, fileKey } = presignData.data;
-
-      const uploadResponse = await fetch(uploadUrl, {
-        method: method || "PUT",
-        body: file,
-        headers: headers || {},
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error("File upload failed");
-      }
-
-      const metaResponse = await attachmentsRepo.saveMetadata({
-        ownerType: "JobCard",
-        ownerId: jobCardId,
-        fileName: file.name,
-        contentType: file.type,
-        sizeBytes: file.size,
-        fileKey: fileKey,
-      });
-
-      if (!metaResponse.success) {
-        throw new Error(metaResponse.message || "Failed to save metadata");
-      }
-
-      return metaResponse.data;
+      return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["attachments", jobCardId] });
       toast.success("File uploaded successfully");
       setIsUploading(false);
+      setNote("");
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     },
     onError: (error: any) => {
       toast.error(error.message || "Upload failed");
@@ -81,32 +60,44 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
     },
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setIsUploading(true);
-      uploadMutation.mutate(file);
+  const handleUpload = () => {
+    if (!selectedFile) {
+      toast.error("Please select a file first");
+      return;
     }
+    setIsUploading(true);
+    uploadMutation.mutate();
   };
 
   if (isError) return <div className="p-8 text-center text-red-500">Error loading attachments</div>;
 
   return (
     <div className="space-y-4">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '16px' }}>
-        <div>
-          <input
-            type="file"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
-          <Button onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
-            {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-            Upload File
-          </Button>
+      <Card>
+        <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, color: "var(--c-text)" }}>Upload Attachment</h3>
+          <div style={{ display: "flex", gap: "16px", alignItems: "flex-end" }}>
+            <div style={{ flex: 1 }}>
+              <Input
+                type="file"
+                ref={fileInputRef}
+                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              />
+            </div>
+            <div style={{ flex: 2 }}>
+              <Input
+                placeholder="Note (optional)"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
+            </div>
+            <Button onClick={handleUpload} disabled={isUploading || !selectedFile}>
+              {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+              Upload
+            </Button>
+          </div>
         </div>
-      </div>
+      </Card>
 
       <Card>
         <div style={{ padding: "16px", display: "flex", gap: "12px" }}>
@@ -130,8 +121,8 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>FileName</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ContentType</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Size</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Note</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Uploaded By</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Owner</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>CreatedAt</th>
               </tr>
             </thead>
@@ -163,12 +154,14 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
                       </span>
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
-                      {(file.sizeBytes / 1024).toFixed(2)} KB
+                      {file.sizeBytes ? (file.sizeBytes / 1024).toFixed(2) : "0.00"} KB
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)", fontSize: "14px" }}>
+                      {file.note || "-"}
                     </td>
                     <td style={{ padding: "16px" }}>{file.uploadedByEmail ?? "-"}</td>
-                    <td style={{ padding: "16px" }}>{file.ownerDisplay ?? "-"}</td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
-                      {new Date(file.createdAt).toLocaleString()}
+                      {file.uploadedAt ? new Date(file.uploadedAt).toLocaleString() : "-"}
                     </td>
                   </tr>
                 ))
