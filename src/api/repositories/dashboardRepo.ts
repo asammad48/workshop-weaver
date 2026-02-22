@@ -11,10 +11,22 @@ import { normalizeError } from './_errors';
 
 const client = createClient(Client);
 
+const toDateOnly = (date?: Date): any => {
+  if (!date) return undefined;
+  return {
+    toISOString: () => date.toISOString().split('T')[0]
+  };
+};
+
 export const dashboardRepo = {
   async overview(params: { branchId?: string, from?: Date, to?: Date, tz?: string }): Promise<DashboardOverviewResponse> {
     try {
-      const res = await client.overview(params.branchId, params.from, params.to, params.tz);
+      const res = await client.overview(
+        params.branchId,
+        toDateOnly(params.from),
+        toDateOnly(params.to),
+        params.tz
+      );
       if (res.success && res.data) {
         return res.data;
       }
@@ -98,8 +110,8 @@ export const dashboardRepo = {
     try {
       const res = await client.kpi(
         params.branchId,
-        params.from,
-        params.to,
+        toDateOnly(params.from),
+        toDateOnly(params.to),
         params.employeeUserId,
         params.pageNumber,
         params.pageSize
