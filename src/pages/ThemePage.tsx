@@ -34,168 +34,166 @@ export default function ThemePage() {
 
     if (confirmed) {
       resetTheme();
-      setLocalPrimary('#0d6efd');
-      setLocalSecondary('#6c757d');
-      setLocalAccent('#0dcaf0');
+      setLocalPrimary('#F4C20D');
+      setLocalSecondary('#C68642');
+      setLocalAccent('#2F2F2F');
       toast.info('Theme reset to defaults');
     }
   };
 
   return (
-    <AppLayout>
-      <div className="stack" style={{ maxWidth: 600 }}>
-        <Card>
-          <CardHeader>
-            <h2 style={{ margin: 0 }}>Theme Settings</h2>
-            <p className="muted" style={{ margin: '4px 0 0 0' }}>
-              Customize the application colors
-            </p>
-          </CardHeader>
-          <CardBody>
-            <div className="stack">
-              {/* Primary Color */}
-              <div className="row" style={{ alignItems: 'flex-end' }}>
-                <div style={{ flex: 1 }}>
-                  <Input
-                    label="Primary Color"
-                    type="text"
-                    value={localPrimary}
-                    onChange={(e) => setLocalPrimary(e.target.value)}
-                    placeholder="#0d6efd"
-                  />
-                </div>
-                <input
-                  type="color"
+    <div className="stack" style={{ maxWidth: 600 }}>
+      <Card>
+        <CardHeader>
+          <h2 style={{ margin: 0 }}>Theme Settings</h2>
+          <p className="muted" style={{ margin: '4px 0 0 0' }}>
+            Customize the application colors
+          </p>
+        </CardHeader>
+        <CardBody>
+          <div className="stack">
+            {/* Primary Color */}
+            <div className="row" style={{ alignItems: 'flex-end' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="Primary Color"
+                  type="text"
                   value={localPrimary}
                   onChange={(e) => setLocalPrimary(e.target.value)}
-                  style={{
-                    width: 48,
-                    height: 38,
-                    padding: 0,
-                    border: '1px solid var(--c-border)',
-                    borderRadius: 6,
-                    cursor: 'pointer',
-                  }}
+                  placeholder="#F4C20D"
                 />
               </div>
+              <input
+                type="color"
+                value={localPrimary}
+                onChange={(e) => setLocalPrimary(e.target.value)}
+                style={{
+                  width: 48,
+                  height: 38,
+                  padding: 0,
+                  border: '1px solid var(--c-border)',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
 
-              {/* Secondary Color */}
-              <div className="row" style={{ alignItems: 'flex-end' }}>
-                <div style={{ flex: 1 }}>
-                  <Input
-                    label="Secondary Color"
-                    type="text"
-                    value={localSecondary}
-                    onChange={(e) => setLocalSecondary(e.target.value)}
-                    placeholder="#6c757d"
-                  />
-                </div>
-                <input
-                  type="color"
+            {/* Secondary Color */}
+            <div className="row" style={{ alignItems: 'flex-end' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="Secondary Color"
+                  type="text"
                   value={localSecondary}
                   onChange={(e) => setLocalSecondary(e.target.value)}
-                  style={{
-                    width: 48,
-                    height: 38,
-                    padding: 0,
-                    border: '1px solid var(--c-border)',
-                    borderRadius: 6,
-                    cursor: 'pointer',
-                  }}
+                  placeholder="#C68642"
                 />
               </div>
+              <input
+                type="color"
+                value={localSecondary}
+                onChange={(e) => setLocalSecondary(e.target.value)}
+                style={{
+                  width: 48,
+                  height: 38,
+                  padding: 0,
+                  border: '1px solid var(--c-border)',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
 
-              {/* Accent Color */}
-              <div className="row" style={{ alignItems: 'flex-end' }}>
-                <div style={{ flex: 1 }}>
-                  <Input
-                    label="Accent Color"
-                    type="text"
-                    value={localAccent}
-                    onChange={(e) => setLocalAccent(e.target.value)}
-                    placeholder="#0dcaf0"
-                  />
-                </div>
-                <input
-                  type="color"
+            {/* Accent Color */}
+            <div className="row" style={{ alignItems: 'flex-end' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="Accent Color"
+                  type="text"
                   value={localAccent}
                   onChange={(e) => setLocalAccent(e.target.value)}
-                  style={{
-                    width: 48,
-                    height: 38,
-                    padding: 0,
-                    border: '1px solid var(--c-border)',
-                    borderRadius: 6,
-                    cursor: 'pointer',
-                  }}
+                  placeholder="#2F2F2F"
                 />
               </div>
+              <input
+                type="color"
+                value={localAccent}
+                onChange={(e) => setLocalAccent(e.target.value)}
+                style={{
+                  width: 48,
+                  height: 38,
+                  padding: 0,
+                  border: '1px solid var(--c-border)',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                }}
+              />
+            </div>
 
-              {/* Preview */}
-              <div style={{ marginTop: 16 }}>
-                <p className="muted" style={{ marginBottom: 8, fontSize: 12 }}>Preview</p>
-                <div className="row">
-                  <div
-                    style={{
-                      width: 60,
-                      height: 40,
-                      backgroundColor: localPrimary,
-                      borderRadius: 6,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontSize: 11,
-                    }}
-                  >
-                    Primary
-                  </div>
-                  <div
-                    style={{
-                      width: 70,
-                      height: 40,
-                      backgroundColor: localSecondary,
-                      borderRadius: 6,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontSize: 11,
-                    }}
-                  >
-                    Secondary
-                  </div>
-                  <div
-                    style={{
-                      width: 60,
-                      height: 40,
-                      backgroundColor: localAccent,
-                      borderRadius: 6,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontSize: 11,
-                    }}
-                  >
-                    Accent
-                  </div>
+            {/* Preview */}
+            <div style={{ marginTop: 16 }}>
+              <p className="muted" style={{ marginBottom: 8, fontSize: 12 }}>Preview</p>
+              <div className="row">
+                <div
+                  style={{
+                    width: 60,
+                    height: 40,
+                    backgroundColor: localPrimary,
+                    borderRadius: 6,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    fontSize: 11,
+                  }}
+                >
+                  Primary
+                </div>
+                <div
+                  style={{
+                    width: 70,
+                    height: 40,
+                    backgroundColor: localSecondary,
+                    borderRadius: 6,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    fontSize: 11,
+                  }}
+                >
+                  Secondary
+                </div>
+                <div
+                  style={{
+                    width: 60,
+                    height: 40,
+                    backgroundColor: localAccent,
+                    borderRadius: 6,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    fontSize: 11,
+                  }}
+                >
+                  Accent
                 </div>
               </div>
             </div>
-          </CardBody>
-          <CardFooter>
-            <div className="row spaceBetween" style={{ width: '100%' }}>
-              <Button variant="secondary" onClick={handleReset}>
-                Reset to Defaults
-              </Button>
-              <Button onClick={handleSave}>
-                Save Theme
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
-    </AppLayout>
+          </div>
+        </CardBody>
+        <CardFooter>
+          <div className="row spaceBetween" style={{ width: '100%' }}>
+            <Button variant="secondary" onClick={handleReset}>
+              Reset to Defaults
+            </Button>
+            <Button onClick={handleSave}>
+              Save Theme
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

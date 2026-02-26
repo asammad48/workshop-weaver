@@ -7,9 +7,9 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_THEME = {
-  primary: '#0d6efd',
-  secondary: '#6c757d',
-  accent: '#0dcaf0',
+  primary: '#F4C20D',
+  secondary: '#C68642',
+  accent: '#2F2F2F',
 };
 
 interface ThemeState {
