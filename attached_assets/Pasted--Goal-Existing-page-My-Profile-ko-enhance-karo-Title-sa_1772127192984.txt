@@ -1,0 +1,191 @@
+**Goal:** Existing page `My Profile` ko enhance karo. Title same: **My Profile**. Is page par basic Email/Name/Role ke saath saath **user ko kin pages aur tabs ka access hai** wo sab show ho — **nav.ts** ke basis par.
+
+### Golden Rules
+
+1. Page name & route change nahi karna: **My Profile** same.
+2. Existing theme/components reuse karna (Card, Table, Badge, Accordion, Tabs).
+3. Authorization backend pe already enforce hoti hai — yahan sirf UX display.
+4. Content **nav.ts** se derive ho. Hardcode mat karna.
+5. “Pages + Tabs + Actions” ka output **sirf wohi show ho jo user access karta hai**.
+
+---
+
+## 1) Data Sources
+
+### 1.1 Current user
+
+Use existing auth store/context:
+
+* `user.email`
+* `user.name`
+* `user.role`
+* `user.branchId?` / `user.branchName?` (agar available)
+* `user.permissions?` (agar tumhare app me permissions model hai)
+
+### 1.2 Navigation config
+
+Import nav from:
+
+* `src/nav.ts` (exact path repo ke hisaab se)
+  Assume nav items include (in any naming):
+* `label/title`
+* `path/route`
+* `icon` (optional)
+* `roles` OR `canAccess(user)` OR `permissions` OR `guard` function
+* `children` (nested menus)
+* `tabs` (agar tabs nav me represent hote hain) OR `meta.tabs`
+
+**IMPORTANT:** nav.ts ki existing shape ko follow karo. Agar keys different hain to mapping adapt karo, lekin nav.ts modify/rename mat karo.
+
+---
+
+## 2) My Profile Page Layout (exact sections)
+
+### Section A — Profile Card (existing + improved)
+
+Card fields:
+
+* Email
+* Name
+* Role (Badge)
+* Branch (if exists) else show “All branches / N/A”
+* Last login (if stored) else hide
+
+### Section B — “Your Access” Overview (summary chips)
+
+Show small KPI chips/cards:
+
+* ✅ Total Pages Accessible (count)
+* ✅ Total Tabs Accessible (count)
+* ✅ Total Actions (count) (agar actions model hai)
+* ✅ Restricted Items (count) (optional)
+
+### Section C — “Accessible Pages & Tabs” (main content)
+
+Use Accordion / Expandable list:
+
+For each accessible **Page**:
+
+* Page Name (label)
+* Path (small text)
+* Under it show:
+
+  * Tabs list (if defined)
+  * Allowed actions (if defined)
+  * Notes: “Branch-scoped” / “Admin summary only” (if nav meta has it)
+
+**Tabs display:**
+
+* If nav has `tabs` array: show each tab as Badge
+* If tabs aren’t present in nav.ts, show “Tabs not configured in nav.ts” (small muted text)
+
+**Actions display:**
+
+* If nav meta includes actions like `create/edit/delete/approve/export` etc.
+* Show as Badges:
+
+  * Create, Edit, Delete, Approve, Export, Upload, Transfer, Receive, Close Job, Reset Password etc.
+
+### Section D — “Quick Links”
+
+Top 5 most-used pages (simple):
+
+* Dashboard
+* JobCards (or Admin summary route for HQ_ADMIN)
+* Inventory (or summary)
+* Finance (or summary)
+* Attendance / Users (role-based)
+
+Generate from nav.ts: pick first 5 accessible or by a priority list.
+
+### Section E — “Copy Support Info”
+
+Add a button: **Copy Access Summary**
+Click -> copy a formatted text block to clipboard:
+
+* Email, Role, Branch
+* Accessible pages list
+* Tabs and actions summary
+  This helps when user reports issues.
+
+---
+
+## 3) Core Logic (must implement)
+
+### 3.1 Flatten navigation
+
+Create helper:
+
+* `flattenNav(navItems)` => returns flat array of nodes with parent chain
+* Each node:
+
+  * `label`
+  * `path`
+  * `roles/permissions/guard`
+  * `tabs`
+  * `actions`
+  * `meta` (branchScoped/adminOnly etc.)
+
+### 3.2 Access check
+
+Implement `canUserAccess(node, user)` using nav.ts rules:
+
+Priority order:
+
+1. If node has `canAccess(user)` function -> use it
+2. else if node has `roles` -> `roles.includes(user.role)`
+3. else if node has `permissions` -> check from user permissions
+4. else default allow (but log warning in console)
+
+### 3.3 Derive allowed pages
+
+`allowedNodes = flatNodes.filter(n => n.path && canUserAccess(n,user))`
+
+### 3.4 Tabs count
+
+If tabs exist:
+`totalTabs = sum(node.tabs.length)`
+Else: 0
+
+### 3.5 Actions count
+
+If actions exist:
+`totalActions = sum(node.actions.length)`
+Else: 0
+
+---
+
+## 4) Exact files to change / add
+
+* Update existing file:
+
+  * `src/pages/MyProfile.tsx` (or your actual path)
+* Add helper utils (only if needed):
+
+  * `src/features/profile/accessSummary/navAccess.ts`
+  * `src/features/profile/accessSummary/types.ts`
+* Add UI subcomponents (optional):
+
+  * `src/features/profile/accessSummary/AccessSummaryPanel.tsx`
+  * `src/features/profile/accessSummary/AccessAccordion.tsx`
+
+---
+
+## 5) Testing Checklist (must do)
+
+1. Login as HQ_ADMIN → profile shows admin-access pages + summary pages.
+2. Login as MANAGER → jobcard/inventory/finance proper set shows (branch scoped).
+3. Login as STORE → inventory + PO + transfers show, finance doesn’t show.
+4. Login as TECH → task/jobcard tabs show, admin pages hidden.
+5. If nav.ts changes, profile auto-updates without code changes.
+
+---
+
+## 6) Output requirement
+
+Deliver working UI with:
+
+* No console errors
+* No hardcoded page list
+* Fully nav.ts driven
+
