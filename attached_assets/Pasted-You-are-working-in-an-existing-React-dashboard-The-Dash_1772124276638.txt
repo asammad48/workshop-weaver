@@ -1,0 +1,57 @@
+You are working in an existing React dashboard. The Dashboard page is already implemented and data is integrated.
+Requirement: show an icon on each dashboard card based on the card object's `key`.
+
+1) Extract/define a single `iconMap` (or `getCardIcon(key)` function) that maps each known card key to a specific icon component.
+   Use the SAME UI theme as ReportsPage for cards and tables (spacing, typography, borders, colors, shadows). Do not change the theme.
+   Only add the icon feature.
+
+2) Keys to support (deduped):
+- total_jobcards_open
+- revenue_collected
+- expenses_total
+- wages_total
+- low_stock_items
+- approvals_pending
+- jobcards_in_shop
+- avg_days_in_shop
+- roadblockers_open
+- tasks_overdue
+- parts_waiting
+- collections_today
+- pending_po
+- pending_transfers
+- part_requests_pending
+- invoices_due_count
+- due_amount_total
+- approvals_pending_cashier
+- payments_today
+- my_tasks_open
+- my_tasks_overdue
+- my_jobcards_active
+- my_roadblockers_open
+
+3) Implementation details:
+- Import icons from `lucide-react` (preferred). If the project already uses a different icon set, use the existing one.
+- Add an `icon` slot/area inside the card layout (e.g., left of title or top-right). Keep it subtle and consistent with ReportsPage styling.
+- If a key is not found in the map, render a safe default icon (e.g., `Circle`).
+- Do NOT modify API/data logic. Do NOT rename keys. Do NOT change existing card structure other than adding icon rendering.
+
+4) Suggested icon semantics (you may refine if the app already has conventions):
+- total_jobcards_open => ClipboardList
+- jobcards_in_shop => Wrench
+- my_jobcards_active => ClipboardCheck
+- revenue_collected / collections_today / payments_today / due_amount_total => Banknote
+- expenses_total / wages_total => Receipt
+- low_stock_items / parts_waiting / part_requests_pending => Package
+- pending_po => FileClock
+- pending_transfers => Truck
+- approvals_pending / approvals_pending_cashier => ShieldAlert
+- roadblockers_open / my_roadblockers_open => AlertTriangle
+- tasks_overdue / my_tasks_overdue => ClockAlert
+- my_tasks_open => ListTodo
+- avg_days_in_shop => Timer
+- invoices_due_count => FileText
+
+5) Deliverable:
+- Provide the code changes: icon map + updated card rendering so that when a card is rendered, it displays the correct icon based on `card.key`.
+- Keep everything consistent with the ReportsPage card/table styling.

@@ -25,6 +25,7 @@ export function HqAdminDashboard({ data, loading }: DashboardProps) {
         {data.cards?.map(card => (
           <KpiCard
             key={card.key}
+            cardKey={card.key}
             title={card.title || ''}
             value={card.value || 0}
             unit={card.unit}
