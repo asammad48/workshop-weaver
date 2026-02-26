@@ -80,20 +80,21 @@ export default function DashboardPage() {
             Welcome back, {user?.email}
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'stretch', gap: '12px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            padding: '8px 12px',
+            padding: '0 12px',
             background: 'var(--c-card)',
             border: '1px solid var(--c-border)',
             borderRadius: '8px',
             color: 'var(--c-muted)',
-            fontSize: '14px'
+            fontSize: '14px',
+            height: '40px'
           }}>
             <Calendar size={16} />
-            Last 30 Days
+            <span style={{ whiteSpace: 'nowrap' }}>Last 30 Days</span>
           </div>
           <DateRangePicker
             from={dateRange.from}

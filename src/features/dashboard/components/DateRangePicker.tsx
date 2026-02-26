@@ -28,20 +28,18 @@ export function DateRangePicker({ from, to, onChange }: DateRangePickerProps) {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
       <Input
         type="date"
-        label="From"
         value={formatDate(from)}
         onChange={handleFromChange}
-        style={{ width: '160px' }}
+        style={{ width: '160px', height: '40px' }}
       />
       <Input
         type="date"
-        label="To"
         value={formatDate(to)}
         onChange={handleToChange}
-        style={{ width: '160px' }}
+        style={{ width: '160px', height: '40px' }}
       />
     </div>
   );
