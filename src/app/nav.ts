@@ -111,67 +111,60 @@ const allNavGroups: NavGroup[] = [
 ];
 
 // Role-based access configuration
-const roleAccess: Record<
-  UserRole,
-  { groups: string[]; readOnlyGroups?: string[] }
-> = {
-  HQ_ADMIN: {
-    groups: [
-      "Main",
-      "Operations",
-      "Inventory",
-      "Purchasing",
-      "Transfers",
-      "Finance",
-      "Attendance",
-      "Reports",
-      "Admin",
-      "Profile",
-    ],
-  },
-  BRANCH_MANAGER: {
-    groups: [
-      "Main",
-      "Operations",
-      "Inventory",
-      "Purchasing",
-      "Transfers",
-      "Finance",
-      "Attendance",
-      "Reports",
-      "Profile",
-    ],
-  },
-  STOREKEEPER: {
-    groups: [
-      "Main",
-      "Operations",
-      "Inventory",
-      "Purchasing",
-      "Transfers",
-      "Reports",
-      "Profile",
-    ],
-    readOnlyGroups: ["Reports"],
-  },
-  CASHIER: {
-    groups: ["Main", "Finance", "Profile"],
-    readOnlyGroups: ["Reports"],
-  },
-  TECHNICIAN: {
-    groups: ["Main", "Profile"],
-  },
-  RECEPTIONIST: {
-    groups: ["Main", "Operations", "Profile"],
-  },
+const rolePageAccess: Record<UserRole, string[]> = {
+  HQ_ADMIN: ["*"],
+  BRANCH_MANAGER: [
+    "/",
+    "/jobcards",
+    "/customers",
+    "/vehicles",
+    "/inventory",
+    "/inventory/purchase-orders",
+    "/inventory/transfers",
+    "/finance",
+    "/reports",
+    "/attendance/me",
+    "/attendance",
+    "/me",
+    "/theme",
+  ],
+  STOREKEEPER: [
+    "/",
+    "/jobcards",
+    "/customers",
+    "/vehicles",
+    "/inventory",
+    "/inventory/purchase-orders",
+    "/inventory/transfers",
+    "/reports",
+    "/attendance/me",
+    "/me",
+    "/theme",
+  ],
+  CASHIER: [
+    "/",
+    "/jobcards",
+    "/finance",
+    "/reports",
+    "/attendance/me",
+    "/me",
+    "/theme",
+  ],
+  TECHNICIAN: ["/", "/jobcards", "/attendance/me", "/me", "/theme"],
+  RECEPTIONIST: [
+    "/",
+    "/jobcards",
+    "/customers",
+    "/vehicles",
+    "/attendance/me",
+    "/me",
+    "/theme",
+  ],
 };
 
-// Special item access for roles that need partial group access
-const roleSpecialItems: Partial<Record<UserRole, string[]>> = {
-  CASHIER: ["/jobcards", "/reports", "/attendance/me"],
-  TECHNICIAN: ["/jobcards", "/attendance/me"],
-  STOREKEEPER: ["/attendance/me"],
-  RECEPTIONIST: ["/attendance/me"],
+const roleReadOnlyGroups: Partial<Record<UserRole, string[]>> = {
+  STOREKEEPER: ["Reports"],
+  CASHIER: ["Reports"],
 };
 
 /**
@@ -179,39 +172,23 @@ const roleSpecialItems: Partial<Record<UserRole, string[]>> = {
  */
 export function getNav(userRole: string | undefined): NavGroup[] {
   const role = (userRole?.toUpperCase() as UserRole) || "TECHNICIAN";
-  const access = roleAccess[role] || roleAccess.TECHNICIAN;
-  const specialItems = roleSpecialItems[role] || [];
+  const pageAccess = rolePageAccess[role] || rolePageAccess.TECHNICIAN;
+  const readOnlyGroups = roleReadOnlyGroups[role] || [];
 
   const result: NavGroup[] = [];
 
   for (const group of allNavGroups) {
-    // Check if role has access to this group
-    const hasGroupAccess = access.groups.includes(group.label);
-    const isReadOnlyGroup = access.readOnlyGroups?.includes(group.label);
-
-    if (hasGroupAccess) {
-      result.push({
-        label: group.label,
-        items: group.items.map((item) => ({
-          ...item,
-          readOnly: isReadOnlyGroup,
-        })),
-      });
-      continue;
-    }
-
-    // Check for special item access (partial group access)
-    const accessibleItems = group.items.filter((item) =>
-      specialItems.includes(item.path),
+    const accessibleItems = group.items.filter(
+      (item) => pageAccess.includes("*") || pageAccess.includes(item.path),
     );
 
     if (accessibleItems.length > 0) {
-      const isReadOnly = access.readOnlyGroups?.includes(group.label);
+      const isReadOnlyGroup = readOnlyGroups.includes(group.label);
       result.push({
         label: group.label,
         items: accessibleItems.map((item) => ({
           ...item,
-          readOnly: isReadOnly,
+          readOnly: isReadOnlyGroup,
         })),
       });
     }
