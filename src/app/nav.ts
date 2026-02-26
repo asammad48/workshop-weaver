@@ -112,7 +112,15 @@ const allNavGroups: NavGroup[] = [
 
 // Role-based access configuration
 const rolePageAccess: Record<UserRole, string[]> = {
-  HQ_ADMIN: ["*"],
+  HQ_ADMIN: [
+    "/attendance/me",
+    "/attendance",
+    "/admin/users",
+    "/admin/branches",
+    "/admin/audit",
+    "/me",
+    "/theme",
+  ],
   BRANCH_MANAGER: [
     "/",
     "/jobcards",
@@ -126,6 +134,7 @@ const rolePageAccess: Record<UserRole, string[]> = {
     "/attendance/me",
     "/attendance",
     "/me",
+    "/admin/workstations",
     "/theme",
   ],
   STOREKEEPER: [

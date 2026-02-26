@@ -94,12 +94,16 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
-    // Exact match for paths like /inventory, /inventory/purchase-orders, etc.
-    // to prevent highlighting /inventory when on /inventory/purchase-orders
     if (location.pathname === path) return true;
     
-    // For nested routes within a feature that aren't themselves main nav items
-    // we can use startsWith but only if the next char is / or it's an exact match
+    // Check if any other nav item is an exact match for the current location.
+    // If another nav item matches exactly, this one (which is a prefix) shouldn't be active.
+    const hasBetterMatch = navGroups.some(group => 
+      group.items.some(item => item.path !== path && location.pathname === item.path)
+    );
+    
+    if (hasBetterMatch) return false;
+    
     return location.pathname.startsWith(path + '/');
   };
 
