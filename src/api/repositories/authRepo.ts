@@ -1,12 +1,13 @@
 import { 
   Client, 
   LoginRequestDto, 
+  RefreshTokenRequestDto,
   ChangePasswordDto,
   UserDto,
   UserRole 
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
-import { normalizeError, toUserMessage, ApiError } from './_errors';
+import { normalizeError, ApiError } from './_errors';
 import type { User } from '@/state/authStore';
 
 // Create configured client instance
@@ -34,6 +35,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
+  refreshToken: string;
   user: User;
 }
 
@@ -56,7 +58,7 @@ export const authRepo = {
       const response = await client.login(request);
       const data = response.data;
 
-      if (!response.success || !data?.accessToken) {
+      if (!response.success || !data?.accessToken || !data?.refreshToken) {
         throw {
           status: 400,
           message: response.message || 'Login failed',
@@ -65,12 +67,42 @@ export const authRepo = {
 
       return {
         token: data.accessToken,
+        refreshToken: data.refreshToken,
         user: {
           id: '',
           email: credentials.email,
           name: credentials.email,
           role: data.role ?? 'User',
         },
+      };
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  /**
+   * Refresh the access token using the refresh token
+   * @throws {ApiError} Normalized error
+   */
+  async refresh(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
+    try {
+      const request = new RefreshTokenRequestDto({
+        refreshToken,
+      });
+
+      const response = await client.refresh(request);
+      const data = response.data;
+
+      if (!response.success || !data?.accessToken || !data?.refreshToken) {
+        throw {
+          status: 401,
+          message: response.message || 'Session expired',
+        } as ApiError;
+      }
+
+      return {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
       };
     } catch (error) {
       throw normalizeError(error);
