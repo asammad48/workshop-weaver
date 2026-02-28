@@ -681,6 +681,51 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
+    refresh(body?: RefreshTokenRequestDto | undefined, signal?: AbortSignal): Promise<LoginResponseDtoApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/auth/refresh";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processRefresh(_response));
+        });
+    }
+
+    protected processRefresh(response: Response): Promise<LoginResponseDtoApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LoginResponseDtoApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<LoginResponseDtoApiResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     changePassword(body?: ChangePasswordDto | undefined, signal?: AbortSignal): Promise<StringApiResponse> {
         let url_ = this.baseUrl + "/api/v1/auth/change-password";
         url_ = url_.replace(/[?&]$/, "");
@@ -11305,6 +11350,7 @@ export interface ILoginRequestDto {
 
 export class LoginResponseDto implements ILoginResponseDto {
     accessToken?: string | undefined;
+    refreshToken?: string | undefined;
     role?: string | undefined;
     branchId?: string | undefined;
 
@@ -11320,6 +11366,7 @@ export class LoginResponseDto implements ILoginResponseDto {
     init(_data?: any) {
         if (_data) {
             this.accessToken = _data["accessToken"];
+            this.refreshToken = _data["refreshToken"];
             this.role = _data["role"];
             this.branchId = _data["branchId"];
         }
@@ -11335,6 +11382,7 @@ export class LoginResponseDto implements ILoginResponseDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["accessToken"] = this.accessToken;
+        data["refreshToken"] = this.refreshToken;
         data["role"] = this.role;
         data["branchId"] = this.branchId;
         return data;
@@ -11343,6 +11391,7 @@ export class LoginResponseDto implements ILoginResponseDto {
 
 export interface ILoginResponseDto {
     accessToken?: string | undefined;
+    refreshToken?: string | undefined;
     role?: string | undefined;
     branchId?: string | undefined;
 }
@@ -12782,6 +12831,42 @@ export interface IReceiveItem {
     partId?: string;
     receiveQty?: number;
     unitCost?: number;
+}
+
+export class RefreshTokenRequestDto implements IRefreshTokenRequestDto {
+    refreshToken?: string | undefined;
+
+    constructor(data?: IRefreshTokenRequestDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.refreshToken = _data["refreshToken"];
+        }
+    }
+
+    static fromJS(data: any): RefreshTokenRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshTokenRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["refreshToken"] = this.refreshToken;
+        return data;
+    }
+}
+
+export interface IRefreshTokenRequestDto {
+    refreshToken?: string | undefined;
 }
 
 export class ResetPasswordDto implements IResetPasswordDto {
