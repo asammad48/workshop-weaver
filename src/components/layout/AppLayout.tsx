@@ -10,7 +10,7 @@ import { notificationsRepo } from '@/api/repositories/notificationsRepo';
 import { NotificationResponse } from '@/api/generated/apiClient';
 
 interface AppLayoutProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 const SIDEBAR_KEY = 'ui.sidebarCollapsed';
@@ -19,355 +19,365 @@ const SIDEBAR_KEY = 'ui.sidebarCollapsed';
  * Application layout with collapsible sidebar navigation and topbar
  */
 export function AppLayout({ children }: AppLayoutProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
-  const [collapsed, setCollapsed] = useState(() => {
-    return localStorage.getItem(SIDEBAR_KEY) === 'true';
-  });
-  const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const notificationRef = useRef<HTMLDivElement>(null);
-
-  const navGroups = getNav(user?.role);
-
-  // Persist collapsed state
-  useEffect(() => {
-    localStorage.setItem(SIDEBAR_KEY, String(collapsed));
-  }, [collapsed]);
-
-  const fetchNotifications = async () => {
-    try {
-      const res = await notificationsRepo.list({ unreadOnly: false, pageSize: 5 });
-      setNotifications(res.items || []);
-
-      const unreadRes = await notificationsRepo.list({ unreadOnly: true, pageSize: 1 });
-      setUnreadCount(unreadRes.totalCount || 0);
-    } catch (err) {
-      console.error('Failed to fetch notifications', err);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      fetchNotifications();
-      const interval = setInterval(fetchNotifications, 60000); // refresh every minute
-      return () => clearInterval(interval);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleMarkRead = async (id: string) => {
-    try {
-      await notificationsRepo.markRead(id);
-      setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
-      setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleLogout = async () => {
-    const confirmed = await confirm({
-      title: 'Logout',
-      message: 'Are you sure you want to logout?',
-      confirmText: 'Logout',
-      danger: true,
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuthStore();
+    const [collapsed, setCollapsed] = useState(() => {
+        return localStorage.getItem(SIDEBAR_KEY) === 'true';
     });
+    const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const notificationRef = useRef<HTMLDivElement>(null);
 
-    if (confirmed) {
-      logout();
-      toast.info('Logged out successfully');
-      navigate('/login');
-    }
-  };
+    const navGroups = getNav(user?.role);
 
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    if (location.pathname === path) return true;
-    
-    // Check if any other nav item is an exact match for the current location.
-    // If another nav item matches exactly, this one (which is a prefix) shouldn't be active.
-    const hasBetterMatch = navGroups.some(group => 
-      group.items.some(item => item.path !== path && location.pathname === item.path)
-    );
-    
-    if (hasBetterMatch) return false;
-    
-    return location.pathname.startsWith(path + '/');
-  };
+    // Persist collapsed state
+    useEffect(() => {
+        localStorage.setItem(SIDEBAR_KEY, String(collapsed));
+    }, [collapsed]);
 
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: 'var(--c-bg)' }}>
-      {/* Sidebar */}
-      <aside
-        style={{
-          width: collapsed ? '64px' : '240px',
-          backgroundColor: 'var(--c-card)',
-          borderRight: '1px solid var(--c-border)',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'width 0.2s ease',
-          overflow: 'hidden',
-          zIndex: 50,
-        }}
-      >
-        {/* Sidebar Toggle / Header */}
-        <div
-          style={{
-            padding: '16px',
-            borderBottom: '1px solid var(--c-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-end',
-            minHeight: '64px',
-          }}
-        >
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--c-muted)',
-              borderRadius: '4px',
-            }}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-          </button>
-        </div>
+    const fetchNotifications = async () => {
+        try {
+            const res = await notificationsRepo.list({ unreadOnly: false, pageSize: 5 });
+            setNotifications(res.items || []);
 
-        {/* Navigation */}
-        <nav style={{ flex: 1, overflow: 'auto', padding: '8px' }}>
-          {navGroups.map((group) => (
-            <div key={group.label} style={{ marginBottom: '16px' }}>
-              {!collapsed && (
-                <div
-                  style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    color: 'var(--c-muted)',
-                    textTransform: 'uppercase',
-                    padding: '8px 12px 4px',
-                    letterSpacing: '0.5px',
-                  }}
-                >
-                  {group.label}
-                </div>
-              )}
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.path);
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    title={collapsed ? item.label : undefined}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: collapsed ? '10px' : '10px 12px',
-                      borderRadius: '6px',
-                      textDecoration: 'none',
-                      color: active ? 'var(--c-primary)' : 'var(--c-text)',
-                      backgroundColor: active ? 'var(--c-primary-soft)' : 'transparent',
-                      fontWeight: active ? 500 : 400,
-                      fontSize: '13px',
-                      marginBottom: '2px',
-                      justifyContent: collapsed ? 'center' : 'flex-start',
-                      transition: 'background-color 0.15s ease',
-                    }}
-                  >
-                    <Icon size={18} style={{ flexShrink: 0 }} />
-                    {!collapsed && (
-                      <span style={{ whiteSpace: 'nowrap' }}>
-                        {item.label}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-      </aside>
+            const unreadRes = await notificationsRepo.list({ unreadOnly: true, pageSize: 1 });
+            setUnreadCount(unreadRes.totalCount || 0);
+        } catch (err) {
+            console.error('Failed to fetch notifications', err);
+        }
+    };
 
-      {/* Main Container */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        {/* Topbar */}
-        <header
-          style={{
-            height: '64px',
-            backgroundColor: 'var(--c-card)',
-            borderBottom: '1px solid var(--c-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            zIndex: 40,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--c-text)' }}>Workshop Management</span>
-            {user?.branchId && (
-              <span
+    useEffect(() => {
+        if (user) {
+            fetchNotifications();
+            const interval = setInterval(fetchNotifications, 60000); // refresh every minute
+            return () => clearInterval(interval);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setShowNotifications(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleMarkRead = async (id: string) => {
+        try {
+            await notificationsRepo.markRead(id);
+            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleLogout = async () => {
+        const confirmed = await confirm({
+            title: 'Logout',
+            message: 'Are you sure you want to logout?',
+            confirmText: 'Logout',
+            danger: true,
+        });
+
+        if (confirmed) {
+            logout();
+            toast.info('Logged out successfully');
+            navigate('/login');
+        }
+    };
+
+    const isActive = (path: string) => {
+        if (path === '/') return location.pathname === '/';
+        if (location.pathname === path) return true;
+
+        // Check if any other nav item is an exact match for the current location.
+        // If another nav item matches exactly, this one (which is a prefix) shouldn't be active.
+        const hasBetterMatch = navGroups.some(group =>
+            group.items.some(item => item.path !== path && location.pathname === item.path)
+        );
+
+        if (hasBetterMatch) return false;
+
+        return location.pathname.startsWith(path + '/');
+    };
+
+    return (
+        <div style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: 'var(--c-bg)' }}>
+            {/* Sidebar */}
+            <aside
                 style={{
-                  backgroundColor: 'var(--c-primary-soft)',
-                  color: 'var(--c-primary)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  padding: '2px 8px',
-                  borderRadius: '999px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Branch: {user.branchId}
-              </span>
-            )}
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Notifications Bell */}
-            <div style={{ position: 'relative' }} ref={notificationRef}>
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--c-muted)',
-                  borderRadius: '50%',
-                  position: 'relative',
-                  transition: 'background-color 0.2s'
-                }}
-                className="hover-bg"
-              >
-                <Bell size={20} />
-                {unreadCount > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '4px',
-                    right: '4px',
-                    backgroundColor: 'var(--c-danger)',
-                    color: 'white',
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    minWidth: '16px',
-                    height: '16px',
-                    borderRadius: '8px',
+                    width: collapsed ? '64px' : '240px',
+                    backgroundColor: 'var(--c-card)',
+                    borderRight: '1px solid var(--c-border)',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '0 4px',
-                    border: '2px solid var(--c-card)'
-                  }}>
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {showNotifications && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  marginTop: '8px',
-                  width: '320px',
-                  backgroundColor: 'var(--c-card)',
-                  border: '1px solid var(--c-border)',
-                  borderRadius: '8px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  zIndex: 100,
-                  overflow: 'hidden'
-                }}>
-                  <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--c-border)', fontWeight: 600, fontSize: '14px', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Notifications</span>
-                    <Link to="/notifications" style={{ fontSize: '12px', color: 'var(--c-primary)', textDecoration: 'none' }} onClick={() => setShowNotifications(false)}>View all</Link>
-                  </div>
-                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                    {notifications.length === 0 ? (
-                      <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)', fontSize: '13px' }}>
-                        No notifications
-                      </div>
-                    ) : (
-                      notifications.map(n => (
-                        <div
-                          key={n.id}
-                          style={{
-                            padding: '12px 16px',
-                            borderBottom: '1px solid var(--c-border)',
-                            backgroundColor: n.isRead ? 'transparent' : 'var(--c-primary-soft)',
-                            cursor: 'pointer'
-                          }}
-                          onClick={() => {
-                            if (n.refType === 'JOB_CARD' && n.refId) {
-                              navigate(`/jobcards/${n.refId}`);
-                              setShowNotifications(false);
-                              if (!n.isRead && n.id) handleMarkRead(n.id);
-                            }
-                          }}
-                        >
-                          <div style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px', display: 'flex', justifyContent: 'space-between' }}>
-                            {n.title}
-                            {!n.isRead && (
-                              <button
-                                onClick={(e) => { e.stopPropagation(); if (n.id) handleMarkRead(n.id); }}
-                                style={{ background: 'none', border: 'none', color: 'var(--c-primary)', cursor: 'pointer' }}
-                              >
-                                <Check size={14} />
-                              </button>
-                            )}
-                          </div>
-                          <div style={{ fontSize: '12px', color: 'var(--c-muted)', lineHeight: '1.4' }}>{n.message}</div>
-                          <div style={{ fontSize: '10px', color: 'var(--c-muted)', marginTop: '4px' }}>
-                            {n.createdAt ? new Date(n.createdAt).toLocaleString() : ''}
-                          </div>
+                    flexDirection: 'column',
+                    transition: 'width 0.2s ease',
+                    overflow: 'hidden',
+                    zIndex: 50,
+                }}
+            >
+                {/* Sidebar Toggle / Header */}
+                <div
+                    style={{
+                        padding: '16px',
+                        borderBottom: '1px solid var(--c-border)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: collapsed ? 'center' : 'space-between',
+                        minHeight: '64px',
+                    }}
+                >
+                    {!collapsed && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <img src="/images/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                            <span style={{ fontWeight: 700, fontSize: '14px', whiteSpace: 'nowrap' }}>Workshop</span>
                         </div>
-                      ))
                     )}
-                  </div>
+                    {collapsed && (
+                        <img src="/images/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                    )}
+                    <button
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--c-muted)',
+                            borderRadius: '4px',
+                        }}
+                        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                    >
+                        {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+                    </button>
                 </div>
-              )}
-            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--c-muted)', fontSize: '13px' }}>
-              <UserIcon size={16} />
-              <span>{user?.email}</span>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-danger)' }}>
-              <LogOut size={16} />
-              <span>Logout</span>
-            </Button>
-          </div>
-        </header>
+                {/* Navigation */}
+                <nav style={{ flex: 1, overflow: 'auto', padding: '8px' }}>
+                    {navGroups.map((group) => (
+                        <div key={group.label} style={{ marginBottom: '16px' }}>
+                            {!collapsed && (
+                                <div
+                                    style={{
+                                        fontSize: '11px',
+                                        fontWeight: 600,
+                                        color: 'var(--c-muted)',
+                                        textTransform: 'uppercase',
+                                        padding: '8px 12px 4px',
+                                        letterSpacing: '0.5px',
+                                    }}
+                                >
+                                    {group.label}
+                                </div>
+                            )}
+                            {group.items.map((item) => {
+                                const Icon = item.icon;
+                                const active = isActive(item.path);
+                                return (
+                                    <Link
+                                        key={item.path}
+                                        to={item.path}
+                                        title={collapsed ? item.label : undefined}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            padding: collapsed ? '10px' : '10px 12px',
+                                            borderRadius: '6px',
+                                            textDecoration: 'none',
+                                            color: active ? 'var(--c-primary)' : 'var(--c-text)',
+                                            backgroundColor: active ? 'var(--c-primary-soft)' : 'transparent',
+                                            fontWeight: active ? 500 : 400,
+                                            fontSize: '13px',
+                                            marginBottom: '2px',
+                                            justifyContent: collapsed ? 'center' : 'flex-start',
+                                            transition: 'background-color 0.15s ease',
+                                        }}
+                                    >
+                                        <Icon size={18} style={{ flexShrink: 0 }} />
+                                        {!collapsed && (
+                                            <span style={{ whiteSpace: 'nowrap' }}>
+                                                {item.label}
+                                            </span>
+                                        )}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </nav>
+            </aside>
 
-        {/* Page Content */}
-        <main style={{ flex: 1, overflow: 'auto' }}>
-          <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+            {/* Main Container */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                {/* Topbar */}
+                <header
+                    style={{
+                        height: '64px',
+                        backgroundColor: 'var(--c-card)',
+                        borderBottom: '1px solid var(--c-border)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0 24px',
+                        zIndex: 40,
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <img src="/images/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                        <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--c-text)' }}>Workshop Management</span>
+                        {user?.branchId && (
+                            <span
+                                style={{
+                                    backgroundColor: 'var(--c-primary-soft)',
+                                    color: 'var(--c-primary)',
+                                    fontSize: '11px',
+                                    fontWeight: 600,
+                                    padding: '2px 8px',
+                                    borderRadius: '999px',
+                                    textTransform: 'uppercase',
+                                }}
+                            >
+                                Branch: {user.branchId}
+                            </span>
+                        )}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        {/* Notifications Bell */}
+                        <div style={{ position: 'relative' }} ref={notificationRef}>
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: '8px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'var(--c-muted)',
+                                    borderRadius: '50%',
+                                    position: 'relative',
+                                    transition: 'background-color 0.2s'
+                                }}
+                                className="hover-bg"
+                            >
+                                <Bell size={20} />
+                                {unreadCount > 0 && (
+                                    <span style={{
+                                        position: 'absolute',
+                                        top: '4px',
+                                        right: '4px',
+                                        backgroundColor: 'var(--c-danger)',
+                                        color: 'white',
+                                        fontSize: '10px',
+                                        fontWeight: 700,
+                                        minWidth: '16px',
+                                        height: '16px',
+                                        borderRadius: '8px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: '0 4px',
+                                        border: '2px solid var(--c-card)'
+                                    }}>
+                                        {unreadCount > 9 ? '9+' : unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {showNotifications && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    right: 0,
+                                    marginTop: '8px',
+                                    width: '320px',
+                                    backgroundColor: 'var(--c-card)',
+                                    border: '1px solid var(--c-border)',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                                    zIndex: 100,
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--c-border)', fontWeight: 600, fontSize: '14px', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span>Notifications</span>
+                                        <Link to="/notifications" style={{ fontSize: '12px', color: 'var(--c-primary)', textDecoration: 'none' }} onClick={() => setShowNotifications(false)}>View all</Link>
+                                    </div>
+                                    <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                        {notifications.length === 0 ? (
+                                            <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)', fontSize: '13px' }}>
+                                                No notifications
+                                            </div>
+                                        ) : (
+                                            notifications.map(n => (
+                                                <div
+                                                    key={n.id}
+                                                    style={{
+                                                        padding: '12px 16px',
+                                                        borderBottom: '1px solid var(--c-border)',
+                                                        backgroundColor: n.isRead ? 'transparent' : 'var(--c-primary-soft)',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                    onClick={() => {
+                                                        if (n.refType === 'JOB_CARD' && n.refId) {
+                                                            navigate(`/jobcards/${n.refId}`);
+                                                            setShowNotifications(false);
+                                                            if (!n.isRead && n.id) handleMarkRead(n.id);
+                                                        }
+                                                    }}
+                                                >
+                                                    <div style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px', display: 'flex', justifyContent: 'space-between' }}>
+                                                        {n.title}
+                                                        {!n.isRead && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); if (n.id) handleMarkRead(n.id); }}
+                                                                style={{ background: 'none', border: 'none', color: 'var(--c-primary)', cursor: 'pointer' }}
+                                                            >
+                                                                <Check size={14} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--c-muted)', lineHeight: '1.4' }}>{n.message}</div>
+                                                    <div style={{ fontSize: '10px', color: 'var(--c-muted)', marginTop: '4px' }}>
+                                                        {n.createdAt ? new Date(n.createdAt).toLocaleString() : ''}
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--c-muted)', fontSize: '13px' }}>
+                            <UserIcon size={16} />
+                            <span>{user?.email}</span>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-danger)' }}>
+                            <LogOut size={16} />
+                            <span>Logout</span>
+                        </Button>
+                    </div>
+                </header>
+
+                {/* Page Content */}
+                <main style={{ flex: 1, overflow: 'auto' }}>
+                    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
+                        {children}
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
 }
