@@ -35,13 +35,13 @@ export default function LoginPage() {
 
         try {
             const response = await authRepo.login({ email, password });
-            setAuth(response.token, response.user);
+            setAuth(response.token, response.refreshToken, response.user);
             toast.success('Login successful!');
             navigate(from, { replace: true });
         } catch (err) {
             // Fallback to demo mode if API is unavailable
             if (email === 'admin@demo.com' && password === 'Admin@123') {
-                setAuth('demo-token-' + Date.now(), DEMO_USER);
+                setAuth('demo-token-' + Date.now(), 'demo-refresh-' + Date.now(), DEMO_USER);
                 toast.info('Logged in (demo mode)');
                 navigate(from, { replace: true });
                 return;
