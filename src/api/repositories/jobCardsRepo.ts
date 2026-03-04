@@ -71,7 +71,7 @@ export const jobCardsRepo = {
     body?: JobCardStatusChangeRequest,
   ): Promise<JobCardResponseApiResponse> {
     try {
-      return await client.status(id, body);
+      return await client.statusPOST(id, body);
     } catch (error) {
       throw normalizeError(error);
     }

@@ -252,9 +252,9 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
 const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean }> = ({ onSubmit, isPending }) => {
   const [formData, setFormData] = useState({
     partId: "",
-    qty: 1,
+    quantityUsed: 1,
     locationId: "",
-    note: "",
+    notes: "",
   });
 
   const { data: parts } = useQuery({ queryKey: ["parts"], queryFn: getPartsOnce });
@@ -285,8 +285,8 @@ const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean
             label="Quantity *"
             type="number"
             required
-            value={formData.qty}
-            onChange={(e) => setFormData(prev => ({ ...prev, qty: parseFloat(e.target.value) }))}
+            value={formData.quantityUsed}
+            onChange={(e) => setFormData(prev => ({ ...prev, quantityUsed: parseFloat(e.target.value) }))}
           />
           <Select
             label="Location *"
@@ -302,8 +302,8 @@ const UsePartModal: React.FC<{ onSubmit: (data: any) => void; isPending: boolean
           <textarea
             style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--c-border)", backgroundColor: "var(--c-bg)", color: "var(--c-text)", outline: "none" }}
             rows={3}
-            value={formData.note}
-            onChange={(e) => setFormData(prev => ({ ...prev, note: e.target.value }))}
+            value={formData.notes}
+            onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
           />
         </div>
       </div>
