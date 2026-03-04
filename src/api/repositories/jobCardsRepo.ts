@@ -52,7 +52,7 @@ export const jobCardsRepo = {
 
   async checkIn(id: string): Promise<JobCardResponseApiResponse> {
     try {
-      return await client.checkIn(id);
+      return await client.checkIn2(id);
     } catch (error) {
       throw normalizeError(error);
     }
@@ -60,7 +60,7 @@ export const jobCardsRepo = {
 
   async checkOut(id: string): Promise<JobCardResponseApiResponse> {
     try {
-      return await client.checkOut(id);
+      return await client.checkOut2(id);
     } catch (error) {
       throw normalizeError(error);
     }
