@@ -30,21 +30,91 @@ import { getUsersOnce } from '@/api/lookups/usersLookup';
 type Tab = 'expenses' | 'wages';
 
 const EXPENSE_CATEGORY_OPTIONS = [
-  { value: ExpenseCategory._1.toString(), label: 'Category 1' },
-  { value: ExpenseCategory._2.toString(), label: 'Category 2' },
-  { value: ExpenseCategory._3.toString(), label: 'Category 3' },
-  { value: ExpenseCategory._4.toString(), label: 'Category 4' },
-  { value: ExpenseCategory._5.toString(), label: 'Category 5' },
-  { value: ExpenseCategory._99.toString(), label: 'Other' },
+    { value: ExpenseCategory._1.toString(), label: 'Spare Parts Purchase' },
+    { value: ExpenseCategory._2.toString(), label: 'Tools & Equipment' },
+    { value: ExpenseCategory._3.toString(), label: 'Machine Maintenance' },
+    { value: ExpenseCategory._4.toString(), label: 'Workshop Supplies' },
+
+    { value: ExpenseCategory._5.toString(), label: 'Staff Salaries' },
+    { value: ExpenseCategory._6.toString(), label: 'Overtime Payments' },
+    { value: ExpenseCategory._7.toString(), label: 'Contractor Mechanics' },
+
+    { value: ExpenseCategory._8.toString(), label: 'Rent / Lease' },
+    { value: ExpenseCategory._9.toString(), label: 'Electricity' },
+    { value: ExpenseCategory._10.toString(), label: 'Water' },
+    { value: ExpenseCategory._11.toString(), label: 'Internet' },
+
+    { value: ExpenseCategory._12.toString(), label: 'Test Drive Fuel' },
+    { value: ExpenseCategory._13.toString(), label: 'Company Vehicle Maintenance' },
+    { value: ExpenseCategory._14.toString(), label: 'Vehicle Insurance' },
+
+    { value: ExpenseCategory._15.toString(), label: 'Inventory Purchase' },
+    { value: ExpenseCategory._16.toString(), label: 'Inventory Loss / Damage' },
+
+    { value: ExpenseCategory._17.toString(), label: 'Advertising' },
+    { value: ExpenseCategory._18.toString(), label: 'Social Media Promotions' },
+    { value: ExpenseCategory._19.toString(), label: 'Discounts & Offers' },
+
+    { value: ExpenseCategory._20.toString(), label: 'Software Subscriptions' },
+    { value: ExpenseCategory._21.toString(), label: 'Hosting / Server Costs' },
+    { value: ExpenseCategory._22.toString(), label: 'POS / Billing Systems' },
+
+    { value: ExpenseCategory._23.toString(), label: 'Office Supplies' },
+    { value: ExpenseCategory._24.toString(), label: 'Printing / Stationery' },
+    { value: ExpenseCategory._25.toString(), label: 'Licenses & Permits' },
+
+    { value: ExpenseCategory._26.toString(), label: 'Bank Charges' },
+    { value: ExpenseCategory._27.toString(), label: 'Loan Payments' },
+    { value: ExpenseCategory._28.toString(), label: 'Taxes' },
+
+    { value: ExpenseCategory._29.toString(), label: 'Misc Expense' },
+    { value: ExpenseCategory._30.toString(), label: 'Emergency Expense' },
+
+    { value: ExpenseCategory._99.toString(), label: 'Other' },
 ];
 
 const CATEGORY_LABELS: Record<number, string> = {
-  [ExpenseCategory._1]: 'Category 1',
-  [ExpenseCategory._2]: 'Category 2',
-  [ExpenseCategory._3]: 'Category 3',
-  [ExpenseCategory._4]: 'Category 4',
-  [ExpenseCategory._5]: 'Category 5',
-  [ExpenseCategory._99]: 'Other',
+    [ExpenseCategory._1]: 'Spare Parts Purchase',
+    [ExpenseCategory._2]: 'Tools & Equipment',
+    [ExpenseCategory._3]: 'Machine Maintenance',
+    [ExpenseCategory._4]: 'Workshop Supplies',
+
+    [ExpenseCategory._5]: 'Staff Salaries',
+    [ExpenseCategory._6]: 'Overtime Payments',
+    [ExpenseCategory._7]: 'Contractor Mechanics',
+
+    [ExpenseCategory._8]: 'Rent / Lease',
+    [ExpenseCategory._9]: 'Electricity',
+    [ExpenseCategory._10]: 'Water',
+    [ExpenseCategory._11]: 'Internet',
+
+    [ExpenseCategory._12]: 'Test Drive Fuel',
+    [ExpenseCategory._13]: 'Company Vehicle Maintenance',
+    [ExpenseCategory._14]: 'Vehicle Insurance',
+
+    [ExpenseCategory._15]: 'Inventory Purchase',
+    [ExpenseCategory._16]: 'Inventory Loss / Damage',
+
+    [ExpenseCategory._17]: 'Advertising',
+    [ExpenseCategory._18]: 'Social Media Promotions',
+    [ExpenseCategory._19]: 'Discounts & Offers',
+
+    [ExpenseCategory._20]: 'Software Subscriptions',
+    [ExpenseCategory._21]: 'Hosting / Server Costs',
+    [ExpenseCategory._22]: 'POS / Billing Systems',
+
+    [ExpenseCategory._23]: 'Office Supplies',
+    [ExpenseCategory._24]: 'Printing / Stationery',
+    [ExpenseCategory._25]: 'Licenses & Permits',
+
+    [ExpenseCategory._26]: 'Bank Charges',
+    [ExpenseCategory._27]: 'Loan Payments',
+    [ExpenseCategory._28]: 'Taxes',
+
+    [ExpenseCategory._29]: 'Misc Expense',
+    [ExpenseCategory._30]: 'Emergency Expense',
+
+    [ExpenseCategory._99]: 'Other',
 };
 
 export default function FinancePage() {
