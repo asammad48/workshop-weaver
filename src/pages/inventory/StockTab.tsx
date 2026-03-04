@@ -68,7 +68,7 @@ export function StockTab({ search, page, setPage }: StockTabProps) {
                 <td style={{ padding: '16px' }}>
                   {item.locationCode && item.locationName ? `${item.locationCode} — ${item.locationName}` : item.locationName || item.locationCode || item.locationId}
                 </td>
-                <td style={{ padding: '16px' }}>{item.qtyOnHand}</td>
+                    <td style={{ padding: '16px' }}>{item.quantityOnHand}</td>
                 {canAdjust && (
                   <td style={{ padding: '16px', textAlign: 'right' }}>
                     <Button variant="secondary" size="sm" onClick={() => handleAdjust(item)}>

@@ -121,12 +121,12 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
                 lineItems.map((item: any) => (
                   <tr key={item.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
                     <td style={{ padding: "16px" }}>
-                      {item.itemType === 0 ? "Labor" :
-                       item.itemType === 1 ? "Stock Part" :
-                       item.itemType === 2 ? "Ordered Part" :
-                       item.itemType === 3 ? "Misc" : "Unknown"}
+                            {item.type === 0 ? "Labor" :
+                             item.type === 1 ? "Stock Part" :
+                             item.type === 2 ? "Ordered Part" :
+                             item.type === 3 ? "Misc" : "Unknown"}
                     </td>
-                    <td style={{ padding: "16px" }}>{item.description}</td>
+                        <td style={{ padding: "16px" }}>{item.title}</td>
                     <td style={{ padding: "16px" }}>{item.qty}</td>
                     <td style={{ padding: "16px" }}>{item.unitPrice?.toLocaleString()}</td>
                     <td style={{ padding: "16px" }}>{item.total?.toLocaleString()}</td>
