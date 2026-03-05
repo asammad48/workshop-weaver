@@ -45,6 +45,7 @@ const iconMap: Record<string, LucideIcon> = {
   my_tasks_open: ListTodo,
   avg_days_in_shop: Timer,
   invoices_due_count: FileText,
+  profit_total: TrendingUp
 };
 
 interface KpiCardProps {
