@@ -286,7 +286,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                           gap: "8px",
                         }}
                       >
-                        {userRoleId === Roles.STOREKEEPER && !req.orderedAt && (
+                                {(userRoleId === Roles.STOREKEEPER || userRoleId === Roles.BRANCH_MANAGER) && !req.orderedAt && (
                           <Button
                             variant="secondary"
                             size="sm"
@@ -304,7 +304,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                             Order
                           </Button>
                         )}
-                        {String(userRoleId) === Roles.STOREKEEPER &&
+                                {(String(userRoleId) === Roles.STOREKEEPER || String(userRoleId) === Roles.BRANCH_MANAGER) &&
                           req.orderedAt &&
                           !req.arrivedAt && (
                             <Button
@@ -324,7 +324,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                               Arrive
                             </Button>
                           )}
-                        {String(userRoleId) === Roles.TECHNICIAN &&
+                                {(String(userRoleId) === Roles.TECHNICIAN || String(userRoleId) === Roles.BRANCH_MANAGER) &&
                           req.arrivedAt &&
                           !req.stationSignedAt && (
                             <Button
