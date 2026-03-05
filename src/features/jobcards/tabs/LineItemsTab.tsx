@@ -104,7 +104,7 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Description</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Qty</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>(Parts/Hours)Qty</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Unit Price</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Total</th>
                 <th style={{ padding: "16px", textAlign: "right", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Actions</th>
@@ -128,8 +128,8 @@ export const LineItemsTab: React.FC<LineItemsTabProps> = ({ jobCardId }) => {
                     </td>
                         <td style={{ padding: "16px" }}>{item.title}</td>
                     <td style={{ padding: "16px" }}>{item.qty}</td>
-                    <td style={{ padding: "16px" }}>{item.unitPrice?.toLocaleString()}</td>
-                    <td style={{ padding: "16px" }}>{item.total?.toLocaleString()}</td>
+                    <td style={{ padding: "16px" }}>EUR {item.unitPrice?.toLocaleString()}</td>
+                    <td style={{ padding: "16px" }}>EUR {item.total?.toLocaleString()}</td>
                     <td style={{ padding: "16px", textAlign: "right" }}>
                       <Button
                         variant="secondary"
@@ -271,7 +271,7 @@ const AddLineItemModal: React.FC<{ jobCardId: string, onSubmit: (data: any) => v
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
           <Input
-            label="Quantity *"
+            label="Quantity (Piece/Hours) *"
             type="number"
             required
             value={formData.quantity}
