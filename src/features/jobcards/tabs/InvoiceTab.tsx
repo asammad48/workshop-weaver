@@ -212,7 +212,26 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
                             </div>
                         </Card>
                     </div>
-
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+                            <Card style={{ padding: '20px' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--c-muted)', textTransform: 'uppercase' }}>SubTotal Amount</span>
+                                <div style={{ fontSize: '24px', fontWeight: 700, marginTop: '4px' }}>
+                                    EUR {invoice.subtotal?.toLocaleString() || '0.00'}
+                                </div>
+                            </Card>
+                            <Card style={{ padding: '20px' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--c-muted)', textTransform: 'uppercase' }}>Discount Percentage</span>
+                                <div style={{ fontSize: '24px', fontWeight: 700, marginTop: '4px', color: 'var(--c-success)' }}>
+                                    % {invoice.discount?.toLocaleString() || '0.00'}
+                                </div>
+                            </Card>
+                            <Card style={{ padding: '20px' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--c-muted)', textTransform: 'uppercase' }}>Tax Percentage</span>
+                                <div style={{ fontSize: '24px', fontWeight: 700, marginTop: '4px', color: invoice.balance > 0 ? 'var(--c-danger)' : 'var(--c-success)' }}>
+                                    % {invoice.tax?.toLocaleString() || '0.00'}
+                                </div>
+                            </Card>
+                        </div>
                     <Card style={{ overflow: 'hidden' }}>
                         <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

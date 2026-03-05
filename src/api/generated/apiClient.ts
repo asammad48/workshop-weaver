@@ -9759,6 +9759,8 @@ export class JobCardStationHistoryResponse implements IJobCardStationHistoryResp
     movedAt?: Date;
     movedByUserId?: string;
     notes?: string | undefined;
+    workStationCode?: string | undefined;
+    moveByUser?: string | undefined;
 
     constructor(data?: IJobCardStationHistoryResponse) {
         if (data) {
@@ -9777,6 +9779,8 @@ export class JobCardStationHistoryResponse implements IJobCardStationHistoryResp
             this.movedAt = _data["movedAt"] ? new Date(_data["movedAt"].toString()) : undefined as any;
             this.movedByUserId = _data["movedByUserId"];
             this.notes = _data["notes"];
+            this.workStationCode = _data["workStationCode"];
+            this.moveByUser = _data["moveByUser"];
         }
     }
 
@@ -9795,6 +9799,8 @@ export class JobCardStationHistoryResponse implements IJobCardStationHistoryResp
         data["movedAt"] = this.movedAt ? this.movedAt.toISOString() : undefined as any;
         data["movedByUserId"] = this.movedByUserId;
         data["notes"] = this.notes;
+        data["workStationCode"] = this.workStationCode;
+        data["moveByUser"] = this.moveByUser;
         return data;
     }
 }
@@ -9806,6 +9812,8 @@ export interface IJobCardStationHistoryResponse {
     movedAt?: Date;
     movedByUserId?: string;
     notes?: string | undefined;
+    workStationCode?: string | undefined;
+    moveByUser?: string | undefined;
 }
 
 export class JobCardStationHistoryResponseApiResponse implements IJobCardStationHistoryResponseApiResponse {

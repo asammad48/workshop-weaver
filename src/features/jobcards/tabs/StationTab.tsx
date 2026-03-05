@@ -194,26 +194,6 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  ID
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
-                  JobCardID
-                </th>
-                <th
-                  style={{
-                    padding: "16px",
-                    color: "var(--c-muted)",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}
-                >
                   Station
                 </th>
                 <th
@@ -286,14 +266,8 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                       (e.currentTarget.style.backgroundColor = "transparent")
                     }
                   >
-                    <td style={{ padding: "16px", color: "var(--c-text)", fontSize: "12px" }}>
-                      {item.id || "-"}
-                    </td>
-                    <td style={{ padding: "16px", color: "var(--c-text)", fontSize: "12px" }}>
-                      {item.jobCardId || "-"}
-                    </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {item.workStationName || item.workStationId || "-"}
+                            {item.workStationCode || item.workStationId || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.movedAt
@@ -301,7 +275,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                         : "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
-                      {item.movedByName || item.movedByUserId || "-"}
+                            {item.moveByUser || item.movedByUserId || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.notes || "-"}
