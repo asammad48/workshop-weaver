@@ -3995,6 +3995,98 @@ export class Client {
     }
 
     /**
+     * @param t (optional) 
+     * @return Success
+     */
+    jobcardsGET4(jobCardId: string, t?: string | undefined, signal?: AbortSignal): Promise<PublicJobCardReceiptResponseApiResponse> {
+        let url_ = this.baseUrl + "/public/receipt/jobcards/{jobCardId}?";
+        if (jobCardId === undefined || jobCardId === null)
+            throw new globalThis.Error("The parameter 'jobCardId' must be defined.");
+        url_ = url_.replace("{jobCardId}", encodeURIComponent("" + jobCardId));
+        if (t === null)
+            throw new globalThis.Error("The parameter 't' cannot be null.");
+        else if (t !== undefined)
+            url_ += "t=" + encodeURIComponent("" + t) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processJobcardsGET4(_response));
+        });
+    }
+
+    protected processJobcardsGET4(response: Response): Promise<PublicJobCardReceiptResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PublicJobCardReceiptResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PublicJobCardReceiptResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param t (optional) 
+     * @return Success
+     */
+    print(jobCardId: string, t?: string | undefined, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/public/receipt/jobcards/{jobCardId}/print?";
+        if (jobCardId === undefined || jobCardId === null)
+            throw new globalThis.Error("The parameter 'jobCardId' must be defined.");
+        url_ = url_.replace("{jobCardId}", encodeURIComponent("" + jobCardId));
+        if (t === null)
+            throw new globalThis.Error("The parameter 't' cannot be null.");
+        else if (t !== undefined)
+            url_ += "t=" + encodeURIComponent("" + t) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processPrint(_response));
+        });
+    }
+
+    protected processPrint(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -7145,19 +7237,19 @@ export interface IChartSeriesDto {
     points?: ChartPointDto[] | undefined;
 }
 
-export enum CommunicationChannel {
+export enum CommunicationDirection {
     _1 = 1,
     _2 = 2,
     _3 = 3,
-    _4 = 4,
-    _5 = 5,
 }
 
 export class CommunicationLogCreateRequest implements ICommunicationLogCreateRequest {
     jobCardId?: string;
-    channel?: CommunicationChannel;
-    messageType?: CommunicationMessageType;
-    notes?: string | undefined;
+    type?: CommunicationType;
+    direction?: CommunicationDirection;
+    summary?: string | undefined;
+    details?: string | undefined;
+    occurredAt?: Date;
 
     constructor(data?: ICommunicationLogCreateRequest) {
         if (data) {
@@ -7171,9 +7263,11 @@ export class CommunicationLogCreateRequest implements ICommunicationLogCreateReq
     init(_data?: any) {
         if (_data) {
             this.jobCardId = _data["jobCardId"];
-            this.channel = _data["channel"];
-            this.messageType = _data["messageType"];
-            this.notes = _data["notes"];
+            this.type = _data["type"];
+            this.direction = _data["direction"];
+            this.summary = _data["summary"];
+            this.details = _data["details"];
+            this.occurredAt = _data["occurredAt"] ? new Date(_data["occurredAt"].toString()) : undefined as any;
         }
     }
 
@@ -7187,29 +7281,34 @@ export class CommunicationLogCreateRequest implements ICommunicationLogCreateReq
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["jobCardId"] = this.jobCardId;
-        data["channel"] = this.channel;
-        data["messageType"] = this.messageType;
-        data["notes"] = this.notes;
+        data["type"] = this.type;
+        data["direction"] = this.direction;
+        data["summary"] = this.summary;
+        data["details"] = this.details;
+        data["occurredAt"] = this.occurredAt ? this.occurredAt.toISOString() : undefined as any;
         return data;
     }
 }
 
 export interface ICommunicationLogCreateRequest {
     jobCardId?: string;
-    channel?: CommunicationChannel;
-    messageType?: CommunicationMessageType;
-    notes?: string | undefined;
+    type?: CommunicationType;
+    direction?: CommunicationDirection;
+    summary?: string | undefined;
+    details?: string | undefined;
+    occurredAt?: Date;
 }
 
 export class CommunicationLogResponse implements ICommunicationLogResponse {
     id?: string;
-    branchId?: string;
+    branchId?: string | undefined;
     jobCardId?: string;
-    channel?: CommunicationChannel;
-    messageType?: CommunicationMessageType;
-    sentAt?: Date;
-    notes?: string | undefined;
-    sentByUserId?: string;
+    type?: CommunicationType;
+    direction?: CommunicationDirection;
+    summary?: string | undefined;
+    details?: string | undefined;
+    occurredAt?: Date;
+    createdByUserId?: string;
     createdByEmail?: string | undefined;
     jobCardPlate?: string | undefined;
 
@@ -7227,11 +7326,12 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
             this.id = _data["id"];
             this.branchId = _data["branchId"];
             this.jobCardId = _data["jobCardId"];
-            this.channel = _data["channel"];
-            this.messageType = _data["messageType"];
-            this.sentAt = _data["sentAt"] ? new Date(_data["sentAt"].toString()) : undefined as any;
-            this.notes = _data["notes"];
-            this.sentByUserId = _data["sentByUserId"];
+            this.type = _data["type"];
+            this.direction = _data["direction"];
+            this.summary = _data["summary"];
+            this.details = _data["details"];
+            this.occurredAt = _data["occurredAt"] ? new Date(_data["occurredAt"].toString()) : undefined as any;
+            this.createdByUserId = _data["createdByUserId"];
             this.createdByEmail = _data["createdByEmail"];
             this.jobCardPlate = _data["jobCardPlate"];
         }
@@ -7249,11 +7349,12 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
         data["id"] = this.id;
         data["branchId"] = this.branchId;
         data["jobCardId"] = this.jobCardId;
-        data["channel"] = this.channel;
-        data["messageType"] = this.messageType;
-        data["sentAt"] = this.sentAt ? this.sentAt.toISOString() : undefined as any;
-        data["notes"] = this.notes;
-        data["sentByUserId"] = this.sentByUserId;
+        data["type"] = this.type;
+        data["direction"] = this.direction;
+        data["summary"] = this.summary;
+        data["details"] = this.details;
+        data["occurredAt"] = this.occurredAt ? this.occurredAt.toISOString() : undefined as any;
+        data["createdByUserId"] = this.createdByUserId;
         data["createdByEmail"] = this.createdByEmail;
         data["jobCardPlate"] = this.jobCardPlate;
         return data;
@@ -7262,13 +7363,14 @@ export class CommunicationLogResponse implements ICommunicationLogResponse {
 
 export interface ICommunicationLogResponse {
     id?: string;
-    branchId?: string;
+    branchId?: string | undefined;
     jobCardId?: string;
-    channel?: CommunicationChannel;
-    messageType?: CommunicationMessageType;
-    sentAt?: Date;
-    notes?: string | undefined;
-    sentByUserId?: string;
+    type?: CommunicationType;
+    direction?: CommunicationDirection;
+    summary?: string | undefined;
+    details?: string | undefined;
+    occurredAt?: Date;
+    createdByUserId?: string;
     createdByEmail?: string | undefined;
     jobCardPlate?: string | undefined;
 }
@@ -7393,13 +7495,12 @@ export interface ICommunicationLogResponseIReadOnlyListApiResponse {
     errors?: string[] | undefined;
 }
 
-export enum CommunicationMessageType {
+export enum CommunicationType {
     _1 = 1,
     _2 = 2,
     _3 = 3,
     _4 = 4,
     _5 = 5,
-    _6 = 6,
 }
 
 export class CreateUserDto implements ICreateUserDto {
@@ -12364,6 +12465,354 @@ export enum PaymentStatus {
     _1 = 1,
     _2 = 2,
     _3 = 3,
+}
+
+export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptResponse {
+    jobCardId?: string;
+    plate?: string | undefined;
+    customerName?: string | undefined;
+    branchName?: string | undefined;
+    entryAt?: Date;
+    exitAt?: Date | undefined;
+    status?: string | undefined;
+    invoice?: PublicReceiptInvoiceDto;
+    payments?: PublicReceiptPaymentDto[] | undefined;
+    communications?: PublicReceiptCommDto[] | undefined;
+
+    constructor(data?: IPublicJobCardReceiptResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobCardId = _data["jobCardId"];
+            this.plate = _data["plate"];
+            this.customerName = _data["customerName"];
+            this.branchName = _data["branchName"];
+            this.entryAt = _data["entryAt"] ? new Date(_data["entryAt"].toString()) : undefined as any;
+            this.exitAt = _data["exitAt"] ? new Date(_data["exitAt"].toString()) : undefined as any;
+            this.status = _data["status"];
+            this.invoice = _data["invoice"] ? PublicReceiptInvoiceDto.fromJS(_data["invoice"]) : undefined as any;
+            if (Array.isArray(_data["payments"])) {
+                this.payments = [] as any;
+                for (let item of _data["payments"])
+                    this.payments!.push(PublicReceiptPaymentDto.fromJS(item));
+            }
+            if (Array.isArray(_data["communications"])) {
+                this.communications = [] as any;
+                for (let item of _data["communications"])
+                    this.communications!.push(PublicReceiptCommDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PublicJobCardReceiptResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicJobCardReceiptResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobCardId"] = this.jobCardId;
+        data["plate"] = this.plate;
+        data["customerName"] = this.customerName;
+        data["branchName"] = this.branchName;
+        data["entryAt"] = this.entryAt ? this.entryAt.toISOString() : undefined as any;
+        data["exitAt"] = this.exitAt ? this.exitAt.toISOString() : undefined as any;
+        data["status"] = this.status;
+        data["invoice"] = this.invoice ? this.invoice.toJSON() : undefined as any;
+        if (Array.isArray(this.payments)) {
+            data["payments"] = [];
+            for (let item of this.payments)
+                data["payments"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.communications)) {
+            data["communications"] = [];
+            for (let item of this.communications)
+                data["communications"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IPublicJobCardReceiptResponse {
+    jobCardId?: string;
+    plate?: string | undefined;
+    customerName?: string | undefined;
+    branchName?: string | undefined;
+    entryAt?: Date;
+    exitAt?: Date | undefined;
+    status?: string | undefined;
+    invoice?: PublicReceiptInvoiceDto;
+    payments?: PublicReceiptPaymentDto[] | undefined;
+    communications?: PublicReceiptCommDto[] | undefined;
+}
+
+export class PublicJobCardReceiptResponseApiResponse implements IPublicJobCardReceiptResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: PublicJobCardReceiptResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IPublicJobCardReceiptResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? PublicJobCardReceiptResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): PublicJobCardReceiptResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicJobCardReceiptResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IPublicJobCardReceiptResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: PublicJobCardReceiptResponse;
+    errors?: string[] | undefined;
+}
+
+export class PublicReceiptCommDto implements IPublicReceiptCommDto {
+    occurredAt?: Date;
+    summary?: string | undefined;
+
+    constructor(data?: IPublicReceiptCommDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.occurredAt = _data["occurredAt"] ? new Date(_data["occurredAt"].toString()) : undefined as any;
+            this.summary = _data["summary"];
+        }
+    }
+
+    static fromJS(data: any): PublicReceiptCommDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicReceiptCommDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["occurredAt"] = this.occurredAt ? this.occurredAt.toISOString() : undefined as any;
+        data["summary"] = this.summary;
+        return data;
+    }
+}
+
+export interface IPublicReceiptCommDto {
+    occurredAt?: Date;
+    summary?: string | undefined;
+}
+
+export class PublicReceiptInvoiceDto implements IPublicReceiptInvoiceDto {
+    hasInvoice?: boolean;
+    subtotal?: number;
+    discount?: number;
+    tax?: number;
+    total?: number;
+    paid?: number;
+    due?: number;
+    lines?: PublicReceiptInvoiceLineDto[] | undefined;
+
+    constructor(data?: IPublicReceiptInvoiceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.hasInvoice = _data["hasInvoice"];
+            this.subtotal = _data["subtotal"];
+            this.discount = _data["discount"];
+            this.tax = _data["tax"];
+            this.total = _data["total"];
+            this.paid = _data["paid"];
+            this.due = _data["due"];
+            if (Array.isArray(_data["lines"])) {
+                this.lines = [] as any;
+                for (let item of _data["lines"])
+                    this.lines!.push(PublicReceiptInvoiceLineDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PublicReceiptInvoiceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicReceiptInvoiceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hasInvoice"] = this.hasInvoice;
+        data["subtotal"] = this.subtotal;
+        data["discount"] = this.discount;
+        data["tax"] = this.tax;
+        data["total"] = this.total;
+        data["paid"] = this.paid;
+        data["due"] = this.due;
+        if (Array.isArray(this.lines)) {
+            data["lines"] = [];
+            for (let item of this.lines)
+                data["lines"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IPublicReceiptInvoiceDto {
+    hasInvoice?: boolean;
+    subtotal?: number;
+    discount?: number;
+    tax?: number;
+    total?: number;
+    paid?: number;
+    due?: number;
+    lines?: PublicReceiptInvoiceLineDto[] | undefined;
+}
+
+export class PublicReceiptInvoiceLineDto implements IPublicReceiptInvoiceLineDto {
+    name?: string | undefined;
+    qty?: number;
+    unitPrice?: number;
+    amount?: number;
+
+    constructor(data?: IPublicReceiptInvoiceLineDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.qty = _data["qty"];
+            this.unitPrice = _data["unitPrice"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): PublicReceiptInvoiceLineDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicReceiptInvoiceLineDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["qty"] = this.qty;
+        data["unitPrice"] = this.unitPrice;
+        data["amount"] = this.amount;
+        return data;
+    }
+}
+
+export interface IPublicReceiptInvoiceLineDto {
+    name?: string | undefined;
+    qty?: number;
+    unitPrice?: number;
+    amount?: number;
+}
+
+export class PublicReceiptPaymentDto implements IPublicReceiptPaymentDto {
+    paidAt?: Date;
+    amount?: number;
+    method?: string | undefined;
+
+    constructor(data?: IPublicReceiptPaymentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.paidAt = _data["paidAt"] ? new Date(_data["paidAt"].toString()) : undefined as any;
+            this.amount = _data["amount"];
+            this.method = _data["method"];
+        }
+    }
+
+    static fromJS(data: any): PublicReceiptPaymentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PublicReceiptPaymentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["paidAt"] = this.paidAt ? this.paidAt.toISOString() : undefined as any;
+        data["amount"] = this.amount;
+        data["method"] = this.method;
+        return data;
+    }
+}
+
+export interface IPublicReceiptPaymentDto {
+    paidAt?: Date;
+    amount?: number;
+    method?: string | undefined;
 }
 
 export class PurchaseOrderCreateRequest implements IPurchaseOrderCreateRequest {
