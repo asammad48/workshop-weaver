@@ -98,7 +98,7 @@ export const jobCardsRepo = {
   },
 
   openPrint(jobCardId: string): void {
-    const url = `${getBaseUrl()}/api/v1/jobcards/${jobCardId}/print`;
+    const url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
     window.open(url, "_blank");
   },
 };

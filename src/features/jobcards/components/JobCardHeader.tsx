@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope, Wrench, Printer } from "lucide-react";
+import { ClipboardList, Stethoscope, Wrench, Printer, ExternalLink } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
 import { getLocationsOnce } from "@/api/lookups/locationsLookup";
@@ -226,6 +226,11 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     jobCardsRepo.openPrint(jobCard.id);
   };
 
+  const handleViewPublic = () => {
+    const url = `${window.location.origin}/r/jobcards/${jobCard.id}`;
+    window.open(url, "_blank");
+  };
+
   const canManage =
     user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER";
 
@@ -243,10 +248,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
       }}
     >
       {canManage && (
-        <Button variant="secondary" onClick={handlePrint}>
-          <Printer size={18} style={{ marginRight: "8px" }} />
-          Print JobCard
-        </Button>
+        <>
+          <Button variant="secondary" onClick={handleViewPublic}>
+            <ExternalLink size={18} style={{ marginRight: "8px" }} />
+            View Public Receipt
+          </Button>
+          <Button variant="secondary" onClick={handlePrint}>
+            <Printer size={18} style={{ marginRight: "8px" }} />
+            Print JobCard
+          </Button>
+        </>
       )}
       <Button variant="secondary" onClick={handleUsePart}>
         <Wrench size={18} style={{ marginRight: "8px" }} />
