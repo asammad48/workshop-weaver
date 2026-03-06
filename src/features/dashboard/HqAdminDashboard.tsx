@@ -52,7 +52,7 @@ export function HqAdminDashboard({ data, loading }: DashboardProps) {
         title="Recent Job Cards"
         loading={loading}
         data={alerts}
-        onRowClick={(item) => navigate(`/jobcards/${item.jobCardId}`)}
+        onRowClick={(item) => navigate(`/r/jobcards/${item.jobCardId}`)}
         columns={[
           { header: 'Plate', render: (item) => item.plate || '-' },
           { header: 'Customer', render: (item) => item.customerName || '-' },
