@@ -29,6 +29,9 @@ import ReportsPage from '@/pages/ReportsPage';
 import MyAttendancePage from '@/pages/attendance/MyAttendancePage';
 import AttendanceAdminPage from '@/pages/attendance/AttendanceAdminPage';
 
+// Public
+import PublicJobCardReceiptPage from '@/pages/public/PublicJobCardReceiptPage';
+
 // Admin
 import UsersPage from '@/pages/admin/UsersPage';
 import BranchesPage from '@/pages/admin/BranchesPage';
@@ -40,6 +43,7 @@ export function AppRoutes() {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/r/jobcards/:jobCardId" element={<PublicJobCardReceiptPage />} />
 
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>

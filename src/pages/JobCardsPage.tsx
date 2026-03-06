@@ -8,6 +8,7 @@ import {
   LogIn,
   LogOut,
   Wrench,
+  Printer,
   ChevronLeft,
   ChevronRight,
   Loader2,
@@ -127,6 +128,10 @@ const JobCardsPage = () => {
 
   const handleView = (item: any) => {
     setSelectedJobCard(item);
+  };
+
+  const handlePrint = (item: any) => {
+    jobCardsRepo.openPrint(item.id);
   };
 
   const canManage =
@@ -486,6 +491,16 @@ const JobCardsPage = () => {
                         >
                           <Eye size={16} />
                         </Button>
+                        {canManage && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            title="Print JobCard"
+                            onClick={() => handlePrint(item)}
+                          >
+                            <Printer size={16} />
+                          </Button>
+                        )}
                         {canManage && !item.entryAt && (
                           <Button
                             variant="secondary"

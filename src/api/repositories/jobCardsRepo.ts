@@ -8,6 +8,7 @@ import {
 } from "@/api/generated/apiClient";
 import { createClient } from "./_repoBase";
 import { normalizeError } from "./_errors";
+import { getBaseUrl } from "../clientFactory";
 
 const client = createClient(Client);
 
@@ -94,5 +95,10 @@ export const jobCardsRepo = {
     } catch (error) {
       throw normalizeError(error);
     }
+  },
+
+  openPrint(jobCardId: string): void {
+    const url = `${getBaseUrl()}/api/v1/jobcards/${jobCardId}/print`;
+    window.open(url, "_blank");
   },
 };

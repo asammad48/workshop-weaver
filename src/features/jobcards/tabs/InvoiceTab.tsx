@@ -7,7 +7,9 @@ import { Select } from "@/components/forms/Select";
 import { ModalContent } from "@/components/ui/Modal";
 import { toast, openModal, closeModal } from "@/state/uiStore";
 import { PAYMENT_METHOD_LABELS, PAYMENT_METHOD_OPTIONS, PaymentMethod } from "@/constants/enums";
-import { Plus, Receipt, History, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Receipt, History, ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import { invoicesRepo } from "@/api/repositories/invoicesRepo";
+import { useAuth } from "@/hooks/useAuth";
 
 interface InvoiceTabProps {
     jobCardId: string;
@@ -130,6 +132,7 @@ const PaymentAddModalContent: React.FC<{ invoice: any; onAdded: () => void }> = 
 };
 
 export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
+    const { user } = useAuth();
     const [invoice, setInvoice] = useState<any>(null);
     const [payments, setPayments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -171,6 +174,16 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
         if (!invoice) return;
         openModal('Record Payment', <PaymentAddModalContent invoice={invoice} onAdded={fetchData} />);
     };
+
+    const handlePrintInvoice = () => {
+        if (!invoice) return;
+        invoicesRepo.openPrint(invoice.id);
+    };
+
+    const canPrintInvoice =
+        user?.role === "HQ_ADMIN" ||
+        user?.role === "BRANCH_MANAGER" ||
+        user?.role === "CASHIER";
 
     if (loading) return <div style={{ padding: '24px', textAlign: 'center' }}>Loading billing info...</div>;
     if (error) return <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-danger)' }}>{error}</div>;
@@ -238,10 +251,18 @@ export const InvoiceTab: React.FC<InvoiceTabProps> = ({ jobCardId }) => {
                                 <History size={18} style={{ color: 'var(--c-muted)' }} />
                                 <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Payment History</h3>
                             </div>
-                            <Button size="sm" onClick={handleAddPaymentModal} disabled={invoice.balance <= 0}>
-                                <Plus size={16} style={{ marginRight: '6px' }} />
-                                Add Payment
-                            </Button>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                {canPrintInvoice && (
+                                    <Button variant="secondary" size="sm" onClick={handlePrintInvoice}>
+                                        <Printer size={16} style={{ marginRight: '6px' }} />
+                                        Print Invoice
+                                    </Button>
+                                )}
+                                <Button size="sm" onClick={handleAddPaymentModal} disabled={invoice.balance <= 0}>
+                                    <Plus size={16} style={{ marginRight: '6px' }} />
+                                    Add Payment
+                                </Button>
+                            </div>
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>

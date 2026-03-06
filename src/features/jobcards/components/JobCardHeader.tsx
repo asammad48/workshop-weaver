@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope, Wrench } from "lucide-react";
+import { ClipboardList, Stethoscope, Wrench, Printer } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
 import { getLocationsOnce } from "@/api/lookups/locationsLookup";
@@ -10,6 +10,7 @@ import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/hooks/useAuth";
 
 interface JobCardHeaderProps {
   jobCard: any;
@@ -20,6 +21,7 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
   jobCard,
   onUpdate,
 }) => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const statusMutation = useMutation({
@@ -220,6 +222,13 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     );
   };
 
+  const handlePrint = () => {
+    jobCardsRepo.openPrint(jobCard.id);
+  };
+
+  const canManage =
+    user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER";
+
   return (
     <div
       style={{
@@ -233,6 +242,12 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         justifyContent: "flex-end",
       }}
     >
+      {canManage && (
+        <Button variant="secondary" onClick={handlePrint}>
+          <Printer size={18} style={{ marginRight: "8px" }} />
+          Print JobCard
+        </Button>
+      )}
       <Button variant="secondary" onClick={handleUsePart}>
         <Wrench size={18} style={{ marginRight: "8px" }} />
         Use Part
