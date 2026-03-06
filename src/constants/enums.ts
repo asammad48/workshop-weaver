@@ -70,6 +70,22 @@ export const USER_ROLE_OPTIONS = Object.entries(USER_ROLE_LABELS).map(
   }),
 );
 
+export enum JobPartRequestStatus {
+  REQUESTED = 0,
+  ORDERED = 1,
+  ARRIVED = 2,
+  STATION_SIGNED = 3,
+  OFFICE_SIGNED = 4,
+}
+
+export const JOB_PART_REQUEST_STATUS_LABELS: Record<number, string> = {
+  [JobPartRequestStatus.REQUESTED]: "Requested",
+  [JobPartRequestStatus.ORDERED]: "Ordered",
+  [JobPartRequestStatus.ARRIVED]: "Arrived",
+  [JobPartRequestStatus.STATION_SIGNED]: "Station Signed",
+  [JobPartRequestStatus.OFFICE_SIGNED]: "Office Signed",
+};
+
 export enum AttendanceStatus {
   PRESENT = 1,
   ABSENT = 2,

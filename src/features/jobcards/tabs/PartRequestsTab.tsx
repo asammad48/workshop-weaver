@@ -19,7 +19,7 @@ import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { useAuth } from "@/hooks/useAuth";
-import { UserRole, Roles } from "@/constants/enums";
+import { UserRole, Roles, JOB_PART_REQUEST_STATUS_LABELS } from "@/constants/enums";
 
 interface PartRequestsTabProps {
   jobCardId: string;
@@ -229,7 +229,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                           border: "1px solid var(--c-border)",
                         }}
                       >
-                        {req.status}
+                        {JOB_PART_REQUEST_STATUS_LABELS[req.status] || req.status}
                       </span>
                     </td>
                     <td style={{ padding: "16px", fontSize: "12px" }}>

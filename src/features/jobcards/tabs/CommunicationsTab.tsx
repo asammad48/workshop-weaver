@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { commsRepo } from "@/api/repositories/commsRepo";
 import { Button } from "@/components/ui/Button";
@@ -22,7 +22,7 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
 
   const { data: commsData, isLoading, isError } = useQuery({
     queryKey: ["communications", jobCardId, page, search],
-    queryFn: () => commsRepo.listByJobCard(jobCardId), // Note: repo might need pagination/search update, but keeping it simple for style
+    queryFn: () => commsRepo.listByJobCard(jobCardId),
   });
 
   const comms = commsData?.data || [];
@@ -39,106 +39,15 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
     onError: () => toast.error("Failed to create log"),
   });
 
-  const handleCreateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    createMutation.mutate({
-      jobCardId,
-      channel: formData.get("channel"),
-      messageType: formData.get("messageType"),
-      sentAt: new Date(formData.get("sentAt") as string).toISOString(),
-      notes: formData.get("notes"),
-    });
-  };
-
   const openCreateModal = () => {
-    let channel = "1";
-    let messageType = "2";
-    let sentAt = new Date().toISOString().slice(0, 16);
-    let notes = "";
-
-    const renderModal = () => openModal(
+    openModal(
       "Add Communication Log",
-      (
-        <ModalContent
-          footer={
-            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
-              <Button onClick={() => {
-                createMutation.mutate({
-                  jobCardId,
-                  channel: parseInt(channel as string),
-                  messageType: parseInt(messageType as string),
-                  sentAt: new Date(sentAt).toISOString(),
-                  notes,
-                });
-              }} disabled={createMutation.isPending}>
-                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save Log
-              </Button>
-            </div>
-          }
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Select 
-              label="Channel"
-              options={[
-                { value: "1", label: "WhatsApp" },
-                { value: "2", label: "SMS" },
-                { value: "3", label: "Call" },
-                { value: "4", label: "Email" },
-                { value: "5", label: "InPerson" },
-              ]}
-              defaultValue={channel}
-              onChange={(e) => {
-                channel = e.target.value;
-                renderModal();
-              }}
-            />
-            <Select 
-              label="Message Type"
-              options={[
-                { value: "1", label: "Diagnosis" },
-                { value: "2", label: "Estimate" },
-                { value: "3", label: "Update" },
-                { value: "4", label: "ReadyForPickup" },
-                { value: "5", label: "PaymentReminder" },
-                { value: "6", label: "Other" },
-              ]}
-              defaultValue={messageType}
-              onChange={(e) => {
-                messageType = e.target.value;
-                renderModal();
-              }}
-            />
-            <Input 
-              label="Sent At" 
-              type="datetime-local" 
-              required 
-              defaultValue={sentAt}
-              onChange={(e) => {
-                sentAt = e.target.value;
-                renderModal();
-              }}
-            />
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-[var(--c-text)]">Notes</label>
-              <textarea 
-                className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
-                placeholder="Enter communication notes..."
-                defaultValue={notes}
-                onChange={(e) => {
-                  notes = e.target.value;
-                  renderModal();
-                }}
-              />
-            </div>
-          </div>
-        </ModalContent>
-      )
+      <CreateLogModal
+        jobCardId={jobCardId}
+        onSave={(data) => createMutation.mutate(data)}
+        isPending={createMutation.isPending}
+      />
     );
-
-    renderModal();
   };
 
   if (isError) return <div className="p-8 text-center text-red-500">Error loading communications</div>;
@@ -170,11 +79,11 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Channel</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>MessageType</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>SentAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Direction</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Occurred At</th>
                 <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Created By</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Notes</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Summary</th>
               </tr>
             </thead>
             <tbody>
@@ -194,30 +103,30 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
                 comms.map((log: any) => (
                   <tr key={log.id} style={{ borderBottom: "1px solid var(--c-border)" }}>
                     <td style={{ padding: "16px" }}>
-                      <span className="flex items-center gap-2">
-                        <MessageSquare size={14} className="text-gray-400" />
-                        {log.channel === 1 ? "WhatsApp" :
-                         log.channel === 2 ? "SMS" :
-                         log.channel === 3 ? "Call" :
-                         log.channel === 4 ? "Email" :
-                         log.channel === 5 ? "In Person" : log.channel}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <MessageSquare size={14} style={{ color: "var(--c-muted)" }} />
+                        <span style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "12px", background: "var(--c-bg-alt)", border: "1px solid var(--c-border)" }}>
+                          {log.type === 1 ? "Diagnosis" :
+                           log.type === 2 ? "Estimate" :
+                           log.type === 3 ? "Update" :
+                           log.type === 4 ? "Ready For Pickup" :
+                           log.type === 5 ? "Payment Reminder" :
+                           log.type === 6 ? "Other" : log.type}
+                        </span>
                       </span>
                     </td>
                     <td style={{ padding: "16px" }}>
                       <span style={{ fontSize: "12px", padding: "2px 8px", borderRadius: "12px", background: "var(--c-bg-alt)", border: "1px solid var(--c-border)" }}>
-                        {log.messageType === 1 ? "Diagnosis" :
-                         log.messageType === 2 ? "Estimate" :
-                         log.messageType === 3 ? "Update" :
-                         log.messageType === 4 ? "Ready For Pickup" :
-                         log.messageType === 5 ? "Payment Reminder" :
-                         log.messageType === 6 ? "Other" : log.messageType}
+                        {log.direction === 1 ? "Outbound" :
+                         log.direction === 2 ? "Inbound" :
+                         log.direction === 3 ? "Internal" : log.direction}
                       </span>
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px" }}>
-                      {new Date(log.sentAt).toLocaleString()}
+                      {log.occurredAt ? new Date(log.occurredAt).toLocaleString() : "-"}
                     </td>
                     <td style={{ padding: "16px" }}>{log.createdByEmail ?? "-"}</td>
-                    <td style={{ padding: "16px" }}>{log.notes}</td>
+                    <td style={{ padding: "16px" }}>{log.summary}</td>
                   </tr>
                 ))
               )}
@@ -240,5 +149,94 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
         </div>
       </Card>
     </div>
+  );
+};
+
+const CreateLogModal: React.FC<{
+  jobCardId: string;
+  onSave: (data: any) => void;
+  isPending: boolean;
+}> = ({ jobCardId, onSave, isPending }) => {
+  const [formData, setFormData] = useState({
+    type: "1",
+    direction: "1",
+    occurredAt: new Date().toISOString().slice(0, 16),
+    summary: "",
+  });
+
+  return (
+    <ModalContent
+      footer={
+        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+          <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+          <Button onClick={() => {
+            onSave({
+              jobCardId,
+              type: parseInt(formData.type),
+              direction: parseInt(formData.direction),
+              occurredAt: new Date(formData.occurredAt).toISOString(),
+              summary: formData.summary,
+            });
+          }} disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Log
+          </Button>
+        </div>
+      }
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <Select
+            label="Message Type"
+            options={[
+              { value: "1", label: "Diagnosis" },
+              { value: "2", label: "Estimate" },
+              { value: "3", label: "Update" },
+              { value: "4", label: "Ready For Pickup" },
+              { value: "5", label: "Payment Reminder" },
+              { value: "6", label: "Other" },
+            ]}
+            value={formData.type}
+            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+          />
+          <Select
+            label="Direction"
+            options={[
+              { value: "1", label: "Outbound" },
+              { value: "2", label: "Inbound" },
+              { value: "3", label: "Internal" },
+            ]}
+            value={formData.direction}
+            onChange={(e) => setFormData(prev => ({ ...prev, direction: e.target.value }))}
+          />
+        </div>
+        <Input
+          label="Occurred At"
+          type="datetime-local"
+          required
+          value={formData.occurredAt}
+          onChange={(e) => setFormData(prev => ({ ...prev, occurredAt: e.target.value }))}
+        />
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <label style={{ fontSize: "14px", fontWeight: 500 }}>Summary (Notes)</label>
+          <textarea
+            style={{
+              width: "100%",
+              padding: "8px 12px",
+              borderRadius: "6px",
+              border: "1px solid var(--c-border)",
+              backgroundColor: "var(--c-bg)",
+              color: "var(--c-text)",
+              outline: "none",
+              minHeight: "100px",
+              resize: "vertical"
+            }}
+            placeholder="Enter communication notes..."
+            value={formData.summary}
+            onChange={(e) => setFormData(prev => ({ ...prev, summary: e.target.value }))}
+          />
+        </div>
+      </div>
+    </ModalContent>
   );
 };

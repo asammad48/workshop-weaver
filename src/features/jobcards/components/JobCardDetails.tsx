@@ -11,6 +11,7 @@ import { RoadblockersTab } from "../tabs/RoadblockersTab";
 import { ApprovalsTab } from "../tabs/ApprovalsTab";
 import { CommunicationsTab } from "../tabs/CommunicationsTab";
 import { AttachmentsTab } from "../tabs/AttachmentsTab";
+import { JOB_CARD_STATUS_LABELS, JobCardStatus } from "@/constants/enums";
 
 interface JobCardDetailsProps {
   jobCard: any;
@@ -91,9 +92,9 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
                     padding: '2px 8px', 
                     borderRadius: '4px', 
                     fontSize: '12px',
-                    backgroundColor: jobCard.status === 2 ? 'rgba(34, 197, 94, 0.1)' : jobCard.status === 1 ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                    color: jobCard.status === 2 ? 'rgb(34, 197, 94)' : jobCard.status === 1 ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
-                  }}>{jobCard.statusName || jobCard.status}</span>
+                    backgroundColor: jobCard.status === JobCardStatus.PAGADO ? 'rgba(34, 197, 94, 0.1)' : jobCard.status === JobCardStatus.EN_PROCESO ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                    color: jobCard.status === JobCardStatus.PAGADO ? 'rgb(34, 197, 94)' : jobCard.status === JobCardStatus.EN_PROCESO ? 'rgb(59, 130, 246)' : 'rgb(107, 114, 128)'
+                  }}>{jobCard.statusName || JOB_CARD_STATUS_LABELS[jobCard.status] || jobCard.status}</span>
                 </div>
               </div>
             </div>
