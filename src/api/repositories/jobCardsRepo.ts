@@ -42,10 +42,10 @@ export const jobCardsRepo = {
   },
 
   async create(
-    body: JobCardCreateRequest,
+    body: JobCardCreateRequest | any,
   ): Promise<JobCardResponseApiResponse> {
     try {
-      return await client.jobcardsPOST(body);
+      return await client.jobcardsPOST(body as JobCardCreateRequest);
     } catch (error) {
       throw normalizeError(error);
     }

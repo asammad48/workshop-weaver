@@ -11,6 +11,7 @@ import { RoadblockersTab } from "../tabs/RoadblockersTab";
 import { ApprovalsTab } from "../tabs/ApprovalsTab";
 import { CommunicationsTab } from "../tabs/CommunicationsTab";
 import { AttachmentsTab } from "../tabs/AttachmentsTab";
+import { DiagnosisTab } from "../tabs/DiagnosisTab";
 import { JOB_CARD_STATUS_LABELS, JobCardStatus } from "@/constants/enums";
 
 interface JobCardDetailsProps {
@@ -37,9 +38,10 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
         display: 'flex', 
         borderBottom: '1px solid var(--c-border)',
         gap: '24px',
-        marginBottom: '8px'
+        marginBottom: '8px',
+        overflowX: 'auto'
       }}>
-        {['details', 'tasks', 'stations', 'line-items', 'part-requests', 'billing', 'roadblockers', 'approvals', 'communications', 'attachments'].map((tab) => (
+        {['details', 'diagnosis', 'tasks', 'stations', 'line-items', 'part-requests', 'billing', 'roadblockers', 'approvals', 'communications', 'attachments'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -100,6 +102,44 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Estimated Timeline</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Requested ETA</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.requestedEta ? new Date(jobCard.requestedEta).toLocaleString() : "—"}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Latest Est. ETA</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.latestEstimatedEta ? new Date(jobCard.latestEstimatedEta).toLocaleString() : "—"}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Latest Est. Price</span>
+                  <span style={{ fontWeight: 500 }}>
+                    {jobCard.latestEstimatedPrice !== undefined && jobCard.latestEstimatedPrice !== null
+                      ? new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(jobCard.latestEstimatedPrice)
+                      : "—"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Latest Diagnosis Summary</h3>
+              <div style={{
+                padding: '12px',
+                backgroundColor: 'var(--c-bg)',
+                borderRadius: '6px',
+                border: '1px solid var(--c-border)',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                minHeight: '80px',
+                whiteSpace: 'pre-wrap'
+              }}>
+                {jobCard.latestDiagnosisSummary || "No diagnosis summary available."}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Timeline & Usage</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
@@ -133,6 +173,8 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
               </div>
             )}
           </div>
+        ) : activeTab === 'diagnosis' ? (
+          <DiagnosisTab jobCardId={jobCard.id} />
         ) : activeTab === 'tasks' ? (
           <TasksTab jobCardId={jobCard.id} />
         ) : activeTab === 'stations' ? (

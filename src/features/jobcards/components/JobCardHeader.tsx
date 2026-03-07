@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClipboardList, Stethoscope, Wrench, Printer, ExternalLink } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
+import { jobCardDiagnosisRepo } from "@/api/repositories/jobCardDiagnosisRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
 import { getLocationsOnce } from "@/api/lookups/locationsLookup";
 import { getPartsOnce } from "@/api/lookups/partsLookup";
@@ -40,15 +41,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
   });
 
   const diagnosisMutation = useMutation({
-    mutationFn: (body: any) => jobCardsRepo.diagnosis(jobCard.id, body),
+    mutationFn: (body: any) => jobCardDiagnosisRepo.create(jobCard.id, body),
     onSuccess: (res) => {
       if (res.success) {
-        toast.success("Diagnosis updated successfully");
+        toast.success("Diagnosis update added successfully");
         queryClient.invalidateQueries({ queryKey: ["jobCards"] });
+        queryClient.invalidateQueries({ queryKey: ["jobCardDiagnosis", jobCard.id] });
         if (onUpdate) onUpdate();
         closeModal();
       } else {
-        toast.error(res.message || "Failed to update diagnosis");
+        toast.error(res.message || "Failed to add diagnosis update");
       }
     },
     onError: (err: any) => toast.error(err.message || "An error occurred"),
@@ -136,13 +138,13 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
 
   const handleDiagnosis = () => {
     let formData = {
-      diagnosis: jobCard.diagnosis || "",
-      estimateCost: jobCard.estimateCost || 0,
-      estimateMinutes: jobCard.estimateMinutes || 0,
+      diagnosisNote: "",
+      estimatedEta: "",
+      estimatedPrice: undefined as number | undefined,
     };
 
     openModal(
-      "Update Diagnosis",
+      "Add Diagnosis Update",
       <ModalContent
         footer={
           <div
@@ -152,10 +154,19 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
               Cancel
             </Button>
             <Button
-              onClick={() => diagnosisMutation.mutate(formData)}
+              onClick={() => {
+                if (!formData.diagnosisNote) {
+                  toast.error("Diagnosis note is required");
+                  return;
+                }
+                diagnosisMutation.mutate({
+                  ...formData,
+                  estimatedEta: formData.estimatedEta ? new Date(formData.estimatedEta) : undefined
+                });
+              }}
               disabled={diagnosisMutation.isPending}
             >
-              {diagnosisMutation.isPending ? "Saving..." : "Save Diagnosis"}
+              {diagnosisMutation.isPending ? "Saving..." : "Add Update"}
             </Button>
           </div>
         }
@@ -163,7 +174,7 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <label style={{ fontSize: "14px", fontWeight: 500 }}>
-              Diagnosis *
+              Diagnosis Note *
             </label>
             <textarea
               style={{
@@ -178,9 +189,8 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
               }}
               rows={4}
               required
-              placeholder="Detailed diagnosis findings"
-              defaultValue={formData.diagnosis}
-              onChange={(e) => (formData.diagnosis = e.target.value)}
+              placeholder="Describe findings and work needed"
+              onChange={(e) => (formData.diagnosisNote = e.target.value)}
             />
           </div>
           <div
@@ -191,19 +201,16 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
             }}
           >
             <Input
-              label="Estimated Cost"
-              type="number"
-              defaultValue={formData.estimateCost}
-              onChange={(e) =>
-                (formData.estimateCost = parseFloat(e.target.value) || 0)
-              }
+              label="Updated ETA"
+              type="datetime-local"
+              onChange={(e) => (formData.estimatedEta = e.target.value)}
             />
             <Input
-              label="Estimated Minutes"
+              label="Estimated Price"
               type="number"
-              defaultValue={formData.estimateMinutes}
+              step="0.01"
               onChange={(e) =>
-                (formData.estimateMinutes = parseInt(e.target.value) || 0)
+                (formData.estimatedPrice = parseFloat(e.target.value) || undefined)
               }
             />
           </div>
@@ -263,10 +270,12 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
         <Wrench size={18} style={{ marginRight: "8px" }} />
         Use Part
       </Button>
-      <Button variant="secondary" onClick={handleDiagnosis}>
-        <Stethoscope size={18} style={{ marginRight: "8px" }} />
-        Update Diagnosis
-      </Button>
+      {(user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER" || user?.role === "TECHNICIAN") && (
+        <Button variant="secondary" onClick={handleDiagnosis}>
+          <Stethoscope size={18} style={{ marginRight: "8px" }} />
+          Add Diagnosis Update
+        </Button>
+      )}
       <Button onClick={handleStatusChange}>
         <ClipboardList size={18} style={{ marginRight: "8px" }} />
         Change Status

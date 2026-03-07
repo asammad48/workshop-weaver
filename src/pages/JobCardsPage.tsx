@@ -44,6 +44,7 @@ const JobCardsPage = () => {
     vehicleId: "",
     mileage: undefined as number | undefined,
     notes: "",
+    requestedEta: "",
   });
 
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -105,11 +106,11 @@ const JobCardsPage = () => {
 
   const handleCreate = () => {
     createMutation.mutate({
-      customerId: formData.customerId,
       vehicleId: formData.vehicleId,
       mileage: formData.mileage,
       initialReport: formData.notes,
-    } as any);
+      requestedEta: formData.requestedEta ? new Date(formData.requestedEta) : undefined,
+    });
   };
 
   const handleAction = async (id: string, action: "checkIn" | "checkOut") => {
@@ -184,6 +185,11 @@ const JobCardsPage = () => {
             onChange={(e) =>
               (formData.mileage = parseInt(e.target.value) || undefined)
             }
+          />
+          <Input
+            label="Requested ETA"
+            type="datetime-local"
+            onChange={(e) => (formData.requestedEta = e.target.value)}
           />
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <label
