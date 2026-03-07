@@ -12869,6 +12869,8 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
     branchName?: string | undefined;
     entryAt?: Date;
     exitAt?: Date | undefined;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
     status?: string | undefined;
     invoice?: PublicReceiptInvoiceDto;
     payments?: PublicReceiptPaymentDto[] | undefined;
@@ -12891,6 +12893,8 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
             this.branchName = _data["branchName"];
             this.entryAt = _data["entryAt"] ? new Date(_data["entryAt"].toString()) : undefined as any;
             this.exitAt = _data["exitAt"] ? new Date(_data["exitAt"].toString()) : undefined as any;
+            this.requestedEta = _data["requestedEta"] ? new Date(_data["requestedEta"].toString()) : undefined as any;
+            this.latestEstimatedEta = _data["latestEstimatedEta"] ? new Date(_data["latestEstimatedEta"].toString()) : undefined as any;
             this.status = _data["status"];
             this.invoice = _data["invoice"] ? PublicReceiptInvoiceDto.fromJS(_data["invoice"]) : undefined as any;
             if (Array.isArray(_data["payments"])) {
@@ -12921,6 +12925,8 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
         data["branchName"] = this.branchName;
         data["entryAt"] = this.entryAt ? this.entryAt.toISOString() : undefined as any;
         data["exitAt"] = this.exitAt ? this.exitAt.toISOString() : undefined as any;
+        data["requestedEta"] = this.requestedEta ? this.requestedEta.toISOString() : undefined as any;
+        data["latestEstimatedEta"] = this.latestEstimatedEta ? this.latestEstimatedEta.toISOString() : undefined as any;
         data["status"] = this.status;
         data["invoice"] = this.invoice ? this.invoice.toJSON() : undefined as any;
         if (Array.isArray(this.payments)) {
@@ -12944,6 +12950,8 @@ export interface IPublicJobCardReceiptResponse {
     branchName?: string | undefined;
     entryAt?: Date;
     exitAt?: Date | undefined;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
     status?: string | undefined;
     invoice?: PublicReceiptInvoiceDto;
     payments?: PublicReceiptPaymentDto[] | undefined;
