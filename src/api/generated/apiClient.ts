@@ -3458,6 +3458,97 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
+    diagnosisLogsPOST(id: string, body?: JobCardDiagnosisLogCreateRequest | undefined, signal?: AbortSignal): Promise<JobCardDiagnosisLogResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/jobcards/{id}/diagnosis-logs";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processDiagnosisLogsPOST(_response));
+        });
+    }
+
+    protected processDiagnosisLogsPOST(response: Response): Promise<JobCardDiagnosisLogResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardDiagnosisLogResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<JobCardDiagnosisLogResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    diagnosisLogsGET(id: string, signal?: AbortSignal): Promise<JobCardDiagnosisTimelineResponseApiResponse> {
+        let url_ = this.baseUrl + "/api/v1/jobcards/{id}/diagnosis-logs";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processDiagnosisLogsGET(_response));
+        });
+    }
+
+    protected processDiagnosisLogsGET(response: Response): Promise<JobCardDiagnosisTimelineResponseApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = JobCardDiagnosisTimelineResponseApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<JobCardDiagnosisTimelineResponseApiResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     jobtasks(body?: JobTaskCreateRequest | undefined, signal?: AbortSignal): Promise<JobTaskResponseApiResponse> {
         let url_ = this.baseUrl + "/api/v1/jobtasks";
         url_ = url_.replace(/[?&]$/, "");
@@ -9265,6 +9356,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
     vehicleId?: string;
     mileage?: number | undefined;
     initialReport?: string | undefined;
+    requestedEta?: Date | undefined;
 
     constructor(data?: IJobCardCreateRequest) {
         if (data) {
@@ -9280,6 +9372,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
             this.vehicleId = _data["vehicleId"];
             this.mileage = _data["mileage"];
             this.initialReport = _data["initialReport"];
+            this.requestedEta = _data["requestedEta"] ? new Date(_data["requestedEta"].toString()) : undefined as any;
         }
     }
 
@@ -9295,6 +9388,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
         data["vehicleId"] = this.vehicleId;
         data["mileage"] = this.mileage;
         data["initialReport"] = this.initialReport;
+        data["requestedEta"] = this.requestedEta ? this.requestedEta.toISOString() : undefined as any;
         return data;
     }
 }
@@ -9303,6 +9397,291 @@ export interface IJobCardCreateRequest {
     vehicleId?: string;
     mileage?: number | undefined;
     initialReport?: string | undefined;
+    requestedEta?: Date | undefined;
+}
+
+export class JobCardDiagnosisLogCreateRequest implements IJobCardDiagnosisLogCreateRequest {
+    diagnosisNote?: string | undefined;
+    estimatedEta?: Date | undefined;
+    estimatedPrice?: number | undefined;
+
+    constructor(data?: IJobCardDiagnosisLogCreateRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.diagnosisNote = _data["diagnosisNote"];
+            this.estimatedEta = _data["estimatedEta"] ? new Date(_data["estimatedEta"].toString()) : undefined as any;
+            this.estimatedPrice = _data["estimatedPrice"];
+        }
+    }
+
+    static fromJS(data: any): JobCardDiagnosisLogCreateRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardDiagnosisLogCreateRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["diagnosisNote"] = this.diagnosisNote;
+        data["estimatedEta"] = this.estimatedEta ? this.estimatedEta.toISOString() : undefined as any;
+        data["estimatedPrice"] = this.estimatedPrice;
+        return data;
+    }
+}
+
+export interface IJobCardDiagnosisLogCreateRequest {
+    diagnosisNote?: string | undefined;
+    estimatedEta?: Date | undefined;
+    estimatedPrice?: number | undefined;
+}
+
+export class JobCardDiagnosisLogResponse implements IJobCardDiagnosisLogResponse {
+    id?: string;
+    jobCardId?: string;
+    diagnosisNote?: string | undefined;
+    estimatedEta?: Date | undefined;
+    estimatedPrice?: number | undefined;
+    createdByUserId?: string;
+    createdByEmail?: string | undefined;
+    createdAt?: Date;
+
+    constructor(data?: IJobCardDiagnosisLogResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.jobCardId = _data["jobCardId"];
+            this.diagnosisNote = _data["diagnosisNote"];
+            this.estimatedEta = _data["estimatedEta"] ? new Date(_data["estimatedEta"].toString()) : undefined as any;
+            this.estimatedPrice = _data["estimatedPrice"];
+            this.createdByUserId = _data["createdByUserId"];
+            this.createdByEmail = _data["createdByEmail"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): JobCardDiagnosisLogResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardDiagnosisLogResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["jobCardId"] = this.jobCardId;
+        data["diagnosisNote"] = this.diagnosisNote;
+        data["estimatedEta"] = this.estimatedEta ? this.estimatedEta.toISOString() : undefined as any;
+        data["estimatedPrice"] = this.estimatedPrice;
+        data["createdByUserId"] = this.createdByUserId;
+        data["createdByEmail"] = this.createdByEmail;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface IJobCardDiagnosisLogResponse {
+    id?: string;
+    jobCardId?: string;
+    diagnosisNote?: string | undefined;
+    estimatedEta?: Date | undefined;
+    estimatedPrice?: number | undefined;
+    createdByUserId?: string;
+    createdByEmail?: string | undefined;
+    createdAt?: Date;
+}
+
+export class JobCardDiagnosisLogResponseApiResponse implements IJobCardDiagnosisLogResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardDiagnosisLogResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IJobCardDiagnosisLogResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? JobCardDiagnosisLogResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): JobCardDiagnosisLogResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardDiagnosisLogResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IJobCardDiagnosisLogResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardDiagnosisLogResponse;
+    errors?: string[] | undefined;
+}
+
+export class JobCardDiagnosisTimelineResponse implements IJobCardDiagnosisTimelineResponse {
+    jobCardId?: string;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
+    latestEstimatedPrice?: number | undefined;
+    latestDiagnosisSummary?: string | undefined;
+    logs?: JobCardDiagnosisLogResponse[] | undefined;
+
+    constructor(data?: IJobCardDiagnosisTimelineResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobCardId = _data["jobCardId"];
+            this.requestedEta = _data["requestedEta"] ? new Date(_data["requestedEta"].toString()) : undefined as any;
+            this.latestEstimatedEta = _data["latestEstimatedEta"] ? new Date(_data["latestEstimatedEta"].toString()) : undefined as any;
+            this.latestEstimatedPrice = _data["latestEstimatedPrice"];
+            this.latestDiagnosisSummary = _data["latestDiagnosisSummary"];
+            if (Array.isArray(_data["logs"])) {
+                this.logs = [] as any;
+                for (let item of _data["logs"])
+                    this.logs!.push(JobCardDiagnosisLogResponse.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): JobCardDiagnosisTimelineResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardDiagnosisTimelineResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobCardId"] = this.jobCardId;
+        data["requestedEta"] = this.requestedEta ? this.requestedEta.toISOString() : undefined as any;
+        data["latestEstimatedEta"] = this.latestEstimatedEta ? this.latestEstimatedEta.toISOString() : undefined as any;
+        data["latestEstimatedPrice"] = this.latestEstimatedPrice;
+        data["latestDiagnosisSummary"] = this.latestDiagnosisSummary;
+        if (Array.isArray(this.logs)) {
+            data["logs"] = [];
+            for (let item of this.logs)
+                data["logs"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IJobCardDiagnosisTimelineResponse {
+    jobCardId?: string;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
+    latestEstimatedPrice?: number | undefined;
+    latestDiagnosisSummary?: string | undefined;
+    logs?: JobCardDiagnosisLogResponse[] | undefined;
+}
+
+export class JobCardDiagnosisTimelineResponseApiResponse implements IJobCardDiagnosisTimelineResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardDiagnosisTimelineResponse;
+    errors?: string[] | undefined;
+
+    constructor(data?: IJobCardDiagnosisTimelineResponseApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.message = _data["message"];
+            this.data = _data["data"] ? JobCardDiagnosisTimelineResponse.fromJS(_data["data"]) : undefined as any;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): JobCardDiagnosisTimelineResponseApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new JobCardDiagnosisTimelineResponseApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["message"] = this.message;
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IJobCardDiagnosisTimelineResponseApiResponse {
+    success?: boolean;
+    message?: string | undefined;
+    data?: JobCardDiagnosisTimelineResponse;
+    errors?: string[] | undefined;
 }
 
 export class JobCardDiagnosisUpdateRequest implements IJobCardDiagnosisUpdateRequest {
@@ -9609,6 +9988,10 @@ export class JobCardResponse implements IJobCardResponse {
     branchName?: string | undefined;
     currentStationName?: string | undefined;
     currentStationCode?: string | undefined;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
+    latestEstimatedPrice?: number | undefined;
+    latestDiagnosisSummary?: string | undefined;
 
     constructor(data?: IJobCardResponse) {
         if (data) {
@@ -9636,6 +10019,10 @@ export class JobCardResponse implements IJobCardResponse {
             this.branchName = _data["branchName"];
             this.currentStationName = _data["currentStationName"];
             this.currentStationCode = _data["currentStationCode"];
+            this.requestedEta = _data["requestedEta"] ? new Date(_data["requestedEta"].toString()) : undefined as any;
+            this.latestEstimatedEta = _data["latestEstimatedEta"] ? new Date(_data["latestEstimatedEta"].toString()) : undefined as any;
+            this.latestEstimatedPrice = _data["latestEstimatedPrice"];
+            this.latestDiagnosisSummary = _data["latestDiagnosisSummary"];
         }
     }
 
@@ -9663,6 +10050,10 @@ export class JobCardResponse implements IJobCardResponse {
         data["branchName"] = this.branchName;
         data["currentStationName"] = this.currentStationName;
         data["currentStationCode"] = this.currentStationCode;
+        data["requestedEta"] = this.requestedEta ? this.requestedEta.toISOString() : undefined as any;
+        data["latestEstimatedEta"] = this.latestEstimatedEta ? this.latestEstimatedEta.toISOString() : undefined as any;
+        data["latestEstimatedPrice"] = this.latestEstimatedPrice;
+        data["latestDiagnosisSummary"] = this.latestDiagnosisSummary;
         return data;
     }
 }
@@ -9683,6 +10074,10 @@ export interface IJobCardResponse {
     branchName?: string | undefined;
     currentStationName?: string | undefined;
     currentStationCode?: string | undefined;
+    requestedEta?: Date | undefined;
+    latestEstimatedEta?: Date | undefined;
+    latestEstimatedPrice?: number | undefined;
+    latestDiagnosisSummary?: string | undefined;
 }
 
 export class JobCardResponseApiResponse implements IJobCardResponseApiResponse {
