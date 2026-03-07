@@ -102,11 +102,11 @@ const PublicJobCardReceiptPage: React.FC = () => {
                     </Card>
                     <Card style={{ padding: "16px" }}>
                         <span style={{ fontSize: "12px", color: "var(--c-muted)", textTransform: "uppercase" }}>Requested ETA</span>
-                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.entryAt ? new Date(receipt.requestedEta).toLocaleDateString() : "-"}</div>
+                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.requestedEta ? new Date(receipt.requestedEta).toLocaleDateString() : "-"}</div>
                     </Card>
                     <Card style={{ padding: "16px" }}>
                         <span style={{ fontSize: "12px", color: "var(--c-muted)", textTransform: "uppercase" }}>Estimated ETA</span>
-                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.entryAt ? new Date(receipt.latestEstimatedEta).toLocaleDateString() : "-"}</div>
+                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.latestEstimatedEta ? new Date(receipt.latestEstimatedEta).toLocaleDateString() : "-"}</div>
                     </Card>
                 </div>
 
