@@ -26,7 +26,7 @@ const InvoiceCreateModalContent: React.FC<{ jobCardId: string; onCreated: () => 
         try {
             await billingRepo.createInvoice(jobCardId, {
                 discount,
-                taxPercent,
+                tax: taxPercent,
                 notes
             });
             toast.success("Invoice created successfully");

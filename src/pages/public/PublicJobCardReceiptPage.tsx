@@ -138,26 +138,53 @@ const PublicJobCardReceiptPage: React.FC = () => {
                             </tbody>
                         </table>
                         <div style={{ padding: "20px", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>
+
                             <div style={{ display: "flex", gap: "40px", fontSize: "14px" }}>
                                 <span style={{ color: "var(--c-muted)" }}>Subtotal</span>
-                                <span style={{ fontWeight: 500 }}>EUR {receipt.invoice.subtotal?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span style={{ fontWeight: 500 }}>
+                                    EUR {receipt.invoice.subtotal?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </span>
                             </div>
+
                             {receipt.invoice.discount > 0 && (
                                 <div style={{ display: "flex", gap: "40px", fontSize: "14px" }}>
-                                    <span style={{ color: "var(--c-muted)" }}>Discount</span>
-                                    <span style={{ color: "var(--c-danger)" }}>- EUR {receipt.invoice.discount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    <span style={{ color: "var(--c-muted)" }}>
+                                        Discount ({receipt.invoice.discount}%)
+                                    </span>
+                                    <span style={{ color: "var(--c-danger)" }}>
+                                        - EUR {(receipt.invoice.subtotal * (receipt.invoice.discount / 100))
+                                            ?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </span>
                                 </div>
                             )}
+
                             {receipt.invoice.tax > 0 && (
                                 <div style={{ display: "flex", gap: "40px", fontSize: "14px" }}>
-                                    <span style={{ color: "var(--c-muted)" }}>Tax</span>
-                                    <span style={{ fontWeight: 500 }}>EUR {receipt.invoice.tax?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    <span style={{ color: "var(--c-muted)" }}>
+                                        Tax ({receipt.invoice.tax}%)
+                                    </span>
+                                    <span style={{ fontWeight: 500 }}>
+                                        EUR {(
+                                            (receipt.invoice.subtotal - (receipt.invoice.subtotal * (receipt.invoice.discount / 100)))
+                                            * (receipt.invoice.tax / 100)
+                                        )?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </span>
                                 </div>
                             )}
+
                             <div style={{ display: "flex", gap: "40px", fontSize: "18px", fontWeight: 700, borderTop: "2px solid var(--c-border)", paddingTop: "8px", marginTop: "4px" }}>
                                 <span>Total</span>
-                                <span>EUR {receipt.invoice.total?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                <span>
+                                    EUR {(
+                                        (receipt.invoice.subtotal - (receipt.invoice.subtotal * (receipt.invoice.discount / 100))) +
+                                        (
+                                            (receipt.invoice.subtotal - (receipt.invoice.subtotal * (receipt.invoice.discount / 100)))
+                                            * (receipt.invoice.tax / 100)
+                                        )
+                                    )?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </span>
                             </div>
+
                         </div>
                     </Card>
                 )}
