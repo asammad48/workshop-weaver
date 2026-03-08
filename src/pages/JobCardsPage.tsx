@@ -30,6 +30,147 @@ import { TasksTab } from "@/features/jobcards/tabs/TasksTab";
 import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 import { JobCardDetails } from "@/features/jobcards/components/JobCardDetails";
 
+interface JobCardFormProps {
+  customers: any[];
+  vehicles: any[];
+  onCancel: () => void;
+  onSubmit: (data: any) => void;
+  isPending: boolean;
+}
+
+const CreateJobCardForm = ({
+  customers,
+  vehicles,
+  onCancel,
+  onSubmit,
+  isPending,
+}: JobCardFormProps) => {
+  const [formState, setFormState] = useState({
+    customerId: "",
+    vehicleId: "",
+    mileage: undefined as number | undefined,
+    notes: "",
+    requestedEta: "",
+  });
+
+  const customerOptions = (customers || []).map((c: any) => ({
+    value: c.id,
+    label: c.name,
+  }));
+
+  const filteredVehicles = (vehicles || []).filter(
+    (v: any) => !formState.customerId || v.customerId === formState.customerId
+  );
+
+  const vehicleOptions = filteredVehicles.map((v: any) => ({
+    value: v.id,
+    label: v.name,
+  }));
+
+  const handleCreateLocal = () => {
+    onSubmit({
+      vehicleId: formState.vehicleId,
+      mileage: formState.mileage,
+      initialReport: formState.notes,
+      requestedEta: formState.requestedEta
+        ? new Date(formState.requestedEta)
+        : undefined,
+    });
+  };
+
+  return (
+    <ModalContent
+      footer={
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <Button variant="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={handleCreateLocal} disabled={isPending}>
+            {isPending ? "Creating..." : "Create"}
+          </Button>
+        </div>
+      }
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <Select
+          label="Customer *"
+          value={formState.customerId}
+          options={customerOptions}
+          placeholder="Select Customer"
+          required
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              customerId: e.target.value,
+              vehicleId: "",
+            }))
+          }
+        />
+        <Select
+          label="Vehicle *"
+          value={formState.vehicleId}
+          options={vehicleOptions}
+          placeholder="Select Vehicle"
+          required
+          disabled={!formState.customerId}
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, vehicleId: e.target.value }))
+          }
+        />
+        <Input
+          label="Mileage"
+          type="number"
+          value={formState.mileage || ""}
+          placeholder="Enter current mileage"
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              mileage: parseInt(e.target.value) || undefined,
+            }))
+          }
+        />
+        <Input
+          label="Requested ETA"
+          type="datetime-local"
+          value={formState.requestedEta}
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, requestedEta: e.target.value }))
+          }
+        />
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          <label
+            style={{
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "var(--c-text)",
+            }}
+          >
+            Notes
+          </label>
+          <textarea
+            style={{
+              width: "100%",
+              padding: "8px 12px",
+              borderRadius: "6px",
+              border: "1px solid var(--c-border)",
+              backgroundColor: "var(--c-bg)",
+              color: "var(--c-text)",
+              outline: "none",
+              resize: "vertical",
+            }}
+            rows={3}
+            value={formState.notes}
+            placeholder="Initial report or notes"
+            onChange={(e) =>
+              setFormState((prev) => ({ ...prev, notes: e.target.value }))
+            }
+          />
+        </div>
+      </div>
+    </ModalContent>
+  );
+};
+
 const JobCardsPage = () => {
   const { user } = useAuth();
   const openModal = useUIStore((s) => s.openModal);
@@ -38,14 +179,6 @@ const JobCardsPage = () => {
   const [search, setSearch] = useState("");
   const [selectedJobCard, setSelectedJobCard] = useState<any>(null);
   const pageSize = 10;
-
-  const [formData] = useState({
-    customerId: "",
-    vehicleId: "",
-    mileage: undefined as number | undefined,
-    notes: "",
-    requestedEta: "",
-  });
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["jobCards", { pageNumber, pageSize, search }],
@@ -104,15 +237,6 @@ const JobCardsPage = () => {
     },
   });
 
-  const handleCreate = () => {
-    createMutation.mutate({
-      vehicleId: formData.vehicleId,
-      mileage: formData.mileage,
-      initialReport: formData.notes,
-      requestedEta: formData.requestedEta ? new Date(formData.requestedEta) : undefined,
-    });
-  };
-
   const handleAction = async (id: string, action: "checkIn" | "checkOut") => {
     const isConfirmed = await confirm({
       title: action === "checkIn" ? "Check-in Vehicle" : "Check-out Vehicle",
@@ -138,89 +262,6 @@ const JobCardsPage = () => {
   const canManage =
     user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER";
 
-  const renderCreateForm = () => {
-    const customerOptions = (customers || []).map((c: any) => ({
-      value: c.id,
-      label: c.name,
-    }));
-    const vehicleOptions = (vehicles || []).map((v: any) => ({
-      value: v.id,
-      label: v.name,
-    }));
-
-    return (
-      <ModalContent
-        footer={
-          <div
-            style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
-          >
-            <Button variant="secondary" onClick={closeModal}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreate} disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Creating..." : "Create"}
-            </Button>
-          </div>
-        }
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <Select
-            label="Customer *"
-            options={customerOptions}
-            placeholder="Select Customer"
-            required
-            onChange={(e) => (formData.customerId = e.target.value)}
-          />
-          <Select
-            label="Vehicle *"
-            options={vehicleOptions}
-            placeholder="Select Vehicle"
-            required
-            onChange={(e) => (formData.vehicleId = e.target.value)}
-          />
-          <Input
-            label="Mileage"
-            type="number"
-            placeholder="Enter current mileage"
-            onChange={(e) =>
-              (formData.mileage = parseInt(e.target.value) || undefined)
-            }
-          />
-          <Input
-            label="Requested ETA"
-            type="datetime-local"
-            onChange={(e) => (formData.requestedEta = e.target.value)}
-          />
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <label
-              style={{
-                fontSize: "14px",
-                fontWeight: 500,
-                color: "var(--c-text)",
-              }}
-            >
-              Notes
-            </label>
-            <textarea
-              style={{
-                width: "100%",
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid var(--c-border)",
-                backgroundColor: "var(--c-bg)",
-                color: "var(--c-text)",
-                outline: "none",
-                resize: "vertical",
-              }}
-              rows={3}
-              placeholder="Initial report or notes"
-              onChange={(e) => (formData.notes = e.target.value)}
-            />
-          </div>
-        </div>
-      </ModalContent>
-    );
-  };
 
   if (selectedJobCard) {
     return (
@@ -254,7 +295,18 @@ const JobCardsPage = () => {
           Job Cards
         </h1>
         <Button
-          onClick={() => openModal("Create Job Card", renderCreateForm())}
+          onClick={() =>
+            openModal(
+              "Create Job Card",
+              <CreateJobCardForm
+                customers={customers || []}
+                vehicles={vehicles || []}
+                onCancel={closeModal}
+                onSubmit={(data) => createMutation.mutate(data)}
+                isPending={createMutation.isPending}
+              />
+            )
+          }
         >
           <Plus size={18} style={{ marginRight: "8px" }} />
           Create Job Card

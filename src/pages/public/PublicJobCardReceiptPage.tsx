@@ -56,7 +56,8 @@ const PublicJobCardReceiptPage: React.FC = () => {
                             Plate: <span style={{ fontWeight: 600, color: "var(--c-text)" }}>{receipt.plate}</span>
                         </p>
                     </div>
-                    <div style={{ textAlign: "right" }}>
+                    <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                        <img src="/images/logo.png" alt="Logo" style={{ width: "64px", height: "64px", objectFit: "contain", marginBottom: "16px" }} />
                         <span style={{
                             padding: "6px 12px",
                             borderRadius: "99px",
