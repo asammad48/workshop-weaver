@@ -41,7 +41,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
         marginBottom: '8px',
         overflowX: 'auto'
       }}>
-        {['details', 'diagnosis', 'tasks', 'stations', 'line-items', 'part-requests', 'billing', 'roadblockers', 'approvals', 'communications', 'attachments'].map((tab) => (
+              {['details', 'stations', 'tasks', 'diagnosis', 'part-requests', 'line-items',  'billing', 'roadblockers', 'approvals', 'communications', 'attachments'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
