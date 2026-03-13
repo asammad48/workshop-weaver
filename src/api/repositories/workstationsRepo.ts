@@ -6,6 +6,7 @@ import {
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
+import { updateLookupCache } from '../lookups/lookupsCache';
 
 const client = createClient(Client);
 
@@ -20,7 +21,11 @@ export const workstationsRepo = {
 
   async create(body: WorkStationCreateRequest): Promise<WorkStationResponseApiResponse> {
     try {
-      return await client.workstationsPOST(body);
+      const res = await client.workstationsPOST(body);
+      if (res.success && res.data) {
+        updateLookupCache('workstations', res.data);
+      }
+      return res;
     } catch (error) {
       throw normalizeError(error);
     }

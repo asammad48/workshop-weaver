@@ -6,6 +6,7 @@ import {
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
+import { updateLookupCache } from '../lookups/lookupsCache';
 
 const client = createClient(Client);
 
@@ -28,7 +29,11 @@ export const branchesRepo = {
 
   async create(body: BranchCreateRequest): Promise<BranchResponseApiResponse> {
     try {
-      return await client.branchesPOST(body);
+      const res = await client.branchesPOST(body);
+      if (res.success && res.data) {
+        updateLookupCache('branches', res.data);
+      }
+      return res;
     } catch (error) {
       throw normalizeError(error);
     }
