@@ -6,6 +6,7 @@ import type {
   LocationCreateRequest,
   StockAdjustRequest 
 } from '../generated/apiClient';
+import { updateLookupCache } from '../lookups/lookupsCache';
 
 const client = createClient(Client);
 
@@ -14,8 +15,13 @@ export const inventoryRepo = {
   getSuppliers: (pageNumber?: number, pageSize?: number, search?: string) =>
     client.suppliersGET(pageNumber, pageSize, search),
   
-  createSupplier: (data: SupplierCreateRequest) =>
-    client.suppliersPOST(data),
+  createSupplier: async (data: SupplierCreateRequest) => {
+    const res = await client.suppliersPOST(data);
+    if (res.success && res.data) {
+      updateLookupCache('suppliers', res.data);
+    }
+    return res;
+  },
 
   // Parts
   getParts: (pageNumber?: number, pageSize?: number, search?: string) =>
@@ -24,15 +30,25 @@ export const inventoryRepo = {
   getPart: (id: string) =>
     client.partsGET2(id),
 
-  createPart: (data: PartCreateRequest) =>
-    client.partsPOST(data),
+  createPart: async (data: PartCreateRequest) => {
+    const res = await client.partsPOST(data);
+    if (res.success && res.data) {
+      updateLookupCache('parts', res.data);
+    }
+    return res;
+  },
 
   // Locations
   getLocations: (pageNumber?: number, pageSize?: number, search?: string) =>
     client.locationsGET(pageNumber, pageSize, search),
 
-  createLocation: (data: LocationCreateRequest) =>
-    client.locationsPOST(data),
+  createLocation: async (data: LocationCreateRequest) => {
+    const res = await client.locationsPOST(data);
+    if (res.success && res.data) {
+      updateLookupCache('locations', res.data);
+    }
+    return res;
+  },
 
   // Stock & Ledger
   getStock: (pageNumber?: number, pageSize?: number, search?: string, partId?: string, locationId?: string) =>

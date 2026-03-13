@@ -3,7 +3,6 @@ import {
   CreateUserDto, 
   ResetPasswordDto, 
   UpdateRoleDto,
-  UserDto,
   UserDtoApiResponse,
   UserDtoPageResponseApiResponse,
   StringApiResponse,
@@ -11,6 +10,7 @@ import {
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
+import { updateLookupCache } from '../lookups/lookupsCache';
 
 const client = createClient(Client);
 
@@ -33,7 +33,11 @@ export const usersRepo = {
 
   async create(body: CreateUserDto): Promise<UserDtoApiResponse> {
     try {
-      return await client.usersPOST(body);
+      const res = await client.usersPOST(body);
+      if (res.success && res.data) {
+        updateLookupCache('users', res.data);
+      }
+      return res;
     } catch (error) {
       throw normalizeError(error);
     }
@@ -41,7 +45,11 @@ export const usersRepo = {
 
   async update(id: string, body: UpdateUserDto): Promise<UserDtoApiResponse> {
     try {
-      return await client.usersPUT(id, body);
+      const res = await client.usersPUT(id, body);
+      if (res.success && res.data) {
+        updateLookupCache('users', res.data);
+      }
+      return res;
     } catch (error) {
       throw normalizeError(error);
     }
