@@ -77,6 +77,10 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
                   <span style={{ fontWeight: 500 }}>{jobCard.customerName || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--c-muted)' }}>Driver</span>
+                  <span style={{ fontWeight: 500 }}>{jobCard.driverName || "-"}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
                   <span style={{ color: 'var(--c-muted)' }}>Plate Number</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.vehiclePlate || jobCard.plate || "-"}</span>
                 </div>
