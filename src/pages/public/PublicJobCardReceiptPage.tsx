@@ -80,6 +80,14 @@ const PublicJobCardReceiptPage: React.FC = () => {
                 {/* Summary Cards */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "16px", marginBottom: "24px" }}>
                     <Card style={{ padding: "16px" }}>
+                        <span style={{ fontSize: "12px", color: "var(--c-muted)", textTransform: "uppercase" }}>Customer</span>
+                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.customerName || "-"}</div>
+                    </Card>
+                    <Card style={{ padding: "16px" }}>
+                        <span style={{ fontSize: "12px", color: "var(--c-muted)", textTransform: "uppercase" }}>Driver</span>
+                        <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.driverName || "-"}</div>
+                    </Card>
+                    <Card style={{ padding: "16px" }}>
                         <span style={{ fontSize: "12px", color: "var(--c-muted)", textTransform: "uppercase" }}>Entry At</span>
                         <div style={{ fontWeight: 600, marginTop: "4px" }}>{receipt.entryAt ? new Date(receipt.entryAt).toLocaleDateString() : "-"}</div>
                     </Card>

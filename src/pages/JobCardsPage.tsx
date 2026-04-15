@@ -16,6 +16,7 @@ import {
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { getCustomersOnce } from "@/api/lookups/customersLookup";
 import { getVehiclesOnce } from "@/api/lookups/vehiclesLookup";
+import { driversRepo } from "@/api/repositories/driversRepo";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -48,6 +49,7 @@ const CreateJobCardForm = ({
   const [formState, setFormState] = useState({
     customerId: "",
     vehicleId: "",
+    driverId: "",
     mileage: undefined as number | undefined,
     notes: "",
     requestedEta: "",
@@ -67,9 +69,30 @@ const CreateJobCardForm = ({
     label: v.name,
   }));
 
+  const selectedCustomer = (customers || []).find(
+    (c: any) => c.id === formState.customerId,
+  );
+  const customerTypeValue = selectedCustomer?.customerType;
+  const isFleetCustomer =
+    customerTypeValue === 2 ||
+    customerTypeValue === "2" ||
+    `${customerTypeValue}`.toLowerCase() === "fleet";
+
+  const { data: driversData, isLoading: isDriversLoading } = useQuery({
+    queryKey: ["driversLookup", formState.customerId],
+    queryFn: () => driversRepo.list(1, 1000, undefined, undefined, undefined, formState.customerId),
+    enabled: Boolean(formState.customerId) && isFleetCustomer,
+  });
+
+  const driverOptions = (driversData?.data?.items || []).map((d: any) => ({
+    value: d.id,
+    label: d.fullName || d.name || d.phone || d.id,
+  }));
+
   const handleCreateLocal = () => {
     onSubmit({
       vehicleId: formState.vehicleId,
+      driverId: formState.driverId || undefined,
       mileage: formState.mileage,
       initialReport: formState.notes,
       requestedEta: formState.requestedEta
@@ -103,9 +126,22 @@ const CreateJobCardForm = ({
               ...prev,
               customerId: e.target.value,
               vehicleId: "",
+              driverId: "",
             }))
           }
         />
+        {isFleetCustomer && (
+          <Select
+            label="Driver"
+            value={formState.driverId}
+            options={driverOptions}
+            placeholder={isDriversLoading ? "Loading drivers..." : "Select Driver"}
+            disabled={!formState.customerId || isDriversLoading}
+            onChange={(e) =>
+              setFormState((prev) => ({ ...prev, driverId: e.target.value }))
+            }
+          />
+        )}
         <Select
           label="Vehicle *"
           value={formState.vehicleId}
@@ -412,6 +448,16 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
+                  Driver
+                </th>
+                <th
+                  style={{
+                    padding: "16px",
+                    color: "var(--c-muted)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   Branch
                 </th>
                 <th
@@ -471,7 +517,7 @@ const JobCardsPage = () => {
               {isLoading ? (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={10}
                     style={{ padding: "48px", textAlign: "center" }}
                   >
                     <Loader2
@@ -484,7 +530,7 @@ const JobCardsPage = () => {
               ) : isError ? (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={10}
                     style={{
                       padding: "48px",
                       textAlign: "center",
@@ -498,7 +544,7 @@ const JobCardsPage = () => {
               ) : items.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={10}
                     style={{
                       padding: "48px",
                       textAlign: "center",
@@ -527,6 +573,9 @@ const JobCardsPage = () => {
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.customerName || "-"}
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
+                      {item.driverName || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.branchName || "-"}

@@ -13698,6 +13698,7 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
     jobCardId?: string;
     plate?: string | undefined;
     customerName?: string | undefined;
+    driverName?: string | undefined;
     branchName?: string | undefined;
     entryAt?: Date;
     exitAt?: Date | undefined;
@@ -13722,6 +13723,7 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
             this.jobCardId = _data["jobCardId"];
             this.plate = _data["plate"];
             this.customerName = _data["customerName"];
+            this.driverName = _data["driverName"];
             this.branchName = _data["branchName"];
             this.entryAt = _data["entryAt"] ? new Date(_data["entryAt"].toString()) : undefined as any;
             this.exitAt = _data["exitAt"] ? new Date(_data["exitAt"].toString()) : undefined as any;
@@ -13754,6 +13756,7 @@ export class PublicJobCardReceiptResponse implements IPublicJobCardReceiptRespon
         data["jobCardId"] = this.jobCardId;
         data["plate"] = this.plate;
         data["customerName"] = this.customerName;
+        data["driverName"] = this.driverName;
         data["branchName"] = this.branchName;
         data["entryAt"] = this.entryAt ? this.entryAt.toISOString() : undefined as any;
         data["exitAt"] = this.exitAt ? this.exitAt.toISOString() : undefined as any;
@@ -13779,6 +13782,7 @@ export interface IPublicJobCardReceiptResponse {
     jobCardId?: string;
     plate?: string | undefined;
     customerName?: string | undefined;
+    driverName?: string | undefined;
     branchName?: string | undefined;
     entryAt?: Date;
     exitAt?: Date | undefined;
