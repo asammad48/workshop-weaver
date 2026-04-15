@@ -53,7 +53,7 @@ interface UIState {
   // Toasts
   toasts: ToastItem[];
   pushToast: (type: ToastType, message: string, options?: ToastOptions) => void;
-  dismissToast: (id: string) => void;
+  dismissToast: (id: string, reason?: 'manual' | 'auto') => void;
 }
 
 let toastIdCounter = 0;
@@ -98,12 +98,12 @@ export const useUIStore = create<UIState>((set, get) => ({
 
     // Auto-remove after configured duration.
     setTimeout(() => {
-      get().dismissToast(id);
+      get().dismissToast(id, 'auto');
     }, durationMs);
   },
-  dismissToast: (id) => {
+  dismissToast: (id, reason = 'manual') => {
     const toast = get().toasts.find((t) => t.id === id);
-    if (toast?.onDismiss) {
+    if (reason === 'manual' && toast?.onDismiss) {
       toast.onDismiss();
     }
     set((state) => ({

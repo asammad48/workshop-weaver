@@ -37,7 +37,7 @@ export function ToastHost() {
               className={styles.toastDismiss}
               onClick={(e) => {
                 e.stopPropagation();
-                dismissToast(t.id);
+                dismissToast(t.id, 'manual');
               }}
             >
               ×

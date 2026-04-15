@@ -14,6 +14,7 @@ interface AppLayoutProps {
 }
 
 const SIDEBAR_KEY = 'ui.sidebarCollapsed';
+const APP_LANGUAGE_KEY = 'ui.appLanguage';
 
 /**
  * Application layout with collapsible sidebar navigation and topbar
@@ -28,6 +29,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState(() => localStorage.getItem(APP_LANGUAGE_KEY) || 'en');
     const notificationRef = useRef<HTMLDivElement>(null);
     const notifiedIdsRef = useRef<Set<string>>(new Set());
     const hasBootstrappedNotificationsRef = useRef(false);
@@ -35,10 +37,69 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     const navGroups = getNav(user?.role);
 
+    const setGoogleTranslateCookie = (language: string) => {
+        const googTransValue = `/auto/${language}`;
+        document.cookie = `googtrans=${googTransValue}; path=/`;
+        document.cookie = `googtrans=${googTransValue}; domain=${window.location.hostname}; path=/`;
+    };
+
+    const applyLanguageToGoogleTranslate = (language: string) => {
+        const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
+        if (combo) {
+            combo.value = language;
+            combo.dispatchEvent(new Event('change'));
+        }
+    };
+
     // Persist collapsed state
     useEffect(() => {
         localStorage.setItem(SIDEBAR_KEY, String(collapsed));
     }, [collapsed]);
+
+    useEffect(() => {
+        localStorage.setItem(APP_LANGUAGE_KEY, selectedLanguage);
+        setGoogleTranslateCookie(selectedLanguage);
+        applyLanguageToGoogleTranslate(selectedLanguage);
+    }, [selectedLanguage]);
+
+    useEffect(() => {
+        // Re-apply selected language when route content changes in SPA.
+        const timer = setTimeout(() => {
+            applyLanguageToGoogleTranslate(selectedLanguage);
+        }, 150);
+        return () => clearTimeout(timer);
+    }, [location.pathname, selectedLanguage]);
+
+    useEffect(() => {
+        const existingScript = document.getElementById('google-translate-script');
+        const selected = localStorage.getItem(APP_LANGUAGE_KEY) || 'en';
+        setGoogleTranslateCookie(selected);
+
+        (window as any).googleTranslateElementInit = () => {
+            if (!(window as any).google?.translate?.TranslateElement) return;
+            new (window as any).google.translate.TranslateElement(
+                {
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,es',
+                    autoDisplay: false,
+                    layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+                },
+                'google_translate_element'
+            );
+
+            setTimeout(() => applyLanguageToGoogleTranslate(selected), 250);
+        };
+
+        if (!existingScript) {
+            const script = document.createElement('script');
+            script.id = 'google-translate-script';
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.body.appendChild(script);
+        } else {
+            setTimeout(() => applyLanguageToGoogleTranslate(selected), 250);
+        }
+    }, []);
 
     const fetchNotifications = async () => {
         try {
@@ -87,11 +148,28 @@ export function AppLayout({ children }: AppLayoutProps) {
                     console.warn('Unable to resume audio context for notifications', error);
                 }
             }
+
+            // On some browsers, a tiny gesture-triggered tone helps unlock future playback.
+            if (audioContextRef.current.state === 'running') {
+                const oscillator = audioContextRef.current.createOscillator();
+                const gainNode = audioContextRef.current.createGain();
+                gainNode.gain.value = 0.00001;
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContextRef.current.destination);
+                oscillator.start();
+                oscillator.stop(audioContextRef.current.currentTime + 0.01);
+            }
+
+            if (audioContextRef.current.state === 'running') {
+                interactionEvents.forEach((eventName) => {
+                    window.removeEventListener(eventName, ensureAudioContextReady);
+                });
+            }
         };
 
         const interactionEvents: Array<keyof WindowEventMap> = ['click', 'keydown', 'touchstart'];
         interactionEvents.forEach((eventName) => {
-            window.addEventListener(eventName, ensureAudioContextReady, { once: true });
+            window.addEventListener(eventName, ensureAudioContextReady);
         });
 
         return () => {
@@ -113,6 +191,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             if (audioContext.state === 'suspended') {
                 await audioContext.resume();
             }
+            if (audioContext.state !== 'running') return;
 
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
@@ -365,6 +444,24 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div id="google_translate_element" style={{ display: 'none' }} />
+                        <select
+                            value={selectedLanguage}
+                            onChange={(e) => setSelectedLanguage(e.target.value)}
+                            style={{
+                                border: '1px solid var(--c-border)',
+                                borderRadius: '6px',
+                                backgroundColor: 'var(--c-bg)',
+                                color: 'var(--c-text)',
+                                padding: '6px 10px',
+                                fontSize: '13px',
+                                cursor: 'pointer',
+                            }}
+                            title="Select language"
+                        >
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                        </select>
                         {/* Notifications Bell */}
                         <div style={{ position: 'relative' }} ref={notificationRef}>
                             <button
