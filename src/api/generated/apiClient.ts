@@ -17,6 +17,14 @@ export class Client {
         this.baseUrl = baseUrl ?? "";
     }
 
+    protected transformOptions(options: RequestInit): Promise<RequestInit> {
+        return Promise.resolve(options);
+    }
+
+    protected transformResult(url: string, response: Response, processor: (response: Response) => any): Promise<any> {
+        return processor(response);
+    }
+
     /**
      * @param body (optional) 
      * @return Success
@@ -9914,6 +9922,7 @@ export interface IJobCardApprovalResponseIReadOnlyListApiResponse {
 
 export class JobCardCreateRequest implements IJobCardCreateRequest {
     vehicleId?: string;
+    driverId?: string | undefined;
     mileage?: number | undefined;
     initialReport?: string | undefined;
     requestedEta?: Date | undefined;
@@ -9930,6 +9939,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
     init(_data?: any) {
         if (_data) {
             this.vehicleId = _data["vehicleId"];
+            this.driverId = _data["driverId"];
             this.mileage = _data["mileage"];
             this.initialReport = _data["initialReport"];
             this.requestedEta = _data["requestedEta"] ? new Date(_data["requestedEta"].toString()) : undefined as any;
@@ -9946,6 +9956,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["vehicleId"] = this.vehicleId;
+        data["driverId"] = this.driverId;
         data["mileage"] = this.mileage;
         data["initialReport"] = this.initialReport;
         data["requestedEta"] = this.requestedEta ? this.requestedEta.toISOString() : undefined as any;
@@ -9955,6 +9966,7 @@ export class JobCardCreateRequest implements IJobCardCreateRequest {
 
 export interface IJobCardCreateRequest {
     vehicleId?: string;
+    driverId?: string | undefined;
     mileage?: number | undefined;
     initialReport?: string | undefined;
     requestedEta?: Date | undefined;
@@ -10804,6 +10816,8 @@ export class JobCardResponse implements IJobCardResponse {
     latestEstimatedEta?: Date | undefined;
     latestEstimatedPrice?: number | undefined;
     latestDiagnosisSummary?: string | undefined;
+    driverId?: string | undefined;
+    driverName?: string | undefined;
 
     constructor(data?: IJobCardResponse) {
         if (data) {
@@ -10835,6 +10849,8 @@ export class JobCardResponse implements IJobCardResponse {
             this.latestEstimatedEta = _data["latestEstimatedEta"] ? new Date(_data["latestEstimatedEta"].toString()) : undefined as any;
             this.latestEstimatedPrice = _data["latestEstimatedPrice"];
             this.latestDiagnosisSummary = _data["latestDiagnosisSummary"];
+            this.driverId = _data["driverId"];
+            this.driverName = _data["driverName"];
         }
     }
 
@@ -10866,6 +10882,8 @@ export class JobCardResponse implements IJobCardResponse {
         data["latestEstimatedEta"] = this.latestEstimatedEta ? this.latestEstimatedEta.toISOString() : undefined as any;
         data["latestEstimatedPrice"] = this.latestEstimatedPrice;
         data["latestDiagnosisSummary"] = this.latestDiagnosisSummary;
+        data["driverId"] = this.driverId;
+        data["driverName"] = this.driverName;
         return data;
     }
 }
@@ -10890,6 +10908,8 @@ export interface IJobCardResponse {
     latestEstimatedEta?: Date | undefined;
     latestEstimatedPrice?: number | undefined;
     latestDiagnosisSummary?: string | undefined;
+    driverId?: string | undefined;
+    driverName?: string | undefined;
 }
 
 export class JobCardResponseApiResponse implements IJobCardResponseApiResponse {
