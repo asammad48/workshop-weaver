@@ -245,7 +245,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     useEffect(() => {
         if (user) {
             fetchNotifications();
-            const interval = setInterval(fetchNotifications, 30000); // refresh every 30 sec
+            const interval = setInterval(fetchNotifications, 10000); // refresh every 10 sec
             return () => clearInterval(interval);
         }
     }, [user]);
