@@ -55,6 +55,12 @@ const PublicJobCardReceiptPage: React.FC = () => {
                         <p style={{ color: "var(--c-muted)", marginTop: "4px", fontSize: "16px" }}>
                             Plate: <span style={{ fontWeight: 600, color: "var(--c-text)" }}>{receipt.plate}</span>
                         </p>
+                        <p style={{ color: "var(--c-muted)", marginTop: "4px", fontSize: "14px" }}>
+                            Customer: <span style={{ fontWeight: 600, color: "var(--c-text)" }}>{receipt.customerName || "-"}</span>
+                        </p>
+                        <p style={{ color: "var(--c-muted)", marginTop: "4px", fontSize: "14px" }}>
+                            Driver: <span style={{ fontWeight: 600, color: "var(--c-text)" }}>{receipt.driverName || "-"}</span>
+                        </p>
                     </div>
                     <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                         <img src="/images/logo.png" alt="Logo" style={{ width: "64px", height: "64px", objectFit: "contain", marginBottom: "16px" }} />

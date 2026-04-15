@@ -29,6 +29,7 @@ import { StationTab } from "@/features/jobcards/tabs/StationTab";
 import { TasksTab } from "@/features/jobcards/tabs/TasksTab";
 import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 import { JobCardDetails } from "@/features/jobcards/components/JobCardDetails";
+import { driversRepo } from "@/api/repositories/driversRepo";
 
 interface JobCardFormProps {
   customers: any[];
@@ -47,6 +48,7 @@ const CreateJobCardForm = ({
 }: JobCardFormProps) => {
   const [formState, setFormState] = useState({
     customerId: "",
+    driverId: "",
     vehicleId: "",
     mileage: undefined as number | undefined,
     notes: "",
@@ -62,14 +64,34 @@ const CreateJobCardForm = ({
     (v: any) => !formState.customerId || v.customerId === formState.customerId
   );
 
+  const selectedCustomer = (customers || []).find(
+    (c: any) => c.id === formState.customerId
+  );
+  const isFleetCustomer = selectedCustomer
+    ? selectedCustomer.customerType === 2 ||
+      selectedCustomer.customerType === "2" ||
+      `${selectedCustomer.customerType}`.toLowerCase() === "fleet"
+    : false;
+
+  const { data: driversData } = useQuery({
+    queryKey: ["driversLookup", formState.customerId],
+    queryFn: () => driversRepo.list(1, 1000, undefined, undefined, undefined, formState.customerId),
+    enabled: !!formState.customerId && isFleetCustomer,
+  });
+
   const vehicleOptions = filteredVehicles.map((v: any) => ({
     value: v.id,
     label: v.name,
+  }));
+  const driverOptions = (driversData?.data?.items || []).map((driver: any) => ({
+    value: driver.id,
+    label: driver.fullName,
   }));
 
   const handleCreateLocal = () => {
     onSubmit({
       vehicleId: formState.vehicleId,
+      driverId: isFleetCustomer ? (formState.driverId || undefined) : undefined,
       mileage: formState.mileage,
       initialReport: formState.notes,
       requestedEta: formState.requestedEta
@@ -102,10 +124,23 @@ const CreateJobCardForm = ({
             setFormState((prev) => ({
               ...prev,
               customerId: e.target.value,
+              driverId: "",
               vehicleId: "",
             }))
           }
         />
+        {isFleetCustomer && (
+          <Select
+            label="Driver"
+            value={formState.driverId}
+            options={driverOptions}
+            placeholder="Select Driver"
+            disabled={!formState.customerId}
+            onChange={(e) =>
+              setFormState((prev) => ({ ...prev, driverId: e.target.value }))
+            }
+          />
+        )}
         <Select
           label="Vehicle *"
           value={formState.vehicleId}
@@ -412,6 +447,16 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
+                  Driver
+                </th>
+                <th
+                  style={{
+                    padding: "16px",
+                    color: "var(--c-muted)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                  }}
+                >
                   Branch
                 </th>
                 <th
@@ -527,6 +572,9 @@ const JobCardsPage = () => {
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.customerName || "-"}
+                    </td>
+                    <td style={{ padding: "16px", color: "var(--c-text)" }}>
+                      {item.driverName || "-"}
                     </td>
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.branchName || "-"}
