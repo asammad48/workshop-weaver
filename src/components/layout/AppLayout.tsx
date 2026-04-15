@@ -31,6 +31,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     const notificationRef = useRef<HTMLDivElement>(null);
     const notifiedIdsRef = useRef<Set<string>>(new Set());
     const hasBootstrappedNotificationsRef = useRef(false);
+    const audioContextRef = useRef<AudioContext | null>(null);
 
     const navGroups = getNav(user?.role);
 
@@ -70,12 +71,49 @@ export function AppLayout({ children }: AppLayoutProps) {
         }
     };
 
-    const beepNotification = () => {
+    useEffect(() => {
+        const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextCtor) return;
+
+        const ensureAudioContextReady = async () => {
+            if (!audioContextRef.current) {
+                audioContextRef.current = new AudioContextCtor();
+            }
+
+            if (audioContextRef.current.state === 'suspended') {
+                try {
+                    await audioContextRef.current.resume();
+                } catch (error) {
+                    console.warn('Unable to resume audio context for notifications', error);
+                }
+            }
+        };
+
+        const interactionEvents: Array<keyof WindowEventMap> = ['click', 'keydown', 'touchstart'];
+        interactionEvents.forEach((eventName) => {
+            window.addEventListener(eventName, ensureAudioContextReady, { once: true });
+        });
+
+        return () => {
+            interactionEvents.forEach((eventName) => {
+                window.removeEventListener(eventName, ensureAudioContextReady);
+            });
+        };
+    }, []);
+
+    const beepNotification = async () => {
         try {
             const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
             if (!AudioContextCtor) return;
 
-            const audioContext = new AudioContextCtor();
+            if (!audioContextRef.current) {
+                audioContextRef.current = new AudioContextCtor();
+            }
+            const audioContext = audioContextRef.current;
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             oscillator.type = 'sine';
@@ -112,7 +150,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             }
         };
 
-        beepNotification();
+        void beepNotification();
         toast.info(message, {
             durationMs: 15000,
             onClick: async () => {
