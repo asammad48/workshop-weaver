@@ -26,11 +26,19 @@ export function ToastHost() {
         }[t.type];
 
         return (
-          <div key={t.id} className={`${styles.toast} ${typeClass}`}>
+          <div
+            key={t.id}
+            className={`${styles.toast} ${typeClass}`}
+            onClick={() => t.onClick?.()}
+            style={{ cursor: t.onClick ? 'pointer' : 'default' }}
+          >
             <div className={styles.toastContent}>{t.message}</div>
             <button
               className={styles.toastDismiss}
-              onClick={() => dismissToast(t.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                dismissToast(t.id);
+              }}
             >
               ×
             </button>

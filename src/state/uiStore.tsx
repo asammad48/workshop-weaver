@@ -27,6 +27,15 @@ export interface ToastItem {
   id: string;
   type: ToastType;
   message: string;
+  durationMs?: number;
+  onClick?: () => void;
+  onDismiss?: () => void;
+}
+
+export interface ToastOptions {
+  durationMs?: number;
+  onClick?: () => void;
+  onDismiss?: () => void;
 }
 
 // Store interface
@@ -43,7 +52,7 @@ interface UIState {
 
   // Toasts
   toasts: ToastItem[];
-  pushToast: (type: ToastType, message: string) => void;
+  pushToast: (type: ToastType, message: string, options?: ToastOptions) => void;
   dismissToast: (id: string) => void;
 }
 
@@ -79,18 +88,24 @@ export const useUIStore = create<UIState>((set, get) => ({
 
   // Toast state
   toasts: [],
-  pushToast: (type, message) => {
+  pushToast: (type, message, options) => {
     const id = `toast-${++toastIdCounter}`;
     set((state) => ({
-      toasts: [...state.toasts, { id, type, message }],
+      toasts: [...state.toasts, { id, type, message, ...options }],
     }));
 
-    // Auto-remove after 3.5s
+    const durationMs = options?.durationMs ?? 3500;
+
+    // Auto-remove after configured duration.
     setTimeout(() => {
       get().dismissToast(id);
-    }, 3500);
+    }, durationMs);
   },
   dismissToast: (id) => {
+    const toast = get().toasts.find((t) => t.id === id);
+    if (toast?.onDismiss) {
+      toast.onDismiss();
+    }
     set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
     }));
@@ -101,10 +116,10 @@ export const useUIStore = create<UIState>((set, get) => ({
 export const confirm = (options: ConfirmOptions) => useUIStore.getState().openConfirm(options);
 
 export const toast = {
-  success: (message: string) => useUIStore.getState().pushToast('success', message),
-  error: (message: string) => useUIStore.getState().pushToast('error', message),
-  info: (message: string) => useUIStore.getState().pushToast('info', message),
-  warning: (message: string) => useUIStore.getState().pushToast('warning', message),
+  success: (message: string, options?: ToastOptions) => useUIStore.getState().pushToast('success', message, options),
+  error: (message: string, options?: ToastOptions) => useUIStore.getState().pushToast('error', message, options),
+  info: (message: string, options?: ToastOptions) => useUIStore.getState().pushToast('info', message, options),
+  warning: (message: string, options?: ToastOptions) => useUIStore.getState().pushToast('warning', message, options),
 };
 
 export const openModal = (title: string, content: ReactNode) => 

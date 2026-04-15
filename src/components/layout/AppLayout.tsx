@@ -29,6 +29,8 @@ export function AppLayout({ children }: AppLayoutProps) {
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
     const notificationRef = useRef<HTMLDivElement>(null);
+    const notifiedIdsRef = useRef<Set<string>>(new Set());
+    const hasBootstrappedNotificationsRef = useRef(false);
 
     const navGroups = getNav(user?.role);
 
@@ -39,20 +41,94 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     const fetchNotifications = async () => {
         try {
-            const res = await notificationsRepo.list({ unreadOnly: false, pageSize: 5 });
-            setNotifications(res.items || []);
+            const res = await notificationsRepo.list({ unreadOnly: true, pageSize: 5 });
+            const unreadItems = res.items || [];
+            setNotifications(unreadItems);
 
             const unreadRes = await notificationsRepo.list({ unreadOnly: true, pageSize: 1 });
             setUnreadCount(unreadRes.totalCount || 0);
+
+            const jobCardUnreadItems = unreadItems.filter(
+                (n) => n.type === 'JOB_CARD' && !!n.id
+            );
+
+            if (!hasBootstrappedNotificationsRef.current) {
+                notifiedIdsRef.current = new Set(jobCardUnreadItems.map((n) => n.id!));
+                hasBootstrappedNotificationsRef.current = true;
+                return;
+            }
+
+            for (const notification of jobCardUnreadItems) {
+                if (!notification.id || notifiedIdsRef.current.has(notification.id)) {
+                    continue;
+                }
+                notifiedIdsRef.current.add(notification.id);
+                showJobCardToast(notification);
+            }
         } catch (err) {
             console.error('Failed to fetch notifications', err);
         }
     };
 
+    const beepNotification = () => {
+        try {
+            const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
+            if (!AudioContextCtor) return;
+
+            const audioContext = new AudioContextCtor();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.12, audioContext.currentTime + 0.02);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.26);
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.27);
+        } catch (error) {
+            console.warn('Unable to play notification beep', error);
+        }
+    };
+
+    const markNotificationAsRead = async (id: string) => {
+        await notificationsRepo.markRead(id);
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+    };
+
+    const showJobCardToast = (notification: NotificationResponse) => {
+        const message = notification.message || notification.title || 'New job card notification';
+        let handled = false;
+        const resolveNotification = async () => {
+            if (handled) return;
+            handled = true;
+            if (!notification.id) return;
+            try {
+                await markNotificationAsRead(notification.id);
+            } catch (error) {
+                console.error('Failed to mark notification as read', error);
+            }
+        };
+
+        beepNotification();
+        toast.info(message, {
+            durationMs: 15000,
+            onClick: async () => {
+                await resolveNotification();
+                if (notification.refType === 'JOB_CARD' && notification.refId) {
+                    navigate(`/jobcards/${notification.refId}`);
+                }
+            },
+            onDismiss: resolveNotification,
+        });
+    };
+
     useEffect(() => {
         if (user) {
             fetchNotifications();
-            const interval = setInterval(fetchNotifications, 60000); // refresh every minute
+            const interval = setInterval(fetchNotifications, 30000); // refresh every 30 sec
             return () => clearInterval(interval);
         }
     }, [user]);
@@ -69,9 +145,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     const handleMarkRead = async (id: string) => {
         try {
-            await notificationsRepo.markRead(id);
-            setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
-            setUnreadCount(prev => Math.max(0, prev - 1));
+            await markNotificationAsRead(id);
         } catch (err) {
             console.error(err);
         }
