@@ -1,7 +1,8 @@
 import { 
   Client, 
   SummaryReportResponseApiResponse,
-  SummaryReportResponse
+  SummaryReportResponse,
+  JobCardReportResponseApiResponse
 } from '@/api/generated/apiClient';
 import { createClient } from './_repoBase';
 import { normalizeError } from './_errors';
@@ -24,5 +25,14 @@ export const reportsRepo = {
     } catch (error) {
       throw normalizeError(error);
     }
-  }
+  },
+
+  async jobCards(from?: Date, to?: Date): Promise<JobCardReportResponseApiResponse> {
+    try {
+      return await client.jobCards(from, to);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
 };

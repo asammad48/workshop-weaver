@@ -177,12 +177,23 @@ const JobCardsPage = () => {
   const closeModal = useUIStore((s) => s.closeModal);
   const [pageNumber, setPageNumber] = useState(1);
   const [search, setSearch] = useState("");
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [selectedJobCard, setSelectedJobCard] = useState<any>(null);
   const pageSize = 10;
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["jobCards", { pageNumber, pageSize, search }],
-    queryFn: () => jobCardsRepo.list(pageNumber, pageSize, search),
+    queryKey: ["jobCards", { pageNumber, pageSize, search, fromDate, toDate }],
+    queryFn: () =>
+      jobCardsRepo.list(
+        pageNumber,
+        pageSize,
+        search,
+        undefined,
+        undefined,
+        fromDate ? new Date(fromDate) : undefined,
+        toDate ? new Date(toDate) : undefined,
+      ),
   });
 
   const items = data?.data?.items ?? [];
@@ -314,7 +325,31 @@ const JobCardsPage = () => {
       </div>
 
       <Card style={{ marginBottom: "24px" }}>
-        <div style={{ padding: "16px", display: "flex", gap: "12px" }}>
+        <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <div style={{ minWidth: "180px", flex: 1 }}>
+              <Input
+                label="From Date"
+                type="date"
+                value={fromDate}
+                onChange={(e) => {
+                  setFromDate(e.target.value);
+                  setPageNumber(1);
+                }}
+              />
+            </div>
+            <div style={{ minWidth: "180px", flex: 1 }}>
+              <Input
+                label="To Date"
+                type="date"
+                value={toDate}
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                  setPageNumber(1);
+                }}
+              />
+            </div>
+          </div>
           <div style={{ position: "relative", flex: 1 }}>
             <Search
               size={18}

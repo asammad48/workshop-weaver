@@ -19,6 +19,8 @@ export const jobCardsRepo = {
     search?: string,
     sortBy?: string,
     sortDirection?: string,
+    fromDate?: Date,
+    toDate?: Date,
   ): Promise<JobCardResponsePageResponseApiResponse> {
     try {
       return await client.jobcardsGET2(
@@ -27,6 +29,8 @@ export const jobCardsRepo = {
         search,
         sortBy,
         sortDirection,
+        fromDate,
+        toDate,
       );
     } catch (error) {
       throw normalizeError(error);

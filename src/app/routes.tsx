@@ -14,6 +14,7 @@ import NotificationsPage from '@/pages/NotificationsPage';
 // Operations
 import JobCardsPage from '@/pages/JobCardsPage';
 import CustomersPage from '@/pages/CustomersPage';
+import DriversPage from '@/pages/DriversPage';
 import VehiclesPage from '@/pages/VehiclesPage';
 
 // Inventory
@@ -56,6 +57,7 @@ export function AppRoutes() {
         {/* Operations */}
         <Route path="/jobcards" element={<JobCardsPage />} />
         <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/customers/drivers" element={<DriversPage />} />
         <Route path="/vehicles" element={<VehiclesPage />} />
 
         {/* Inventory */}

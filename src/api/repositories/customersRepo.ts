@@ -19,6 +19,16 @@ export const customersRepo = {
     }
   },
 
+
+
+  async fleet(pageNumber?: number, pageSize?: number, search?: string, sortBy?: string, sortDirection?: string): Promise<CustomerResponsePageResponseApiResponse> {
+    try {
+      return await client.fleet(pageNumber, pageSize, search, sortBy, sortDirection);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async get(id: string): Promise<CustomerResponseApiResponse> {
     try {
       return await client.customersGET2(id);
