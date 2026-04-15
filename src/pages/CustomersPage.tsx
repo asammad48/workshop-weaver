@@ -107,7 +107,7 @@ export default function CustomersPage() {
           <Select
             label="Customer Type *"
             options={[...CUSTOMER_TYPE_OPTIONS]}
-            value={formData.customerType}
+            defaultValue={formData.customerType}
             onChange={(e) => {
               formData.customerType = e.target.value;
             }}
