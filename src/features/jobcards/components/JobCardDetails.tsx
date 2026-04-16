@@ -13,6 +13,7 @@ import { CommunicationsTab } from "../tabs/CommunicationsTab";
 import { AttachmentsTab } from "../tabs/AttachmentsTab";
 import { DiagnosisTab } from "../tabs/DiagnosisTab";
 import { JOB_CARD_STATUS_LABELS, JobCardStatus } from "@/constants/enums";
+import { useI18n } from "@/i18n";
 
 interface JobCardDetailsProps {
   jobCard: any;
@@ -20,17 +21,31 @@ interface JobCardDetailsProps {
 }
 
 export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack }) => {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState("details");
+  const tabLabels: Record<string, string> = {
+    details: t('jobCards.tabs.details'),
+    stations: t('jobCards.tabs.stations'),
+    tasks: t('jobCards.tabs.tasks'),
+    diagnosis: t('jobCards.tabs.diagnosis'),
+    'part-requests': t('jobCards.tabs.partRequests'),
+    'line-items': t('jobCards.tabs.lineItems'),
+    billing: t('jobCards.tabs.billing'),
+    roadblockers: t('jobCards.tabs.roadblockers'),
+    approvals: t('jobCards.tabs.approvals'),
+    communications: t('jobCards.tabs.communications'),
+    attachments: t('jobCards.tabs.attachments'),
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <Button variant="secondary" size="sm" onClick={onBack}>
           <ChevronLeft size={18} style={{ marginRight: '4px' }} />
-          Back to List
+          {t('jobCards.backToList')}
         </Button>
         <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>
-          Job Card: {jobCard.plate}
+          {t('jobCards.title')}: {jobCard.plate}
         </h2>
       </div>
 
@@ -59,7 +74,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
               textTransform: 'capitalize'
             }}
           >
-            {tab.replace('-', ' ')}
+            {tabLabels[tab] || tab.replace('-', ' ')}
           </button>
         ))}
       </div>

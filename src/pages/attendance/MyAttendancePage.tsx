@@ -162,7 +162,7 @@ export default function MyAttendancePage() {
                 color: "var(--c-text)",
               }}
             >
-              Note (Optional)
+              {t('pages.attendance.noteOptional')}
             </label>
             <textarea
               value={note}
@@ -193,7 +193,7 @@ export default function MyAttendancePage() {
               ) : (
                 <LogIn size={18} style={{ marginRight: "8px" }} />
               )}
-              Check-in
+              {t('pages.attendance.checkIn')}
             </Button>
             <Button
               onClick={handleCheckOut}
@@ -206,7 +206,7 @@ export default function MyAttendancePage() {
               ) : (
                 <LogOut size={18} style={{ marginRight: "8px" }} />
               )}
-              Check-out
+              {t('pages.attendance.checkOut')}
             </Button>
           </div>
         </div>
@@ -229,7 +229,7 @@ export default function MyAttendancePage() {
               color: "var(--c-text)",
             }}
           >
-            Monthly View
+            {t('pages.attendance.monthlyView')}
           </h2>
           <div style={{ display: "flex", gap: "12px" }}>
             <div style={{ width: "120px" }}>
@@ -276,7 +276,7 @@ export default function MyAttendancePage() {
                     fontWeight: 500,
                   }}
                 >
-                  Status
+                  {t('table.status')}
                 </th>
                 <th
                   style={{
@@ -286,7 +286,7 @@ export default function MyAttendancePage() {
                     fontWeight: 500,
                   }}
                 >
-                  Check-in
+                  {t('pages.attendance.checkIn')}
                 </th>
                 <th
                   style={{
@@ -296,7 +296,7 @@ export default function MyAttendancePage() {
                     fontWeight: 500,
                   }}
                 >
-                  Check-out
+                  {t('pages.attendance.checkOut')}
                 </th>
                 <th
                   style={{
@@ -306,7 +306,7 @@ export default function MyAttendancePage() {
                     fontWeight: 500,
                   }}
                 >
-                  Note
+                  {t('table.notes')}
                 </th>
               </tr>
             </thead>

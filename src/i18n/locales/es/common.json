@@ -213,6 +213,39 @@
     ,"daysOpen": "Días abiertos"
     ,"station": "Estación"
     ,"days": "Días"
+    ,"assignedTo": "Asignado a"
+    ,"startedAt": "Inició"
+    ,"endedAt": "Finalizó"
+    ,"totalMinutes": "Minutos totales"
+    ,"user": "Usuario"
+    ,"task": "Tarea"
+    ,"direction": "Dirección"
+    ,"occurredAt": "Ocurrió en"
+    ,"createdBy": "Creado por"
+    ,"summary": "Resumen"
+    ,"unitPrice": "Precio unitario"
+    ,"resolvedAt": "Resuelto en"
+    ,"employee": "Empleado"
+  },
+  "jobCards": {
+    "backToList": "Volver a la lista",
+    "title": "Orden de trabajo",
+    "tabs": {
+      "details": "Detalles",
+      "stations": "Estaciones",
+      "tasks": "Tareas",
+      "diagnosis": "Diagnóstico",
+      "partRequests": "Solicitud de partes",
+      "lineItems": "Líneas",
+      "billing": "Facturación",
+      "roadblockers": "Bloqueadores",
+      "approvals": "Aprobaciones",
+      "communications": "Comunicaciones",
+      "attachments": "Adjuntos"
+    },
+    "tabsContent": {
+      "addTask": "Agregar tarea"
+    }
   },
   "pages": {
     "dashboard": {
@@ -265,27 +298,51 @@
       "title": "Gestión de inventario",
       "noSuppliers": "No se encontraron proveedores",
       "noParts": "No se encontraron partes",
-      "noLocations": "No se encontraron ubicaciones"
+      "noLocations": "No se encontraron ubicaciones",
+      "tabs": {
+        "suppliers": "Proveedores",
+        "parts": "Partes",
+        "locations": "Ubicaciones",
+        "stock": "Stock",
+        "ledger": "Libro"
+      }
     },
     "purchaseOrders": {
       "title": "Órdenes de compra",
       "empty": "No se encontraron órdenes de compra"
     },
     "finance": {
-      "title": "Finanzas"
+      "title": "Finanzas",
+      "expensesTab": "Gastos",
+      "wagesTab": "Sueldos"
     },
     "reports": {
       "title": "Reportes",
       "generate": "Generar reporte",
       "roadblockerAging": "Antigüedad de bloqueadores",
-      "stuckVehicles": "Vehículos atascados"
+      "stuckVehicles": "Vehículos atascados",
+      "cards": {
+        "totalRevenue": "Ingresos totales",
+        "totalExpenses": "Gastos totales",
+        "totalWages": "Sueldos totales",
+        "carsInShop": "Autos en taller",
+        "avgDaysInShop": "Promedio de días en taller",
+        "commsSent": "Comunicaciones enviadas"
+      }
     },
     "attendance": {
       "myTitle": "Mi asistencia",
       "today": "Asistencia de hoy",
       "managementTitle": "Gestión de asistencia",
       "noTodayRecords": "No se encontraron registros de asistencia para hoy",
-      "noRecords": "No se encontraron registros para este período"
+      "noRecords": "No se encontraron registros para este período",
+      "checkIn": "Entrada",
+      "checkOut": "Salida",
+      "noteOptional": "Nota (Opcional)",
+      "monthlyView": "Vista mensual",
+      "allEmployees": "Todos los empleados",
+      "todayList": "Lista de hoy",
+      "employeeMonthView": "Vista mensual por empleado"
     },
     "profile": {
       "title": "Mi perfil",

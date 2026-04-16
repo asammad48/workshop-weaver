@@ -19,12 +19,14 @@ import { Input } from "@/components/ui/Input";
 import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
+import { useI18n } from "@/i18n";
 
 interface TasksTabProps {
     jobCardId: string;
 }
 
 export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError, error, refetch } = useQuery({
@@ -189,7 +191,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button onClick={handleCreateTask}>
                     <Plus size={18} style={{ marginRight: "8px" }} />
-                    Add Task
+                    {t('jobCards.tabsContent.addTask')}
                 </Button>
             </div>
 
@@ -203,13 +205,13 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                                     textAlign: "left",
                                 }}
                             >
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Station</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Title</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Assigned To</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Status</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>StartedAt</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>EndedAt</th>
-                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>TotalMinutes</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.station')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.title')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.assignedTo')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.status')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.startedAt')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.endedAt')}</th>
+                                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.totalMinutes')}</th>
                                 <th
                                     style={{
                                         padding: "16px",
@@ -219,7 +221,7 @@ export const TasksTab: React.FC<TasksTabProps> = ({ jobCardId }) => {
                                         fontWeight: 500,
                                     }}
                                 >
-                                    Actions
+                                    {t('table.actions')}
                                 </th>
                             </tr>
                         </thead>
@@ -437,12 +439,12 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead>
                             <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>User</th>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Task</th>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Station</th>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>StartedAt</th>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>EndedAt</th>
-                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>Minutes</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.user')}</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.task')}</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.station')}</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.startedAt')}</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.endedAt')}</th>
+                                <th style={{ padding: "12px", color: "var(--c-muted)", fontSize: "13px" }}>{t('table.minutes')}</th>
                                 <th
                                     style={{
                                         padding: "12px",
@@ -451,7 +453,7 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
                                         fontSize: "13px",
                                     }}
                                 >
-                                    Actions
+                                    {t('table.actions')}
                                 </th>
                             </tr>
                         </thead>

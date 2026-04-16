@@ -7,6 +7,7 @@ import { ModalContent } from "@/components/ui/Modal";
 import { toast, openModal, closeModal, confirm } from "@/state/uiStore";
 import { ROADBLOCKER_TYPE_LABELS, ROADBLOCKER_TYPE_OPTIONS, RoadblockerType } from "@/constants/enums";
 import { Plus, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface RoadblockersTabProps {
   jobCardId: string;
@@ -71,6 +72,7 @@ const RoadblockerAddModalContent: React.FC<{ jobCardId: string; onAdded: () => v
 };
 
 export const RoadblockersTab: React.FC<RoadblockersTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const [roadblockers, setRoadblockers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -131,12 +133,12 @@ export const RoadblockersTab: React.FC<RoadblockersTabProps> = ({ jobCardId }) =
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--c-bg-subtle)', borderBottom: '1px solid var(--c-border)' }}>
-              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Type</th>
-              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Description</th>
-              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Created</th>
-              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Resolved At</th>
-              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Status</th>
-              <th style={{ textAlign: 'right', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>Action</th>
+              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.type')}</th>
+              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.description')}</th>
+              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.createdAt')}</th>
+              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.resolvedAt')}</th>
+              <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.status')}</th>
+              <th style={{ textAlign: 'right', padding: '12px 20px', fontSize: '12px', fontWeight: 600, color: 'var(--c-muted)' }}>{t('table.actions')}</th>
             </tr>
           </thead>
           <tbody>

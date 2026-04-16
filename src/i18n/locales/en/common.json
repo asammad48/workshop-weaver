@@ -213,6 +213,39 @@
     ,"daysOpen": "Days Open"
     ,"station": "Station"
     ,"days": "Days"
+    ,"assignedTo": "Assigned To"
+    ,"startedAt": "Started At"
+    ,"endedAt": "Ended At"
+    ,"totalMinutes": "Total Minutes"
+    ,"user": "User"
+    ,"task": "Task"
+    ,"direction": "Direction"
+    ,"occurredAt": "Occurred At"
+    ,"createdBy": "Created By"
+    ,"summary": "Summary"
+    ,"unitPrice": "Unit Price"
+    ,"resolvedAt": "Resolved At"
+    ,"employee": "Employee"
+  },
+  "jobCards": {
+    "backToList": "Back to List",
+    "title": "Job Card",
+    "tabs": {
+      "details": "Details",
+      "stations": "Stations",
+      "tasks": "Tasks",
+      "diagnosis": "Diagnosis",
+      "partRequests": "Part Requests",
+      "lineItems": "Line Items",
+      "billing": "Billing",
+      "roadblockers": "Roadblockers",
+      "approvals": "Approvals",
+      "communications": "Communications",
+      "attachments": "Attachments"
+    },
+    "tabsContent": {
+      "addTask": "Add Task"
+    }
   },
   "pages": {
     "dashboard": {
@@ -265,27 +298,51 @@
       "title": "Inventory Management",
       "noSuppliers": "No suppliers found",
       "noParts": "No parts found",
-      "noLocations": "No locations found"
+      "noLocations": "No locations found",
+      "tabs": {
+        "suppliers": "Suppliers",
+        "parts": "Parts",
+        "locations": "Locations",
+        "stock": "Stock",
+        "ledger": "Ledger"
+      }
     },
     "purchaseOrders": {
       "title": "Purchase Orders",
       "empty": "No purchase orders found"
     },
     "finance": {
-      "title": "Finance"
+      "title": "Finance",
+      "expensesTab": "Expenses",
+      "wagesTab": "Wages"
     },
     "reports": {
       "title": "Reports",
       "generate": "Generate Report",
       "roadblockerAging": "Roadblocker Aging",
-      "stuckVehicles": "Stuck Vehicles"
+      "stuckVehicles": "Stuck Vehicles",
+      "cards": {
+        "totalRevenue": "Total Revenue",
+        "totalExpenses": "Total Expenses",
+        "totalWages": "Total Wages",
+        "carsInShop": "Cars In Shop",
+        "avgDaysInShop": "Avg Days In Shop",
+        "commsSent": "Comms Sent"
+      }
     },
     "attendance": {
       "myTitle": "My Attendance",
       "today": "Today's Attendance",
       "managementTitle": "Attendance Management",
       "noTodayRecords": "No attendance records found for today",
-      "noRecords": "No records found for this period"
+      "noRecords": "No records found for this period",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "noteOptional": "Note (Optional)",
+      "monthlyView": "Monthly View",
+      "allEmployees": "All Employees",
+      "todayList": "Today's List",
+      "employeeMonthView": "Employee Month View"
     },
     "profile": {
       "title": "My Profile",

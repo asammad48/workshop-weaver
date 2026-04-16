@@ -142,7 +142,7 @@ export default function FinancePage() {
             cursor: 'pointer'
           }}
         >
-          Expenses
+          {t('pages.finance.expensesTab')}
         </button>
         <button
           onClick={() => setActiveTab('wages')}
@@ -157,7 +157,7 @@ export default function FinancePage() {
             cursor: 'pointer'
           }}
         >
-          Wages
+          {t('pages.finance.wagesTab')}
         </button>
       </div>
 

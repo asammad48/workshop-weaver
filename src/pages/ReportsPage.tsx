@@ -149,32 +149,32 @@ export default function ReportsPage() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '24px' }}>
           <SummaryCard 
-            title="Total Revenue" 
+            title={t('pages.reports.cards.totalRevenue')} 
             value={summary?.totalRevenue !== undefined ? `$${summary.totalRevenue.toLocaleString()}` : undefined} 
             icon={DollarSign} 
             color="#10b981" 
           />
           <SummaryCard 
-            title="Total Expenses" 
+            title={t('pages.reports.cards.totalExpenses')} 
             value={summary?.totalExpenses !== undefined ? `$${summary.totalExpenses.toLocaleString()}` : undefined} 
             icon={DollarSign} 
             color="#ef4444" 
           />
           <SummaryCard 
-            title="Total Wages" 
+            title={t('pages.reports.cards.totalWages')} 
             value={summary?.totalWages !== undefined ? `$${summary.totalWages.toLocaleString()}` : undefined} 
             icon={Users} 
             color="#3b82f6" 
           />
           <SummaryCard 
-            title="Cars In Shop" 
+            title={t('pages.reports.cards.carsInShop')} 
             value={summary?.vehiclesInShop} 
             icon={Car} 
             color="#f59e0b" 
           />
           {summary?.avgDaysInShop !== undefined && (
             <SummaryCard 
-              title="Avg Days In Shop" 
+              title={t('pages.reports.cards.avgDaysInShop')}
               value={summary.avgDaysInShop} 
               icon={Clock} 
               color="#8b5cf6" 
@@ -182,7 +182,7 @@ export default function ReportsPage() {
           )}
           {summary?.communicationsCount !== undefined && (
             <SummaryCard 
-              title="Comms Sent" 
+              title={t('pages.reports.cards.commsSent')}
               value={summary.communicationsCount} 
               icon={FileText} 
               color="#ec4899" 

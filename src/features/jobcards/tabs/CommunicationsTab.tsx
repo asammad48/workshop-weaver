@@ -8,12 +8,14 @@ import { Select } from "@/components/forms/Select";
 import { useUIStore, toast, closeModal, openModal } from "@/state/uiStore";
 import { ModalContent } from "@/components/ui/Modal";
 import { Loader2, Plus, MessageSquare, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface CommunicationsTabProps {
   jobCardId: string;
 }
 
 export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const pushToast = useUIStore((s) => s.pushToast);
   const [page, setPage] = useState(1);
@@ -79,11 +81,11 @@ export const CommunicationsTab: React.FC<CommunicationsTabProps> = ({ jobCardId 
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Type</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Direction</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Occurred At</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Created By</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Summary</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.type')}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.direction')}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.occurredAt')}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.createdBy')}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t('table.summary')}</th>
               </tr>
             </thead>
             <tbody>

@@ -63,7 +63,7 @@ export default function AttendanceAdminPage() {
 
   const employeeOptions = useMemo(
     () => [
-      { value: "", label: "All Employees" },
+      { value: "", label: t('pages.attendance.allEmployees') },
       ...users.map((u) => ({ value: u.id!, label: u.email! })),
     ],
     [users],
@@ -303,7 +303,7 @@ export default function AttendanceAdminPage() {
             cursor: "pointer",
           }}
         >
-          Today's List
+          {t('pages.attendance.todayList')}
         </button>
         <button
           onClick={() => setActiveTab("month")}
@@ -321,7 +321,7 @@ export default function AttendanceAdminPage() {
             cursor: "pointer",
           }}
         >
-          Employee Month View
+          {t('pages.attendance.employeeMonthView')}
         </button>
       </div>
 
@@ -344,7 +344,7 @@ export default function AttendanceAdminPage() {
                       fontWeight: 500,
                     }}
                   >
-                    Employee
+                    {t('table.employee')}
                   </th>
                   <th
                     style={{
@@ -364,7 +364,7 @@ export default function AttendanceAdminPage() {
                       fontWeight: 500,
                     }}
                   >
-                    Check-in
+                    {t('pages.attendance.checkIn')}
                   </th>
                   <th
                     style={{
@@ -374,7 +374,7 @@ export default function AttendanceAdminPage() {
                       fontWeight: 500,
                     }}
                   >
-                    Check-out
+                    {t('pages.attendance.checkOut')}
                   </th>
                   <th
                     style={{
@@ -384,7 +384,7 @@ export default function AttendanceAdminPage() {
                       fontWeight: 500,
                     }}
                   >
-                    Status
+                    {t('table.status')}
                   </th>
                   <th
                     style={{
@@ -606,7 +606,7 @@ export default function AttendanceAdminPage() {
                         fontWeight: 500,
                       }}
                     >
-                      Status
+                      {t('table.status')}
                     </th>
                     <th
                       style={{
@@ -616,7 +616,7 @@ export default function AttendanceAdminPage() {
                         fontWeight: 500,
                       }}
                     >
-                      Check-in
+                      {t('pages.attendance.checkIn')}
                     </th>
                     <th
                       style={{
@@ -626,7 +626,7 @@ export default function AttendanceAdminPage() {
                         fontWeight: 500,
                       }}
                     >
-                      Check-out
+                      {t('pages.attendance.checkOut')}
                     </th>
                     <th
                       style={{

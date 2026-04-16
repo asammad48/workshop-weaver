@@ -39,6 +39,14 @@ export default function InventoryPage() {
     }
   };
 
+  const tabLabels: Record<Tab, string> = {
+    suppliers: t('pages.inventory.tabs.suppliers'),
+    parts: t('pages.inventory.tabs.parts'),
+    locations: t('pages.inventory.tabs.locations'),
+    stock: t('pages.inventory.tabs.stock'),
+    ledger: t('pages.inventory.tabs.ledger'),
+  };
+
   const handleCreate = () => {
     if (activeTab === 'stock') {
       openModal('Adjust Stock', <StockAdjustModal onSuccess={() => { closeModal(); queryClient.invalidateQueries({ queryKey: ['stock'] }); }} />);
@@ -88,7 +96,7 @@ export default function InventoryPage() {
               textTransform: 'capitalize'
             }}
           >
-            {tab.replace('-', ' ')}
+            {tabLabels[tab]}
           </button>
         ))}
       </div>
