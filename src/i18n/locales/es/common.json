@@ -188,44 +188,44 @@
     "mileage": "Kilometraje",
     "jobCard": "Orden de trabajo",
     "fromDate": "Desde fecha",
-    "toDate": "Hasta fecha"
-    ,"code": "Código"
-    ,"name": "Nombre"
-    ,"address": "Dirección"
-    ,"sku": "SKU"
-    ,"brand": "Marca"
-    ,"unit": "Unidad"
-    ,"orderNo": "N.º de orden"
-    ,"supplier": "Proveedor"
-    ,"createdAt": "Creado el"
-    ,"submitted": "Enviado"
-    ,"part": "Parte"
-    ,"qty": "Cant."
-    ,"cost": "Costo"
-    ,"total": "Total"
-    ,"category": "Categoría"
-    ,"amount": "Monto"
-    ,"notes": "Notas"
-    ,"staffBranch": "Empleado / Sucursal"
-    ,"paidAt": "Pagado el"
-    ,"period": "Período"
-    ,"description": "Descripción"
-    ,"daysOpen": "Días abiertos"
-    ,"station": "Estación"
-    ,"days": "Días"
-    ,"assignedTo": "Asignado a"
-    ,"startedAt": "Inició"
-    ,"endedAt": "Finalizó"
-    ,"totalMinutes": "Minutos totales"
-    ,"user": "Usuario"
-    ,"task": "Tarea"
-    ,"direction": "Dirección"
-    ,"occurredAt": "Ocurrió en"
-    ,"createdBy": "Creado por"
-    ,"summary": "Resumen"
-    ,"unitPrice": "Precio unitario"
-    ,"resolvedAt": "Resuelto en"
-    ,"employee": "Empleado"
+    "toDate": "Hasta fecha",
+    "code": "Código",
+    "name": "Nombre",
+    "address": "Dirección",
+    "sku": "SKU",
+    "brand": "Marca",
+    "unit": "Unidad",
+    "orderNo": "N.º de orden",
+    "supplier": "Proveedor",
+    "createdAt": "Creado el",
+    "submitted": "Enviado",
+    "part": "Parte",
+    "qty": "Cant.",
+    "cost": "Costo",
+    "total": "Total",
+    "category": "Categoría",
+    "amount": "Monto",
+    "notes": "Notas",
+    "staffBranch": "Empleado / Sucursal",
+    "paidAt": "Pagado el",
+    "period": "Período",
+    "description": "Descripción",
+    "daysOpen": "Días abiertos",
+    "station": "Estación",
+    "days": "Días",
+    "assignedTo": "Asignado a",
+    "startedAt": "Inició",
+    "endedAt": "Finalizó",
+    "totalMinutes": "Minutos totales",
+    "user": "Usuario",
+    "task": "Tarea",
+    "direction": "Dirección",
+    "occurredAt": "Ocurrió en",
+    "createdBy": "Creado por",
+    "summary": "Resumen",
+    "unitPrice": "Precio unitario",
+    "resolvedAt": "Resuelto en",
+    "employee": "Empleado"
   },
   "jobCards": {
     "backToList": "Volver a la lista",
@@ -245,6 +245,232 @@
     },
     "tabsContent": {
       "addTask": "Agregar tarea"
+    },
+    "detailsSection": {
+      "vehicleCustomer": "Vehículo y cliente",
+      "customer": "Cliente",
+      "driver": "Conductor",
+      "plateNumber": "Número de placa",
+      "branch": "Sucursal",
+      "station": "Estación",
+      "status": "Estado",
+      "estimatedTimeline": "Cronograma estimado",
+      "requestedEta": "ETA solicitada",
+      "latestEstEta": "Última ETA estimada",
+      "latestEstPrice": "Último precio estimado",
+      "latestDiagnosisSummary": "Último resumen de diagnóstico",
+      "noDiagnosisSummary": "No hay resumen de diagnóstico disponible.",
+      "timelineUsage": "Cronograma y uso",
+      "mileage": "Kilometraje",
+      "checkIn": "Entrada",
+      "checkOut": "Salida",
+      "notes": "Notas"
+    },
+    "header": {
+      "toasts": {
+        "statusUpdated": "Estado actualizado correctamente",
+        "statusUpdateFailed": "No se pudo actualizar el estado",
+        "diagnosisAdded": "Actualización de diagnóstico agregada correctamente",
+        "diagnosisAddFailed": "No se pudo agregar la actualización de diagnóstico",
+        "partUsageRecorded": "Uso de repuesto registrado",
+        "partUsageFailed": "No se pudo registrar el uso de repuesto",
+        "genericError": "Ocurrió un error",
+        "diagnosisRequired": "La nota de diagnóstico es obligatoria"
+      },
+      "modals": {
+        "changeStatus": "Cambiar estado de la orden",
+        "addDiagnosis": "Agregar actualización de diagnóstico",
+        "usePart": "Usar repuesto"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "updating": "Actualizando...",
+        "updateStatus": "Actualizar estado",
+        "saving": "Guardando...",
+        "addUpdate": "Agregar actualización",
+        "recording": "Registrando...",
+        "viewPublicReceipt": "Ver recibo público",
+        "printJobCard": "Imprimir orden",
+        "usePart": "Usar repuesto",
+        "addDiagnosisUpdate": "Agregar actualización de diagnóstico",
+        "changeStatus": "Cambiar estado"
+      },
+      "fields": {
+        "status": "Estado *",
+        "note": "Nota",
+        "statusNotePlaceholder": "Nota opcional del cambio de estado",
+        "diagnosisNote": "Nota de diagnóstico *",
+        "diagnosisPlaceholder": "Describa hallazgos y trabajo necesario",
+        "updatedEta": "ETA actualizada",
+        "estimatedPrice": "Precio estimado",
+        "part": "Repuesto *",
+        "selectPart": "Seleccionar repuesto",
+        "quantity": "Cantidad *",
+        "location": "Ubicación *",
+        "selectLocation": "Seleccionar ubicación",
+        "notes": "Notas"
+      },
+      "statusOptions": {
+        "newRequest": "Nueva solicitud",
+        "orderPlaced": "Pedido realizado",
+        "orderReceived": "Pedido recibido",
+        "awaitingApproval": "En espera de aprobación",
+        "inProgress": "En progreso",
+        "customerNotified": "Cliente informado",
+        "readyForPickup": "Listo para recoger",
+        "paid": "Pagado"
+      }
+    },
+    "stationTab": {
+      "moveToStation": "Mover a estación",
+      "moveJobCard": "Mover orden",
+      "targetStation": "Estación destino *",
+      "selectTargetStation": "Seleccionar estación destino",
+      "notes": "Notas",
+      "notesPlaceholder": "Agregar notas (opcional)",
+      "move": "Mover",
+      "moving": "Moviendo...",
+      "station": "Estación",
+      "movedAt": "Movido el",
+      "movedBy": "Movido por",
+      "noHistory": "No se encontró historial de estaciones",
+      "loadError": "Error al cargar historial",
+      "unknownError": "Error desconocido",
+      "selectTargetError": "Seleccione una estación destino",
+      "moveSuccess": "Orden movida correctamente",
+      "moveFailed": "No se pudo mover la orden",
+      "cancel": "Cancelar"
+    },
+    "partRequestsTab": {
+      "newRequest": "Nueva solicitud",
+      "newPartRequest": "Nueva solicitud de repuesto",
+      "part": "Repuesto",
+      "supplier": "Proveedor",
+      "qty": "Cant.",
+      "station": "Estación",
+      "status": "Estado",
+      "dates": "Fechas",
+      "actions": "Acciones",
+      "noRequests": "No se encontraron solicitudes de repuestos",
+      "requested": "Sol:",
+      "ordered": "Ped:",
+      "arrived": "Lle:",
+      "signed": "Firm:",
+      "order": "Pedir",
+      "arrive": "Recibir",
+      "stationSign": "Firma estación",
+      "officeSign": "Firma oficina",
+      "createRequest": "Crear solicitud",
+      "creating": "Creando...",
+      "cancel": "Cancelar",
+      "selectPart": "Seleccionar repuesto",
+      "quantity": "Cantidad *",
+      "stationField": "Estación *",
+      "selectStation": "Seleccionar estación",
+      "notes": "Notas",
+      "partRequestCreated": "Solicitud de repuesto creada",
+      "partRequestCreateFailed": "No se pudo crear la solicitud",
+      "statusUpdated": "Estado actualizado",
+      "statusUpdateFailed": "No se pudo actualizar el estado",
+      "unknownAction": "Acción desconocida"
+    },
+    "approvalsTab": {
+      "requestApproval": "Solicitar aprobación",
+      "approvalRequested": "Aprobación solicitada",
+      "approvalRequestFailed": "No se pudo solicitar aprobación",
+      "approvalProcessed": "Aprobación procesada",
+      "approvalProcessFailed": "No se pudo procesar la aprobación",
+      "submitRequest": "Enviar solicitud",
+      "approvalRole": "Rol de aprobación",
+      "supervisor": "Supervisor",
+      "cashier": "Cajero",
+      "note": "Nota",
+      "approvalNote": "Nota de aprobación",
+      "enterApprovalDetails": "Ingrese detalles de la aprobación...",
+      "addNote": "Agregar una nota...",
+      "approveAs": "Aprobar como",
+      "approve": "Aprobar",
+      "searchPlaceholder": "Buscar aprobaciones...",
+      "approvalType": "Tipo de aprobación",
+      "status": "Estado",
+      "requestedAt": "Solicitado el",
+      "requestedBy": "Solicitado por",
+      "approvedAt": "Aprobado el",
+      "approvedBy": "Aprobado por",
+      "actions": "Acciones",
+      "noApprovals": "No se encontraron aprobaciones",
+      "errorLoading": "Error al cargar aprobaciones",
+      "page": "Página",
+      "of": "de"
+    },
+    "attachmentsTab": {
+      "uploadAttachment": "Subir adjunto",
+      "noteOptional": "Nota (opcional)",
+      "upload": "Subir",
+      "searchPlaceholder": "Buscar adjuntos...",
+      "fileName": "Nombre de archivo",
+      "contentType": "Tipo de contenido",
+      "size": "Tamaño",
+      "note": "Nota",
+      "uploadedBy": "Subido por",
+      "createdAt": "Creado el",
+      "noAttachments": "No se encontraron adjuntos",
+      "errorLoading": "Error al cargar adjuntos",
+      "fileUploadSuccess": "Archivo subido correctamente",
+      "uploadFailed": "Error al subir",
+      "selectFileError": "Primero seleccione un archivo",
+      "page": "Página",
+      "of": "de"
+    },
+    "diagnosisTab": {
+      "loadError": "Error al cargar diagnóstico",
+      "unknownError": "Error desconocido",
+      "requestedEta": "ETA solicitada",
+      "latestEstEta": "Última ETA estimada",
+      "estPrice": "Precio estimado",
+      "latestDiagnosisSummary": "Último resumen de diagnóstico",
+      "timeline": "Cronología de diagnóstico",
+      "date": "Fecha",
+      "by": "Por",
+      "diagnosisNote": "Nota de diagnóstico",
+      "newEta": "Nueva ETA",
+      "noUpdates": "Aún no hay actualizaciones de diagnóstico"
+    },
+    "invoiceTab": {
+      "invoiceCreated": "Factura creada correctamente",
+      "invoiceCreateFailed": "No se pudo crear la factura",
+      "paymentAdded": "Pago agregado correctamente",
+      "paymentAddFailed": "No se pudo agregar el pago",
+      "amountMustBePositive": "El monto debe ser mayor que 0",
+      "createInvoice": "Crear factura",
+      "recordPayment": "Registrar pago",
+      "generateInvoice": "Generar factura",
+      "discount": "Descuento ($)",
+      "tax": "Impuesto (%)",
+      "notes": "Notas",
+      "amount": "Monto ($) *",
+      "method": "Método *",
+      "paymentDate": "Fecha de pago *",
+      "loading": "Cargando información de facturación...",
+      "loadFailed": "No se pudo cargar la información de facturación.",
+      "noInvoiceTitle": "No hay factura generada",
+      "noInvoiceDescription": "Genere una factura para comenzar a aceptar pagos de esta orden.",
+      "invoiceAmount": "Monto de factura",
+      "paidAmount": "Monto pagado",
+      "balanceDue": "Saldo pendiente",
+      "subTotalAmount": "Monto subtotal",
+      "discountPercentage": "Porcentaje de descuento",
+      "taxPercentage": "Porcentaje de impuesto",
+      "paymentHistory": "Historial de pagos",
+      "printInvoice": "Imprimir factura",
+      "addPayment": "Agregar pago",
+      "date": "Fecha",
+      "methodCol": "Método",
+      "notesCol": "Notas",
+      "amountCol": "Monto",
+      "noPayments": "Aún no hay pagos registrados.",
+      "page": "Página",
+      "of": "de"
     }
   },
   "pages": {

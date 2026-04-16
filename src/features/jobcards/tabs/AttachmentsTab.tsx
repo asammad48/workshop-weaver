@@ -6,12 +6,14 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { toast } from "@/state/uiStore";
 import { Loader2, Plus, FileIcon, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface AttachmentsTabProps {
   jobCardId: string;
 }
 
 export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [isUploading, setIsUploading] = useState(false);
   const [note, setNote] = useState("");
@@ -42,40 +44,40 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
 
       const res = await attachmentsRepo.upload(formData);
       if (!res.success) {
-        throw new Error(res.message || "Upload failed");
+        throw new Error(res.message || t("jobCards.attachmentsTab.uploadFailed"));
       }
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["attachments", jobCardId] });
-      toast.success("File uploaded successfully");
+      toast.success(t("jobCards.attachmentsTab.fileUploadSuccess"));
       setIsUploading(false);
       setNote("");
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
     onError: (error: any) => {
-      toast.error(error.message || "Upload failed");
+      toast.error(error.message || t("jobCards.attachmentsTab.uploadFailed"));
       setIsUploading(false);
     },
   });
 
   const handleUpload = () => {
     if (!selectedFile) {
-      toast.error("Please select a file first");
+      toast.error(t("jobCards.attachmentsTab.selectFileError"));
       return;
     }
     setIsUploading(true);
     uploadMutation.mutate();
   };
 
-  if (isError) return <div className="p-8 text-center text-red-500">Error loading attachments</div>;
+  if (isError) return <div className="p-8 text-center text-red-500">{t("jobCards.attachmentsTab.errorLoading")}</div>;
 
   return (
     <div className="space-y-4">
       <Card>
         <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600, color: "var(--c-text)" }}>Upload Attachment</h3>
+          <h3 style={{ fontSize: "16px", fontWeight: 600, color: "var(--c-text)" }}>{t("jobCards.attachmentsTab.uploadAttachment")}</h3>
           <div style={{ display: "flex", gap: "16px", alignItems: "flex-end" }}>
             <div style={{ flex: 1 }}>
               <Input
@@ -86,14 +88,14 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
             </div>
             <div style={{ flex: 2 }}>
               <Input
-                placeholder="Note (optional)"
+                placeholder={t("jobCards.attachmentsTab.noteOptional")}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
               />
             </div>
             <Button onClick={handleUpload} disabled={isUploading || !selectedFile}>
               {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-              Upload
+              {t("jobCards.attachmentsTab.upload")}
             </Button>
           </div>
         </div>
@@ -104,7 +106,7 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
           <div style={{ position: "relative", flex: 1 }}>
             <Search size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--c-muted)" }} />
             <Input 
-              placeholder="Search attachments..." 
+              placeholder={t("jobCards.attachmentsTab.searchPlaceholder")} 
               style={{ paddingLeft: "40px" }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -118,12 +120,12 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>FileName</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ContentType</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Size</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Note</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Uploaded By</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>CreatedAt</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.fileName")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.contentType")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.size")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.note")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.uploadedBy")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.attachmentsTab.createdAt")}</th>
               </tr>
             </thead>
             <tbody>
@@ -136,7 +138,7 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
               ) : attachments.length === 0 ? (
                 <tr>
                   <td colSpan={6} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
-                    No attachments found
+                    {t("jobCards.attachmentsTab.noAttachments")}
                   </td>
                 </tr>
               ) : (
@@ -172,7 +174,7 @@ export const AttachmentsTab: React.FC<AttachmentsTabProps> = ({ jobCardId }) => 
 
         <div style={{ padding: "16px", borderTop: "1px solid var(--c-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "14px", color: "var(--c-muted)" }}>
-            Page {page} of {totalPages}
+            {t("jobCards.attachmentsTab.page")} {page} {t("jobCards.attachmentsTab.of")} {totalPages}
           </span>
           <div style={{ display: "flex", gap: "8px" }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>

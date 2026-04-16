@@ -85,30 +85,30 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
         {activeTab === 'details' ? (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Vehicle & Customer</h3>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('jobCards.detailsSection.vehicleCustomer')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Customer</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.customer')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.customerName || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Driver</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.driver')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.driverName || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Plate Number</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.plateNumber')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.vehiclePlate || jobCard.plate || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Branch</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.branch')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.branchName || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Station</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.station')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.currentStationName || jobCard.currentStationCode || "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Status</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.status')}</span>
                   <span style={{ 
                     padding: '2px 8px', 
                     borderRadius: '4px', 
@@ -121,18 +121,18 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Estimated Timeline</h3>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('jobCards.detailsSection.estimatedTimeline')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Requested ETA</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.requestedEta')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.requestedEta ? new Date(jobCard.requestedEta).toLocaleString() : "—"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Latest Est. ETA</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.latestEstEta')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.latestEstimatedEta ? new Date(jobCard.latestEstimatedEta).toLocaleString() : "—"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Latest Est. Price</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.latestEstPrice')}</span>
                   <span style={{ fontWeight: 500 }}>
                     {jobCard.latestEstimatedPrice !== undefined && jobCard.latestEstimatedPrice !== null
                       ? new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(jobCard.latestEstimatedPrice)
@@ -143,7 +143,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Latest Diagnosis Summary</h3>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('jobCards.detailsSection.latestDiagnosisSummary')}</h3>
               <div style={{
                 padding: '12px',
                 backgroundColor: 'var(--c-bg)',
@@ -154,23 +154,23 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
                 minHeight: '80px',
                 whiteSpace: 'pre-wrap'
               }}>
-                {jobCard.latestDiagnosisSummary || "No diagnosis summary available."}
+                {jobCard.latestDiagnosisSummary || t('jobCards.detailsSection.noDiagnosisSummary')}
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Timeline & Usage</h3>
+              <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('jobCards.detailsSection.timelineUsage')}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Mileage</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.mileage')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.mileage?.toLocaleString() || '0'} km</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Check-in</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.checkIn')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.entryAt ? new Date(jobCard.entryAt).toLocaleString() : "-"}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--c-border)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--c-muted)' }}>Check-out</span>
+                  <span style={{ color: 'var(--c-muted)' }}>{t('jobCards.detailsSection.checkOut')}</span>
                   <span style={{ fontWeight: 500 }}>{jobCard.exitAt ? new Date(jobCard.exitAt).toLocaleString() : "-"}</span>
                 </div>
               </div>
@@ -178,7 +178,7 @@ export const JobCardDetails: React.FC<JobCardDetailsProps> = ({ jobCard, onBack 
 
             {jobCard.notes && (
               <div style={{ gridColumn: 'span 2', marginTop: '8px' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>Notes</h3>
+                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>{t('jobCards.detailsSection.notes')}</h3>
                 <div style={{ 
                   padding: '12px', 
                   backgroundColor: 'var(--c-bg)', 

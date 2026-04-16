@@ -188,44 +188,44 @@
     "mileage": "Mileage",
     "jobCard": "Job Card",
     "fromDate": "From Date",
-    "toDate": "To Date"
-    ,"code": "Code"
-    ,"name": "Name"
-    ,"address": "Address"
-    ,"sku": "SKU"
-    ,"brand": "Brand"
-    ,"unit": "Unit"
-    ,"orderNo": "Order No"
-    ,"supplier": "Supplier"
-    ,"createdAt": "Created At"
-    ,"submitted": "Submitted"
-    ,"part": "Part"
-    ,"qty": "Qty"
-    ,"cost": "Cost"
-    ,"total": "Total"
-    ,"category": "Category"
-    ,"amount": "Amount"
-    ,"notes": "Notes"
-    ,"staffBranch": "Staff / Branch"
-    ,"paidAt": "Paid At"
-    ,"period": "Period"
-    ,"description": "Description"
-    ,"daysOpen": "Days Open"
-    ,"station": "Station"
-    ,"days": "Days"
-    ,"assignedTo": "Assigned To"
-    ,"startedAt": "Started At"
-    ,"endedAt": "Ended At"
-    ,"totalMinutes": "Total Minutes"
-    ,"user": "User"
-    ,"task": "Task"
-    ,"direction": "Direction"
-    ,"occurredAt": "Occurred At"
-    ,"createdBy": "Created By"
-    ,"summary": "Summary"
-    ,"unitPrice": "Unit Price"
-    ,"resolvedAt": "Resolved At"
-    ,"employee": "Employee"
+    "toDate": "To Date",
+    "code": "Code",
+    "name": "Name",
+    "address": "Address",
+    "sku": "SKU",
+    "brand": "Brand",
+    "unit": "Unit",
+    "orderNo": "Order No",
+    "supplier": "Supplier",
+    "createdAt": "Created At",
+    "submitted": "Submitted",
+    "part": "Part",
+    "qty": "Qty",
+    "cost": "Cost",
+    "total": "Total",
+    "category": "Category",
+    "amount": "Amount",
+    "notes": "Notes",
+    "staffBranch": "Staff / Branch",
+    "paidAt": "Paid At",
+    "period": "Period",
+    "description": "Description",
+    "daysOpen": "Days Open",
+    "station": "Station",
+    "days": "Days",
+    "assignedTo": "Assigned To",
+    "startedAt": "Started At",
+    "endedAt": "Ended At",
+    "totalMinutes": "Total Minutes",
+    "user": "User",
+    "task": "Task",
+    "direction": "Direction",
+    "occurredAt": "Occurred At",
+    "createdBy": "Created By",
+    "summary": "Summary",
+    "unitPrice": "Unit Price",
+    "resolvedAt": "Resolved At",
+    "employee": "Employee"
   },
   "jobCards": {
     "backToList": "Back to List",
@@ -245,6 +245,232 @@
     },
     "tabsContent": {
       "addTask": "Add Task"
+    },
+    "detailsSection": {
+      "vehicleCustomer": "Vehicle & Customer",
+      "customer": "Customer",
+      "driver": "Driver",
+      "plateNumber": "Plate Number",
+      "branch": "Branch",
+      "station": "Station",
+      "status": "Status",
+      "estimatedTimeline": "Estimated Timeline",
+      "requestedEta": "Requested ETA",
+      "latestEstEta": "Latest Est. ETA",
+      "latestEstPrice": "Latest Est. Price",
+      "latestDiagnosisSummary": "Latest Diagnosis Summary",
+      "noDiagnosisSummary": "No diagnosis summary available.",
+      "timelineUsage": "Timeline & Usage",
+      "mileage": "Mileage",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "notes": "Notes"
+    },
+    "header": {
+      "toasts": {
+        "statusUpdated": "Status updated successfully",
+        "statusUpdateFailed": "Failed to update status",
+        "diagnosisAdded": "Diagnosis update added successfully",
+        "diagnosisAddFailed": "Failed to add diagnosis update",
+        "partUsageRecorded": "Part usage recorded",
+        "partUsageFailed": "Failed to record part usage",
+        "genericError": "An error occurred",
+        "diagnosisRequired": "Diagnosis note is required"
+      },
+      "modals": {
+        "changeStatus": "Change Job Card Status",
+        "addDiagnosis": "Add Diagnosis Update",
+        "usePart": "Use Part"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "updating": "Updating...",
+        "updateStatus": "Update Status",
+        "saving": "Saving...",
+        "addUpdate": "Add Update",
+        "recording": "Recording...",
+        "viewPublicReceipt": "View Public Receipt",
+        "printJobCard": "Print JobCard",
+        "usePart": "Use Part",
+        "addDiagnosisUpdate": "Add Diagnosis Update",
+        "changeStatus": "Change Status"
+      },
+      "fields": {
+        "status": "Status *",
+        "note": "Note",
+        "statusNotePlaceholder": "Optional status change note",
+        "diagnosisNote": "Diagnosis Note *",
+        "diagnosisPlaceholder": "Describe findings and work needed",
+        "updatedEta": "Updated ETA",
+        "estimatedPrice": "Estimated Price",
+        "part": "Part *",
+        "selectPart": "Select part",
+        "quantity": "Quantity *",
+        "location": "Location *",
+        "selectLocation": "Select location",
+        "notes": "Notes"
+      },
+      "statusOptions": {
+        "newRequest": "New Request",
+        "orderPlaced": "Order Placed",
+        "orderReceived": "Order Received",
+        "awaitingApproval": "Awaiting Approval",
+        "inProgress": "In Progress",
+        "customerNotified": "Customer Notified",
+        "readyForPickup": "Ready for Pickup",
+        "paid": "Paid"
+      }
+    },
+    "stationTab": {
+      "moveToStation": "Move to Station",
+      "moveJobCard": "Move Job Card",
+      "targetStation": "Target Station *",
+      "selectTargetStation": "Select target station",
+      "notes": "Notes",
+      "notesPlaceholder": "Add some notes (optional)",
+      "move": "Move",
+      "moving": "Moving...",
+      "station": "Station",
+      "movedAt": "Moved At",
+      "movedBy": "Moved By",
+      "noHistory": "No station history found",
+      "loadError": "Error loading history",
+      "unknownError": "Unknown error",
+      "selectTargetError": "Please select a target station",
+      "moveSuccess": "Job card moved successfully",
+      "moveFailed": "Failed to move job card",
+      "cancel": "Cancel"
+    },
+    "partRequestsTab": {
+      "newRequest": "New Request",
+      "newPartRequest": "New Part Request",
+      "part": "Part",
+      "supplier": "Supplier",
+      "qty": "Qty",
+      "station": "Station",
+      "status": "Status",
+      "dates": "Dates",
+      "actions": "Actions",
+      "noRequests": "No part requests found",
+      "requested": "Req:",
+      "ordered": "Ord:",
+      "arrived": "Arr:",
+      "signed": "Sign:",
+      "order": "Order",
+      "arrive": "Arrive",
+      "stationSign": "Station Sign",
+      "officeSign": "Office Sign",
+      "createRequest": "Create Request",
+      "creating": "Creating...",
+      "cancel": "Cancel",
+      "selectPart": "Select part",
+      "quantity": "Quantity *",
+      "stationField": "Station *",
+      "selectStation": "Select station",
+      "notes": "Notes",
+      "partRequestCreated": "Part request created",
+      "partRequestCreateFailed": "Failed to create request",
+      "statusUpdated": "Status updated",
+      "statusUpdateFailed": "Failed to update status",
+      "unknownAction": "Unknown action"
+    },
+    "approvalsTab": {
+      "requestApproval": "Request Approval",
+      "approvalRequested": "Approval requested",
+      "approvalRequestFailed": "Failed to request approval",
+      "approvalProcessed": "Approval processed",
+      "approvalProcessFailed": "Failed to process approval",
+      "submitRequest": "Submit Request",
+      "approvalRole": "Approval Role",
+      "supervisor": "Supervisor",
+      "cashier": "Cashier",
+      "note": "Note",
+      "approvalNote": "Approval Note",
+      "enterApprovalDetails": "Enter approval details...",
+      "addNote": "Add a note...",
+      "approveAs": "Approve as",
+      "approve": "Approve",
+      "searchPlaceholder": "Search approvals...",
+      "approvalType": "Approval Type",
+      "status": "Status",
+      "requestedAt": "Requested At",
+      "requestedBy": "Requested By",
+      "approvedAt": "Approved At",
+      "approvedBy": "Approved By",
+      "actions": "Actions",
+      "noApprovals": "No approvals found",
+      "errorLoading": "Error loading approvals",
+      "page": "Page",
+      "of": "of"
+    },
+    "attachmentsTab": {
+      "uploadAttachment": "Upload Attachment",
+      "noteOptional": "Note (optional)",
+      "upload": "Upload",
+      "searchPlaceholder": "Search attachments...",
+      "fileName": "File Name",
+      "contentType": "Content Type",
+      "size": "Size",
+      "note": "Note",
+      "uploadedBy": "Uploaded By",
+      "createdAt": "Created At",
+      "noAttachments": "No attachments found",
+      "errorLoading": "Error loading attachments",
+      "fileUploadSuccess": "File uploaded successfully",
+      "uploadFailed": "Upload failed",
+      "selectFileError": "Please select a file first",
+      "page": "Page",
+      "of": "of"
+    },
+    "diagnosisTab": {
+      "loadError": "Error loading diagnosis",
+      "unknownError": "Unknown error",
+      "requestedEta": "Requested ETA",
+      "latestEstEta": "Latest Est. ETA",
+      "estPrice": "Est. Price",
+      "latestDiagnosisSummary": "Latest Diagnosis Summary",
+      "timeline": "Diagnosis Timeline",
+      "date": "Date",
+      "by": "By",
+      "diagnosisNote": "Diagnosis Note",
+      "newEta": "New ETA",
+      "noUpdates": "No diagnosis updates yet"
+    },
+    "invoiceTab": {
+      "invoiceCreated": "Invoice created successfully",
+      "invoiceCreateFailed": "Failed to create invoice",
+      "paymentAdded": "Payment added successfully",
+      "paymentAddFailed": "Failed to add payment",
+      "amountMustBePositive": "Amount must be greater than 0",
+      "createInvoice": "Create Invoice",
+      "recordPayment": "Record Payment",
+      "generateInvoice": "Generate Invoice",
+      "discount": "Discount ($)",
+      "tax": "Tax (%)",
+      "notes": "Notes",
+      "amount": "Amount ($) *",
+      "method": "Method *",
+      "paymentDate": "Payment Date *",
+      "loading": "Loading billing info...",
+      "loadFailed": "Failed to load billing information.",
+      "noInvoiceTitle": "No Invoice Generated",
+      "noInvoiceDescription": "Generate an invoice to start accepting payments for this job card.",
+      "invoiceAmount": "Invoice Amount",
+      "paidAmount": "Paid Amount",
+      "balanceDue": "Balance Due",
+      "subTotalAmount": "SubTotal Amount",
+      "discountPercentage": "Discount Percentage",
+      "taxPercentage": "Tax Percentage",
+      "paymentHistory": "Payment History",
+      "printInvoice": "Print Invoice",
+      "addPayment": "Add Payment",
+      "date": "Date",
+      "methodCol": "Method",
+      "notesCol": "Notes",
+      "amountCol": "Amount",
+      "noPayments": "No payments recorded yet.",
+      "page": "Page",
+      "of": "of"
     }
   },
   "pages": {

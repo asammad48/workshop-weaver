@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Stethoscope, Clock, Tag } from "lucide-react";
 import { jobCardDiagnosisRepo } from "@/api/repositories/jobCardDiagnosisRepo";
 import { Card } from "@/components/ui/Card";
+import { useI18n } from "@/i18n";
 
 interface DiagnosisTabProps {
   jobCardId: string;
 }
 
 export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["jobCardDiagnosis", jobCardId],
     queryFn: () => jobCardDiagnosisRepo.getTimeline(jobCardId),
@@ -32,7 +34,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
   if (isError) {
     return (
       <div style={{ padding: "24px", color: "var(--c-danger)" }}>
-        Error loading diagnosis: {(error as any)?.message || "Unknown error"}
+        {t("jobCards.diagnosisTab.loadError")}: {(error as any)?.message || t("jobCards.diagnosisTab.unknownError")}
       </div>
     );
   }
@@ -44,7 +46,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
         <Card style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--c-muted)" }}>
             <Clock size={16} />
-            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>Requested ETA</span>
+            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>{t("jobCards.diagnosisTab.requestedEta")}</span>
           </div>
           <span style={{ fontSize: "16px", fontWeight: 500 }}>
             {timeline?.requestedEta ? new Date(timeline.requestedEta).toLocaleString() : "—"}
@@ -54,7 +56,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
         <Card style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--c-muted)" }}>
             <Clock size={16} />
-            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>Latest Est. ETA</span>
+            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>{t("jobCards.diagnosisTab.latestEstEta")}</span>
           </div>
           <span style={{ fontSize: "16px", fontWeight: 500 }}>
             {timeline?.latestEstimatedEta ? new Date(timeline.latestEstimatedEta).toLocaleString() : "—"}
@@ -64,7 +66,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
         <Card style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--c-muted)" }}>
             <Tag size={16} />
-            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>Est. Price</span>
+            <span style={{ fontSize: "12px", fontWeight: 600, textTransform: "uppercase" }}>{t("jobCards.diagnosisTab.estPrice")}</span>
           </div>
           <span style={{ fontSize: "16px", fontWeight: 500 }}>
             {timeline?.latestEstimatedPrice !== undefined && timeline?.latestEstimatedPrice !== null
@@ -76,7 +78,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
 
       {timeline?.latestDiagnosisSummary && (
         <Card style={{ padding: "16px" }}>
-          <h3 style={{ fontSize: "14px", fontWeight: 600, color: "var(--c-muted)", textTransform: "uppercase", marginBottom: "12px" }}>Latest Diagnosis Summary</h3>
+          <h3 style={{ fontSize: "14px", fontWeight: 600, color: "var(--c-muted)", textTransform: "uppercase", marginBottom: "12px" }}>{t("jobCards.diagnosisTab.latestDiagnosisSummary")}</h3>
           <p style={{ fontSize: "14px", lineHeight: "1.5", whiteSpace: "pre-wrap" }}>{timeline.latestDiagnosisSummary}</p>
         </Card>
       )}
@@ -84,17 +86,17 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
       {/* Logs Table */}
       <Card>
         <div style={{ padding: "16px", borderBottom: "1px solid var(--c-border)" }}>
-          <h3 style={{ fontSize: "16px", fontWeight: 600 }}>Diagnosis Timeline</h3>
+          <h3 style={{ fontSize: "16px", fontWeight: 600 }}>{t("jobCards.diagnosisTab.timeline")}</h3>
         </div>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Date</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>By</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Diagnosis Note</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>New ETA</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Est. Price</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.diagnosisTab.date")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.diagnosisTab.by")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.diagnosisTab.diagnosisNote")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.diagnosisTab.newEta")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.diagnosisTab.estPrice")}</th>
               </tr>
             </thead>
             <tbody>
@@ -102,7 +104,7 @@ export const DiagnosisTab: React.FC<DiagnosisTabProps> = ({ jobCardId }) => {
                 <tr>
                   <td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
                     <Stethoscope size={48} style={{ marginBottom: "16px", opacity: 0.2, margin: "0 auto" }} />
-                    <p>No diagnosis updates yet</p>
+                    <p>{t("jobCards.diagnosisTab.noUpdates")}</p>
                   </td>
                 </tr>
               ) : (

@@ -8,12 +8,14 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/forms/Select";
 import { useUIStore, toast, closeModal, openModal } from "@/state/uiStore";
 import { Loader2, Plus, Shield, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface ApprovalsTabProps {
   jobCardId: string;
 }
 
 export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const pushToast = useUIStore((s) => s.pushToast);
   const [page, setPage] = useState(1);
@@ -34,9 +36,9 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["approvals", jobCardId] });
       closeModal();
-      toast.success("Approval requested");
+      toast.success(t("jobCards.approvalsTab.approvalRequested"));
     },
-    onError: () => toast.error("Failed to request approval"),
+    onError: () => toast.error(t("jobCards.approvalsTab.approvalRequestFailed")),
   });
 
   const approveMutation = useMutation({
@@ -47,9 +49,9 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["approvals", jobCardId] });
       closeModal();
-      toast.success("Approval processed");
+      toast.success(t("jobCards.approvalsTab.approvalProcessed"));
     },
-    onError: () => toast.error("Failed to process approval"),
+    onError: () => toast.error(t("jobCards.approvalsTab.approvalProcessFailed")),
   });
 
   const handleCreateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,12 +81,12 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     let note = "";
 
     const renderModal = () => openModal(
-      "Request Approval",
+      t("jobCards.approvalsTab.requestApproval"),
       (
         <ModalContent
           footer={
             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+              <Button variant="secondary" onClick={closeModal}>{t("jobCards.header.actions.cancel")}</Button>
               <Button onClick={() => {
                 createMutation.mutate({
                   targetType,
@@ -94,17 +96,17 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                 } as any);
               }} disabled={createMutation.isPending}>
                 {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Submit Request
+                {t("jobCards.approvalsTab.submitRequest")}
               </Button>
             </div>
           }
         >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <Select 
-            label="Approval Role"
+            label={t("jobCards.approvalsTab.approvalRole")}
             options={[
-              { value: "1", label: "Supervisor" },
-              { value: "2", label: "Cashier" },
+              { value: "1", label: t("jobCards.approvalsTab.supervisor") },
+              { value: "2", label: t("jobCards.approvalsTab.cashier") },
             ]}
             defaultValue={approvalType.toString()}
             onChange={(val) => {
@@ -113,10 +115,10 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
             }}
           />
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--c-text)]">Note</label>
+            <label className="text-sm font-medium text-[var(--c-text)]">{t("jobCards.approvalsTab.note")}</label>
             <textarea 
               className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
-              placeholder="Enter approval details..."
+              placeholder={t("jobCards.approvalsTab.enterApprovalDetails")}
               defaultValue={note}
               onChange={(e) => {
                 note = e.target.value;
@@ -136,12 +138,12 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     let note = "";
 
     const renderModal = () => openModal(
-      `Approve as ${role}`,
+      `${t("jobCards.approvalsTab.approveAs")} ${role}`,
       (
         <ModalContent
           footer={
             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-              <Button variant="secondary" onClick={closeModal}>Cancel</Button>
+              <Button variant="secondary" onClick={closeModal}>{t("jobCards.header.actions.cancel")}</Button>
               <Button onClick={() => {
                 approveMutation.mutate({
                   id: approval.id,
@@ -150,17 +152,17 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
                 });
               }} disabled={approveMutation.isPending}>
                 {approveMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Approve
+                {t("jobCards.approvalsTab.approve")}
               </Button>
             </div>
           }
         >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div className="space-y-1">
-            <label className="text-sm font-medium text-[var(--c-text)]">Approval Note</label>
+            <label className="text-sm font-medium text-[var(--c-text)]">{t("jobCards.approvalsTab.approvalNote")}</label>
             <textarea 
               className="w-full p-2 text-sm border rounded bg-[var(--c-bg-alt)] text-[var(--c-text)] border-[var(--c-border)] focus:outline-none focus:border-[var(--c-primary)] transition-colors min-h-[100px] resize-y" 
-              placeholder="Add a note..." 
+              placeholder={t("jobCards.approvalsTab.addNote")} 
               defaultValue={note}
               onChange={(e) => {
                 note = e.target.value;
@@ -176,13 +178,13 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
     renderModal();
   };
 
-  if (isError) return <div className="p-8 text-center text-red-500">Error loading approvals</div>;
+  if (isError) return <div className="p-8 text-center text-red-500">{t("jobCards.approvalsTab.errorLoading")}</div>;
 
   return (
     <div className="space-y-4">
       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '16px' }}>
         <Button onClick={openCreateModal}>
-          <Plus className="mr-2 h-4 w-4" /> Request Approval
+          <Plus className="mr-2 h-4 w-4" /> {t("jobCards.approvalsTab.requestApproval")}
         </Button>
       </div>
 
@@ -191,7 +193,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           <div style={{ position: "relative", flex: 1 }}>
             <Search size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--c-muted)" }} />
             <Input 
-              placeholder="Search approvals..." 
+              placeholder={t("jobCards.approvalsTab.searchPlaceholder")} 
               style={{ paddingLeft: "40px" }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -205,14 +207,14 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--c-border)", textAlign: "left" }}>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovalType</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Status</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>RequestedAt</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>RequestedBy</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovedAt</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>ApprovedBy</th>
-                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Note</th>
-                <th style={{ padding: "16px", textAlign: "right", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>Actions</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.approvalType")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.status")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.requestedAt")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.requestedBy")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.approvedAt")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.approvedBy")}</th>
+                <th style={{ padding: "16px", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.note")}</th>
+                <th style={{ padding: "16px", textAlign: "right", color: "var(--c-muted)", fontSize: "14px", fontWeight: 500 }}>{t("jobCards.approvalsTab.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -225,7 +227,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
               ) : approvals.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ padding: "48px", textAlign: "center", color: "var(--c-muted)" }}>
-                    No approvals found
+                    {t("jobCards.approvalsTab.noApprovals")}
                   </td>
                 </tr>
               ) : (
@@ -274,7 +276,7 @@ export const ApprovalsTab: React.FC<ApprovalsTabProps> = ({ jobCardId }) => {
 
         <div style={{ padding: "16px", borderTop: "1px solid var(--c-border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: "14px", color: "var(--c-muted)" }}>
-            Page {page} of {totalPages}
+            {t("jobCards.approvalsTab.page")} {page} {t("jobCards.approvalsTab.of")} {totalPages}
           </span>
           <div style={{ display: "flex", gap: "8px" }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>

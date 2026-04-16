@@ -20,6 +20,7 @@ import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { useAuth } from "@/hooks/useAuth";
 import { UserRole, Roles, JOB_PART_REQUEST_STATUS_LABELS } from "@/constants/enums";
+import { useI18n } from "@/i18n";
 
 interface PartRequestsTabProps {
   jobCardId: string;
@@ -28,6 +29,7 @@ interface PartRequestsTabProps {
 export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
   jobCardId,
 }) => {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const userRoleId = user?.role;
@@ -43,14 +45,14 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
     mutationFn: (body: any) => partRequestsRepo.create(jobCardId, body),
     onSuccess: (res) => {
       if (res.success) {
-        toast.success("Part request created");
+        toast.success(t("jobCards.partRequestsTab.partRequestCreated"));
         refetch();
         closeModal();
       } else {
-        toast.error(res.message || "Failed to create request");
+        toast.error(res.message || t("jobCards.partRequestsTab.partRequestCreateFailed"));
       }
     },
-    onError: (err: any) => toast.error(err.message || "An error occurred"),
+    onError: (err: any) => toast.error(err.message || t("jobCards.header.toasts.genericError")),
   });
 
   const actionMutation = useMutation({
@@ -65,23 +67,23 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
         case "office":
           return partRequestsRepo.officeSign(id);
         default:
-          throw new Error("Unknown action");
+          throw new Error(t("jobCards.partRequestsTab.unknownAction"));
       }
     },
     onSuccess: (res) => {
       if (res.success) {
-        toast.success("Status updated");
+        toast.success(t("jobCards.partRequestsTab.statusUpdated"));
         refetch();
       } else {
-        toast.error(res.message || "Failed to update status");
+        toast.error(res.message || t("jobCards.partRequestsTab.statusUpdateFailed"));
       }
     },
-    onError: (err: any) => toast.error(err.message || "An error occurred"),
+    onError: (err: any) => toast.error(err.message || t("jobCards.header.toasts.genericError")),
   });
 
   const handleCreateRequest = () => {
     openModal(
-      "New Part Request",
+      t("jobCards.partRequestsTab.newPartRequest"),
       <CreateRequestModal
         jobCardId={jobCardId}
         onSubmit={(data) => createMutation.mutate(data)}
@@ -107,7 +109,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button onClick={handleCreateRequest}>
           <Plus size={18} style={{ marginRight: "8px" }} />
-          New Request
+          {t("jobCards.partRequestsTab.newRequest")}
         </Button>
       </div>
 
@@ -128,7 +130,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Part
+                  {t("jobCards.partRequestsTab.part")}
                 </th>
                 <th
                   style={{
@@ -137,7 +139,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Supplier
+                  {t("jobCards.partRequestsTab.supplier")}
                 </th>
                 <th
                   style={{
@@ -146,7 +148,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Qty
+                  {t("jobCards.partRequestsTab.qty")}
                 </th>
                 <th
                   style={{
@@ -155,7 +157,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Station
+                  {t("jobCards.partRequestsTab.station")}
                 </th>
                 <th
                   style={{
@@ -164,7 +166,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Status
+                  {t("jobCards.partRequestsTab.status")}
                 </th>
                 <th
                   style={{
@@ -173,7 +175,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Dates
+                  {t("jobCards.partRequestsTab.dates")}
                 </th>
                 <th
                   style={{
@@ -183,7 +185,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                     fontSize: "14px",
                   }}
                 >
-                  Actions
+                  {t("jobCards.partRequestsTab.actions")}
                 </th>
               </tr>
             </thead>
@@ -198,7 +200,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                       color: "var(--c-muted)",
                     }}
                   >
-                    No part requests found
+                    {t("jobCards.partRequestsTab.noRequests")}
                   </td>
                 </tr>
               ) : (
@@ -240,7 +242,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                           gap: "4px",
                         }}
                       >
-                        <span style={{ color: "var(--c-muted)" }}>Req:</span>{" "}
+                        <span style={{ color: "var(--c-muted)" }}>{t("jobCards.partRequestsTab.requested")}</span>{" "}
                         <span>
                           {req.requestedAt
                             ? new Date(req.requestedAt).toLocaleDateString()
@@ -249,7 +251,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                         {req.orderedAt && (
                           <>
                             <span style={{ color: "var(--c-muted)" }}>
-                              Ord:
+                              {t("jobCards.partRequestsTab.ordered")}
                             </span>{" "}
                             <span>
                               {new Date(req.orderedAt).toLocaleDateString()}
@@ -259,7 +261,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                         {req.arrivedAt && (
                           <>
                             <span style={{ color: "var(--c-muted)" }}>
-                              Arr:
+                              {t("jobCards.partRequestsTab.arrived")}
                             </span>{" "}
                             <span>
                               {new Date(req.arrivedAt).toLocaleDateString()}
@@ -269,7 +271,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                         {req.signedAt && (
                           <>
                             <span style={{ color: "var(--c-muted)" }}>
-                              Sign:
+                              {t("jobCards.partRequestsTab.signed")}
                             </span>{" "}
                             <span>
                               {new Date(req.signedAt).toLocaleDateString()}
@@ -301,7 +303,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                               size={14}
                               style={{ marginRight: "4px" }}
                             />{" "}
-                            Order
+                            {t("jobCards.partRequestsTab.order")}
                           </Button>
                         )}
                                 {(String(userRoleId) === Roles.STOREKEEPER || String(userRoleId) === Roles.BRANCH_MANAGER) &&
@@ -321,7 +323,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                                 size={14}
                                 style={{ marginRight: "4px" }}
                               />{" "}
-                              Arrive
+                              {t("jobCards.partRequestsTab.arrive")}
                             </Button>
                           )}
                                 {(String(userRoleId) === Roles.TECHNICIAN || String(userRoleId) === Roles.BRANCH_MANAGER) &&
@@ -341,7 +343,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                                 size={14}
                                 style={{ marginRight: "4px" }}
                               />{" "}
-                              Station Sign
+                              {t("jobCards.partRequestsTab.stationSign")}
                             </Button>
                           )}
                         {(String(userRoleId) === Roles.BRANCH_MANAGER ||
@@ -362,7 +364,7 @@ export const PartRequestsTab: React.FC<PartRequestsTabProps> = ({
                                 size={14}
                                 style={{ marginRight: "4px" }}
                               />{" "}
-                              Office Sign
+                              {t("jobCards.partRequestsTab.officeSign")}
                             </Button>
                           )}
                       </div>
@@ -383,6 +385,7 @@ const CreateRequestModal: React.FC<{
   onSubmit: (data: any) => void;
   isPending: boolean;
 }> = ({ jobCardId, onSubmit, isPending }) => {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     partId: "",
     qty: 1,
@@ -415,19 +418,19 @@ const CreateRequestModal: React.FC<{
           style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
         >
           <Button variant="secondary" onClick={closeModal}>
-            Cancel
+            {t("jobCards.partRequestsTab.cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={isPending}>
-            {isPending ? "Creating..." : "Create Request"}
+            {isPending ? t("jobCards.partRequestsTab.creating") : t("jobCards.partRequestsTab.createRequest")}
           </Button>
         </div>
       }
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <Select
-          label="Part *"
+          label={t("jobCards.partRequestsTab.part")}
           required
-          placeholder="Select part"
+          placeholder={t("jobCards.partRequestsTab.selectPart")}
           value={formData.partId}
           options={(parts || []).map((p: any) => ({
             value: p.id,
@@ -438,7 +441,7 @@ const CreateRequestModal: React.FC<{
           }
         />
         <Input
-          label="Quantity *"
+          label={t("jobCards.partRequestsTab.quantity")}
           type="number"
           required
           value={formData.qty}
@@ -450,9 +453,9 @@ const CreateRequestModal: React.FC<{
           }
         />
         <Select
-          label="Station *"
+          label={t("jobCards.partRequestsTab.stationField")}
           required
-          placeholder="Select station"
+          placeholder={t("jobCards.partRequestsTab.selectStation")}
           value={formData.stationCode}
           options={(workstations || []).map((w: any) => ({
             value: w.code, // 👈 use code instead of id
@@ -467,7 +470,7 @@ const CreateRequestModal: React.FC<{
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-          <label style={{ fontSize: "14px", fontWeight: 500 }}>Notes</label>
+          <label style={{ fontSize: "14px", fontWeight: 500 }}>{t("jobCards.partRequestsTab.notes")}</label>
           <textarea
             style={{
               width: "100%",

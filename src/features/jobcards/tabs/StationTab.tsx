@@ -10,12 +10,14 @@ import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { MoveJobCardRequest } from "@/api/generated/apiClient";
+import { useI18n } from "@/i18n";
 
 interface StationTabProps {
   jobCardId: string;
 }
 
 export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
 
   const {
@@ -36,18 +38,18 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
       stationsRepo.move(jobCardId, body),
     onSuccess: (res) => {
       if (res.success) {
-        toast.success("Job card moved successfully");
+        toast.success(t("jobCards.stationTab.moveSuccess"));
         queryClient.invalidateQueries({
           queryKey: ["stationHistory", jobCardId],
         });
         queryClient.invalidateQueries({ queryKey: ["jobCard", jobCardId] });
         closeModal();
       } else {
-        toast.error(res.message || "Failed to move job card");
+        toast.error(res.message || t("jobCards.stationTab.moveFailed"));
       }
     },
     onError: (err: any) => {
-      toast.error(err.message || "An error occurred");
+      toast.error(err.message || t("jobCards.header.toasts.genericError"));
     },
   });
 
@@ -71,7 +73,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
 
     const handleSubmit = () => {
       if (!formData.workStationId) {
-        toast.error("Please select a target station");
+        toast.error(t("jobCards.stationTab.selectTargetError"));
         return;
       }
       
@@ -84,26 +86,26 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
     };
 
     openModal(
-      "Move Job Card",
+      t("jobCards.stationTab.moveJobCard"),
       <ModalContent
         footer={
           <div
             style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
           >
             <Button variant="secondary" onClick={closeModal}>
-              Cancel
+              {t("jobCards.stationTab.cancel")}
             </Button>
             <Button onClick={handleSubmit} disabled={moveMutation.isPending}>
-              {moveMutation.isPending ? "Moving..." : "Move"}
+              {moveMutation.isPending ? t("jobCards.stationTab.moving") : t("jobCards.stationTab.move")}
             </Button>
           </div>
         }
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <Select
-            label="Target Station *"
+            label={t("jobCards.stationTab.targetStation")}
             options={workstationOptions}
-            placeholder="Select target station"
+            placeholder={t("jobCards.stationTab.selectTargetStation")}
             required
             onChange={(e) => (formData.workStationId = e.target.value)}
           />
@@ -115,7 +117,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                 color: "var(--c-text)",
               }}
             >
-              Notes
+              {t("jobCards.stationTab.notes")}
             </label>
             <textarea
               style={{
@@ -129,7 +131,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                 resize: "vertical",
               }}
               rows={3}
-              placeholder="Add some notes (optional)"
+              placeholder={t("jobCards.stationTab.notesPlaceholder")}
               onChange={(e) => (formData.notes = e.target.value)}
             />
           </div>
@@ -161,7 +163,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
       >
         <AlertCircle size={24} style={{ margin: "0 auto 8px" }} />
         <p>
-          Error loading history: {(error as any)?.message || "Unknown error"}
+          {t("jobCards.stationTab.loadError")}: {(error as any)?.message || t("jobCards.stationTab.unknownError")}
         </p>
       </div>
     );
@@ -172,7 +174,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button onClick={handleMove}>
           <MoveHorizontal size={18} style={{ marginRight: "8px" }} />
-          Move to Station
+          {t("jobCards.stationTab.moveToStation")}
         </Button>
       </div>
 
@@ -194,7 +196,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  Station
+                  {t("jobCards.stationTab.station")}
                 </th>
                 <th
                   style={{
@@ -204,7 +206,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  Moved At
+                  {t("jobCards.stationTab.movedAt")}
                 </th>
                 <th
                   style={{
@@ -214,7 +216,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  Moved By
+                  {t("jobCards.stationTab.movedBy")}
                 </th>
                 <th
                   style={{
@@ -224,7 +226,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                     fontWeight: 500,
                   }}
                 >
-                  Notes
+                  {t("jobCards.stationTab.notes")}
                 </th>
               </tr>
             </thead>
@@ -247,7 +249,7 @@ export const StationTab: React.FC<StationTabProps> = ({ jobCardId }) => {
                         margin: "0 auto",
                       }}
                     />
-                    <p>No station history found</p>
+                    <p>{t("jobCards.stationTab.noHistory")}</p>
                   </td>
                 </tr>
               ) : (
