@@ -120,7 +120,7 @@ export default function DashboardPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', gap: '16px' }}>
         <div>
           <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--c-text)', marginBottom: '4px' }}>{t('pages.dashboard.title')}</h1>
-          <p style={{ color: 'var(--c-muted)', fontSize: '14px' }}>Welcome back, {user?.email}</p>
+          <p style={{ color: 'var(--c-muted)', fontSize: '14px' }}>{t('pages.dashboard.welcomeBack')}, {user?.email}</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'stretch', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <Button variant="secondary" onClick={() => setReportOpen((v) => !v)}>

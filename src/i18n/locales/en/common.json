@@ -2,7 +2,9 @@
   "common": {
     "actions": {
       "cancel": "Cancel"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "layout": {
     "brand": {
@@ -479,7 +481,22 @@
       "downloadReport": "Download Report",
       "last30Days": "Last 30 Days",
       "applyDownloadPdf": "Apply & Download PDF",
-      "selectedRange": "Selected range"
+      "selectedRange": "Selected range",
+      "welcomeBack": "Welcome back",
+      "manager": {
+        "performance": "Performance",
+        "jobCards3Days": "Job Cards (3+ Days in Shop)",
+        "employeePerformance": "Employee Performance",
+        "tasks": "Tasks",
+        "overdue": "Overdue",
+        "avgMin": "Avg Min",
+        "present": "Present"
+      },
+      "tech": {
+        "tasksCompleted": "Tasks Completed",
+        "myActiveJobCards": "My Active Job Cards",
+        "hasRoadblocker": "Has Roadblocker"
+      }
     },
     "customers": {
       "title": "Customers",

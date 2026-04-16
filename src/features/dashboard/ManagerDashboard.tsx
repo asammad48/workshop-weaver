@@ -5,6 +5,7 @@ import { dashboardRepo } from '@/api/repositories/dashboardRepo';
 import { KpiCard } from './components/KpiCard';
 import { ChartCard } from './components/ChartCard';
 import { AlertTable } from './components/AlertTable';
+import { useI18n } from '@/i18n';
 
 interface DashboardProps {
   data: DashboardOverviewResponse;
@@ -12,6 +13,7 @@ interface DashboardProps {
 }
 
 export function ManagerDashboard({ data, loading }: DashboardProps) {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [alerts, setAlerts] = useState<JobCardAlertRow[]>([]);
   const [kpis, setKpis] = useState<EmployeeKpiRow[]>([]);
@@ -64,7 +66,7 @@ export function ManagerDashboard({ data, loading }: DashboardProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
         {data.series && data.series.length > 0 && (
           <ChartCard
-            title="Performance"
+            title={t('pages.dashboard.manager.performance')}
             series={data.series.filter(s =>
               ['jobcards_in_shop', 'tasks_completed'].includes(s.key || '')
             )}
@@ -75,32 +77,32 @@ export function ManagerDashboard({ data, loading }: DashboardProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
         {/* Alerts Table */}
         <AlertTable
-          title="Job Cards (3+ Days in Shop)"
+          title={t('pages.dashboard.manager.jobCards3Days')}
           loading={extraLoading || loading}
           data={alerts}
           onRowClick={(item) => navigate(`/jobcards/${item.jobCardId}`)}
           columns={[
-            { header: 'Plate', render: (item) => item.plate || '-' },
-            { header: 'Status', render: (item) => item.status || '-' },
-            { header: 'Days', render: (item) => item.daysInShop || 0 }
+            { header: t('table.plate'), render: (item) => item.plate || '-' },
+            { header: t('table.status'), render: (item) => item.status || '-' },
+            { header: t('table.days'), render: (item) => item.daysInShop || 0 }
           ]}
         />
 
         {/* Employee KPI Table */}
         <AlertTable
-          title="Employee Performance"
+          title={t('pages.dashboard.manager.employeePerformance')}
           loading={extraLoading || loading}
           data={kpis}
           columns={[
-            { header: 'Email', render: (item) => item.employeeEmail || '-' },
-            { header: 'Tasks', render: (item) => item.tasksCompleted || 0 },
-            { header: 'Overdue', render: (item) => (
+            { header: t('table.email'), render: (item) => item.employeeEmail || '-' },
+            { header: t('pages.dashboard.manager.tasks'), render: (item) => item.tasksCompleted || 0 },
+            { header: t('pages.dashboard.manager.overdue'), render: (item) => (
               <span style={{ color: (item.tasksOverdue || 0) > 0 ? 'var(--c-danger)' : 'inherit' }}>
                 {item.tasksOverdue || 0}
               </span>
             )},
-            { header: 'Avg Min', render: (item) => item.avgTaskMinutes?.toFixed(1) || 0 },
-            { header: 'Present', render: (item) => item.attendancePresentDays || 0 }
+            { header: t('pages.dashboard.manager.avgMin'), render: (item) => item.avgTaskMinutes?.toFixed(1) || 0 },
+            { header: t('pages.dashboard.manager.present'), render: (item) => item.attendancePresentDays || 0 }
           ]}
         />
       </div>

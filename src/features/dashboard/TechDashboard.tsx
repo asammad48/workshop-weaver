@@ -3,6 +3,7 @@ import { DashboardOverviewResponse } from '@/api/generated/apiClient';
 import { KpiCard } from './components/KpiCard';
 import { ChartCard } from './components/ChartCard';
 import { AlertTable } from './components/AlertTable';
+import { useI18n } from '@/i18n';
 
 interface DashboardProps {
   data: DashboardOverviewResponse;
@@ -10,6 +11,7 @@ interface DashboardProps {
 }
 
 export function TechDashboard({ data, loading }: DashboardProps) {
+  const { t } = useI18n();
   const navigate = useNavigate();
 
   const alerts = data.alerts?.topJobCardAlerts || [];
@@ -39,7 +41,7 @@ export function TechDashboard({ data, loading }: DashboardProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
         {data.series && data.series.length > 0 && (
           <ChartCard
-            title="Tasks Completed"
+            title={t('pages.dashboard.tech.tasksCompleted')}
             series={data.series.filter(s =>
               ['tasks_completed'].includes(s.key || '')
             )}
@@ -49,14 +51,14 @@ export function TechDashboard({ data, loading }: DashboardProps) {
 
       {/* Alerts Table */}
       <AlertTable
-        title="My Active Job Cards"
+        title={t('pages.dashboard.tech.myActiveJobCards')}
         loading={loading}
         data={alerts}
         onRowClick={(item) => navigate(`/jobcards/${item.jobCardId}`)}
         columns={[
-          { header: 'Plate', render: (item) => item.plate || '-' },
-          { header: 'Status', render: (item) => item.status || '-' },
-          { header: 'Has Roadblocker', render: (item) => item.hasRoadblocker ? 'Yes' : 'No' }
+          { header: t('table.plate'), render: (item) => item.plate || '-' },
+          { header: t('table.status'), render: (item) => item.status || '-' },
+          { header: t('pages.dashboard.tech.hasRoadblocker'), render: (item) => item.hasRoadblocker ? t('common.yes') : t('common.no') }
         ]}
       />
     </div>

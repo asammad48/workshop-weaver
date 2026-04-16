@@ -2,7 +2,9 @@
   "common": {
     "actions": {
       "cancel": "Cancelar"
-    }
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "layout": {
     "brand": {
@@ -479,7 +481,22 @@
       "downloadReport": "Descargar reporte",
       "last30Days": "Últimos 30 días",
       "applyDownloadPdf": "Aplicar y descargar PDF",
-      "selectedRange": "Rango seleccionado"
+      "selectedRange": "Rango seleccionado",
+      "welcomeBack": "Bienvenido de nuevo",
+      "manager": {
+        "performance": "Rendimiento",
+        "jobCards3Days": "Órdenes (3+ días en taller)",
+        "employeePerformance": "Rendimiento del empleado",
+        "tasks": "Tareas",
+        "overdue": "Atrasadas",
+        "avgMin": "Min prom",
+        "present": "Presente"
+      },
+      "tech": {
+        "tasksCompleted": "Tareas completadas",
+        "myActiveJobCards": "Mis órdenes activas",
+        "hasRoadblocker": "Tiene bloqueador"
+      }
     },
     "customers": {
       "title": "Clientes",
