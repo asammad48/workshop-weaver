@@ -30,6 +30,7 @@ import { TasksTab } from "@/features/jobcards/tabs/TasksTab";
 import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 import { JobCardDetails } from "@/features/jobcards/components/JobCardDetails";
 import { driversRepo } from "@/api/repositories/driversRepo";
+import { useI18n } from "@/i18n";
 
 interface JobCardFormProps {
   customers: any[];
@@ -207,6 +208,7 @@ const CreateJobCardForm = ({
 };
 
 const JobCardsPage = () => {
+  const { t } = useI18n();
   const { user } = useAuth();
   const openModal = useUIStore((s) => s.openModal);
   const closeModal = useUIStore((s) => s.closeModal);
@@ -338,12 +340,12 @@ const JobCardsPage = () => {
             margin: 0,
           }}
         >
-          Job Cards
+          {t("pages.jobCards.title")}
         </h1>
         <Button
           onClick={() =>
             openModal(
-              "Create Job Card",
+              t("pages.jobCards.create"),
               <CreateJobCardForm
                 customers={customers || []}
                 vehicles={vehicles || []}
@@ -355,7 +357,7 @@ const JobCardsPage = () => {
           }
         >
           <Plus size={18} style={{ marginRight: "8px" }} />
-          Create Job Card
+          {t("pages.jobCards.create")}
         </Button>
       </div>
 
@@ -364,7 +366,7 @@ const JobCardsPage = () => {
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
             <div style={{ minWidth: "180px", flex: 1 }}>
               <Input
-                label="From Date"
+                label={t("table.fromDate")}
                 type="date"
                 value={fromDate}
                 onChange={(e) => {
@@ -375,7 +377,7 @@ const JobCardsPage = () => {
             </div>
             <div style={{ minWidth: "180px", flex: 1 }}>
               <Input
-                label="To Date"
+                label={t("table.toDate")}
                 type="date"
                 value={toDate}
                 onChange={(e) => {
@@ -397,7 +399,7 @@ const JobCardsPage = () => {
               }}
             />
             <Input
-              placeholder="Search plate or customer..."
+              placeholder={t("pages.jobCards.searchPlaceholder")}
               style={{ paddingLeft: "40px" }}
               value={search}
               onChange={(e) => {
@@ -427,7 +429,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Plate
+                  {t("table.plate")}
                 </th>
                 <th
                   style={{
@@ -437,7 +439,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Customer
+                  {t("table.customer")}
                 </th>
                 <th
                   style={{
@@ -447,7 +449,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Driver
+                  {t("table.driver")}
                 </th>
                 <th
                   style={{
@@ -457,7 +459,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Branch
+                  {t("table.branch")}
                 </th>
                 <th
                   style={{
@@ -467,7 +469,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Status
+                  {t("table.status")}
                 </th>
                 <th
                   style={{
@@ -477,7 +479,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Entry At
+                  {t("table.entryAt")}
                 </th>
                 <th
                   style={{
@@ -487,7 +489,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Exit At
+                  {t("table.exitAt")}
                 </th>
                 <th
                   style={{
@@ -497,7 +499,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Mileage
+                  {t("table.mileage")}
                 </th>
                 <th
                   style={{
@@ -508,7 +510,7 @@ const JobCardsPage = () => {
                     fontWeight: 500,
                   }}
                 >
-                  Actions
+                  {t("table.actions")}
                 </th>
               </tr>
             </thead>
@@ -681,7 +683,7 @@ const JobCardsPage = () => {
           }}
         >
           <span style={{ fontSize: "14px", color: "var(--c-muted)" }}>
-            Page {pageNumber} of {totalPages}
+            {t("table.page")} {pageNumber} {t("table.of")} {totalPages}
           </span>
           <div style={{ display: "flex", gap: "8px" }}>
             <Button

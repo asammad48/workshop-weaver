@@ -154,5 +154,82 @@
       "title": "Registro de servicio",
       "empty": "No hay actividad registrada."
     }
+  },
+  "table": {
+    "actions": "Acciones",
+    "page": "Página",
+    "of": "de",
+    "fullName": "Nombre completo",
+    "phone": "Teléfono",
+    "customerType": "Tipo de cliente",
+    "email": "Correo electrónico",
+    "nationalId": "ID nacional",
+    "license": "Licencia",
+    "customer": "Cliente",
+    "plate": "Matrícula",
+    "make": "Marca",
+    "model": "Modelo",
+    "year": "Año",
+    "type": "Tipo",
+    "title": "Título",
+    "message": "Mensaje",
+    "date": "Fecha",
+    "transferNo": "N.º de traslado",
+    "status": "Estado",
+    "from": "Desde",
+    "to": "Hasta",
+    "requested": "Solicitado",
+    "shipped": "Enviado",
+    "received": "Recibido",
+    "driver": "Conductor",
+    "branch": "Sucursal",
+    "entryAt": "Entrada",
+    "exitAt": "Salida",
+    "mileage": "Kilometraje",
+    "jobCard": "Orden de trabajo",
+    "fromDate": "Desde fecha",
+    "toDate": "Hasta fecha"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Panel",
+      "downloadReport": "Descargar reporte",
+      "last30Days": "Últimos 30 días",
+      "applyDownloadPdf": "Aplicar y descargar PDF",
+      "selectedRange": "Rango seleccionado"
+    },
+    "customers": {
+      "title": "Clientes",
+      "add": "Agregar cliente",
+      "searchPlaceholder": "Buscar clientes...",
+      "empty": "No se encontraron clientes"
+    },
+    "drivers": {
+      "title": "Conductores",
+      "add": "Agregar conductor",
+      "searchPlaceholder": "Buscar conductores...",
+      "empty": "No se encontraron conductores"
+    },
+    "vehicles": {
+      "title": "Vehículos",
+      "add": "Agregar vehículo",
+      "searchPlaceholder": "Buscar vehículos...",
+      "empty": "No se encontraron vehículos"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "empty": "No se encontraron notificaciones"
+    },
+    "transfers": {
+      "title": "Traslados de stock",
+      "create": "Crear traslado",
+      "searchPlaceholder": "Buscar traslados...",
+      "empty": "No se encontraron traslados"
+    },
+    "jobCards": {
+      "title": "Órdenes de trabajo",
+      "create": "Crear orden de trabajo",
+      "searchPlaceholder": "Buscar matrícula o cliente..."
+    }
   }
 }

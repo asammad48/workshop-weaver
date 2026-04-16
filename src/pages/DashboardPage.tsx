@@ -15,8 +15,10 @@ import { Button } from '@/components/ui/Button';
 import { reportsRepo } from '@/api/repositories/reportsRepo';
 import { toast } from '@/components/ui/Toast';
 import { downloadJobCardsPdf } from '@/features/dashboard/jobCardReportPdf';
+import { useI18n } from '@/i18n';
 
 export default function DashboardPage() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const [data, setData] = useState<DashboardOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -117,13 +119,13 @@ export default function DashboardPage() {
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--c-text)', marginBottom: '4px' }}>Dashboard</h1>
+          <h1 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--c-text)', marginBottom: '4px' }}>{t('pages.dashboard.title')}</h1>
           <p style={{ color: 'var(--c-muted)', fontSize: '14px' }}>Welcome back, {user?.email}</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'stretch', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <Button variant="secondary" onClick={() => setReportOpen((v) => !v)}>
             <Download size={16} style={{ marginRight: '8px' }} />
-            Download Report
+            {t('pages.dashboard.downloadReport')}
           </Button>
           <div
             style={{
@@ -140,7 +142,7 @@ export default function DashboardPage() {
             }}
           >
             <Calendar size={16} />
-            <span style={{ whiteSpace: 'nowrap' }}>Last 30 Days</span>
+            <span style={{ whiteSpace: 'nowrap' }}>{t('pages.dashboard.last30Days')}</span>
           </div>
           <DateRangePicker from={dateRange.from} to={dateRange.to} onChange={setDateRange} />
         </div>
@@ -151,28 +153,28 @@ export default function DashboardPage() {
           <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
               <div style={{ minWidth: '200px', flex: 1 }}>
-                <Input label="From Date" type="date" value={reportFrom} onChange={(e) => setReportFrom(e.target.value)} />
+                <Input label={t('table.fromDate')} type="date" value={reportFrom} onChange={(e) => setReportFrom(e.target.value)} />
               </div>
               <div style={{ minWidth: '200px', flex: 1 }}>
-                <Input label="To Date" type="date" value={reportTo} onChange={(e) => setReportTo(e.target.value)} />
+                <Input label={t('table.toDate')} type="date" value={reportTo} onChange={(e) => setReportTo(e.target.value)} />
               </div>
               <Button onClick={handleDownloadReport} disabled={reportLoading}>
                 {reportLoading ? <Loader2 size={16} className="animate-spin" style={{ marginRight: '8px' }} /> : <Download size={16} style={{ marginRight: '8px' }} />}
-                Apply & Download PDF
+                {t('pages.dashboard.applyDownloadPdf')}
               </Button>
             </div>
 
-            <div style={{ fontSize: '13px', color: 'var(--c-muted)' }}>Selected range: {reportDateLabel}</div>
+            <div style={{ fontSize: '13px', color: 'var(--c-muted)' }}>{t('pages.dashboard.selectedRange')}: {reportDateLabel}</div>
 
             {reportPreview.length > 0 && (
               <div style={{ overflowX: 'auto', border: '1px solid var(--c-border)', borderRadius: '8px' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>Job Card</th>
-                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>Customer</th>
-                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>Plate</th>
-                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>Status</th>
+                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.jobCard')}</th>
+                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.customer')}</th>
+                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.plate')}</th>
+                      <th style={{ padding: '10px 12px', fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.status')}</th>
                     </tr>
                   </thead>
                   <tbody>

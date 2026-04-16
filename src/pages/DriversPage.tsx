@@ -10,8 +10,10 @@ import { Select } from '@/components/forms/Select';
 import { DriverCreateRequest } from '@/api/generated/apiClient';
 import { driversRepo } from '@/api/repositories/driversRepo';
 import { getFleetCustomersOnce } from '@/api/lookups/customersLookup';
+import { useI18n } from '@/i18n';
 
 export default function DriversPage() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -138,11 +140,11 @@ export default function DriversPage() {
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
-          Drivers
+          {t('pages.drivers.title')}
         </h1>
         <Button onClick={handleAddDriver}>
           <Plus size={18} style={{ marginRight: '8px' }} />
-          Add Driver
+          {t('pages.drivers.add')}
         </Button>
       </div>
 
@@ -154,7 +156,7 @@ export default function DriversPage() {
               style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }}
             />
             <Input
-              placeholder="Search drivers..."
+              placeholder={t('pages.drivers.searchPlaceholder')}
               style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => {
@@ -171,11 +173,11 @@ export default function DriversPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Full Name</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Phone</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>License</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Customer</th>
-                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.fullName')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.phone')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.license')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.customer')}</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -195,7 +197,7 @@ export default function DriversPage() {
                 <tr>
                   <td colSpan={5} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
                     <CarFront size={48} style={{ marginBottom: '16px', opacity: 0.2, margin: '0 auto' }} />
-                    <p>No drivers found</p>
+                    <p>{t('pages.drivers.empty')}</p>
                   </td>
                 </tr>
               ) : (
@@ -221,7 +223,7 @@ export default function DriversPage() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {pageNumber} of {totalPages}
+            {t('table.page')} {pageNumber} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button

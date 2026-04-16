@@ -19,8 +19,10 @@ import {
   PackageCheck,
   ClipboardList
 } from 'lucide-react';
+import { useI18n } from '@/i18n';
 
 export default function TransfersPage() {
+  const { t, language } = useI18n();
   const [transfers, setTransfers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -102,10 +104,10 @@ export default function TransfersPage() {
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Stock Transfers</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>{t('pages.transfers.title')}</h1>
         <Button onClick={openCreateModal}>
           <Plus size={18} style={{ marginRight: '8px' }} />
-          Create Transfer
+          {t('pages.transfers.create')}
         </Button>
       </div>
 
@@ -114,7 +116,7 @@ export default function TransfersPage() {
           <div style={{ position: 'relative', flex: 1 }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} />
             <Input 
-              placeholder="Search transfers..." 
+              placeholder={t('pages.transfers.searchPlaceholder')} 
               style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -128,14 +130,14 @@ export default function TransfersPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Transfer No</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>From</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>To</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Requested</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Shipped</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Received</th>
-                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.transferNo')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.status')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.from')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.to')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.requested')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.shipped')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.received')}</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -154,7 +156,7 @@ export default function TransfersPage() {
               ) : transfers.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
-                    No transfers found
+                    {t('pages.transfers.empty')}
                   </td>
                 </tr>
               ) : (
@@ -182,13 +184,13 @@ export default function TransfersPage() {
                       <div style={{ fontSize: "12px", color: "var(--c-muted)" }}>{t.toLocationName || "-"}</div>
                     </td>
                     <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
-                      {t.requestedAt ? new Date(t.requestedAt).toLocaleDateString() : '—'}
+                      {t.requestedAt ? new Date(t.requestedAt).toLocaleDateString(language) : '—'}
                     </td>
                     <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
-                      {t.shippedAt ? new Date(t.shippedAt).toLocaleDateString() : '—'}
+                      {t.shippedAt ? new Date(t.shippedAt).toLocaleDateString(language) : '—'}
                     </td>
                     <td style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px' }}>
-                      {t.receivedAt ? new Date(t.receivedAt).toLocaleDateString() : '—'}
+                      {t.receivedAt ? new Date(t.receivedAt).toLocaleDateString(language) : '—'}
                     </td>
                     <td style={{ padding: '16px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
@@ -218,7 +220,7 @@ export default function TransfersPage() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {page} of {totalPages}
+            {t('table.page')} {page} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
@@ -360,4 +362,3 @@ function CreateTransferForm({ locations, parts, onSuccess, onCancel }: any) {
     </ModalContent>
   );
 }
-

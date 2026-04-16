@@ -18,8 +18,10 @@ import { vehiclesRepo } from '@/api/repositories/vehiclesRepo';
 import { getCustomersOnce } from '@/api/lookups/customersLookup';
 import { VehicleCreateRequest } from '@/api/generated/apiClient';
 import { Select } from '@/components/forms/Select';
+import { useI18n } from '@/i18n';
 
 export default function VehiclesPage() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [pageNumber, setPageNumber] = useState(1);
@@ -129,11 +131,11 @@ export default function VehiclesPage() {
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)', margin: 0 }}>
-          Vehicles
+          {t('pages.vehicles.title')}
         </h1>
         <Button onClick={handleAddVehicle}>
           <Plus size={18} style={{ marginRight: '8px' }} />
-          Add Vehicle
+          {t('pages.vehicles.add')}
         </Button>
       </div>
 
@@ -145,7 +147,7 @@ export default function VehiclesPage() {
               style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} 
             />
             <Input
-              placeholder="Search vehicles..."
+              placeholder={t('pages.vehicles.searchPlaceholder')}
               style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => {
@@ -162,12 +164,12 @@ export default function VehiclesPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Plate</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Make</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Model</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Year</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Customer</th>
-                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.plate')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.make')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.model')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.year')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.customer')}</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -187,7 +189,7 @@ export default function VehiclesPage() {
                 <tr>
                   <td colSpan={6} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
                     <Car size={48} style={{ marginBottom: '16px', opacity: 0.2, margin: '0 auto' }} />
-                    <p>No vehicles found</p>
+                    <p>{t('pages.vehicles.empty')}</p>
                   </td>
                 </tr>
               ) : (
@@ -214,7 +216,7 @@ export default function VehiclesPage() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {pageNumber} of {totalPages}
+            {t('table.page')} {pageNumber} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button 

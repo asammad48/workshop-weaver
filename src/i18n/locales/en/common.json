@@ -154,5 +154,82 @@
       "title": "Service Log",
       "empty": "No activity logged."
     }
+  },
+  "table": {
+    "actions": "Actions",
+    "page": "Page",
+    "of": "of",
+    "fullName": "Full Name",
+    "phone": "Phone",
+    "customerType": "Customer Type",
+    "email": "Email",
+    "nationalId": "National ID",
+    "license": "License",
+    "customer": "Customer",
+    "plate": "Plate",
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "type": "Type",
+    "title": "Title",
+    "message": "Message",
+    "date": "Date",
+    "transferNo": "Transfer No",
+    "status": "Status",
+    "from": "From",
+    "to": "To",
+    "requested": "Requested",
+    "shipped": "Shipped",
+    "received": "Received",
+    "driver": "Driver",
+    "branch": "Branch",
+    "entryAt": "Entry At",
+    "exitAt": "Exit At",
+    "mileage": "Mileage",
+    "jobCard": "Job Card",
+    "fromDate": "From Date",
+    "toDate": "To Date"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "downloadReport": "Download Report",
+      "last30Days": "Last 30 Days",
+      "applyDownloadPdf": "Apply & Download PDF",
+      "selectedRange": "Selected range"
+    },
+    "customers": {
+      "title": "Customers",
+      "add": "Add Customer",
+      "searchPlaceholder": "Search customers...",
+      "empty": "No customers found"
+    },
+    "drivers": {
+      "title": "Drivers",
+      "add": "Add Driver",
+      "searchPlaceholder": "Search drivers...",
+      "empty": "No drivers found"
+    },
+    "vehicles": {
+      "title": "Vehicles",
+      "add": "Add Vehicle",
+      "searchPlaceholder": "Search vehicles...",
+      "empty": "No vehicles found"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications found"
+    },
+    "transfers": {
+      "title": "Stock Transfers",
+      "create": "Create Transfer",
+      "searchPlaceholder": "Search transfers...",
+      "empty": "No transfers found"
+    },
+    "jobCards": {
+      "title": "Job Cards",
+      "create": "Create Job Card",
+      "searchPlaceholder": "Search plate or customer..."
+    }
   }
 }
