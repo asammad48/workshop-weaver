@@ -585,7 +585,10 @@
       "monthlyView": "Monthly View",
       "allEmployees": "All Employees",
       "todayList": "Today's List",
-      "employeeMonthView": "Employee Month View"
+      "employeeMonthView": "Employee Month View",
+      "pageSize": "Page Size",
+      "month": "Month",
+      "selectEmployeeForMonth": "Please select an employee to view monthly records"
     },
     "profile": {
       "title": "My Profile",

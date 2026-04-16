@@ -585,7 +585,10 @@
       "monthlyView": "Vista mensual",
       "allEmployees": "Todos los empleados",
       "todayList": "Lista de hoy",
-      "employeeMonthView": "Vista mensual por empleado"
+      "employeeMonthView": "Vista mensual por empleado",
+      "pageSize": "Tamaño de página",
+      "month": "Mes",
+      "selectEmployeeForMonth": "Seleccione un empleado para ver los registros mensuales"
     },
     "profile": {
       "title": "Mi perfil",

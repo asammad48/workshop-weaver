@@ -244,7 +244,7 @@ export default function AttendanceAdminPage() {
           {user?.role === "HQ_ADMIN" && (
             <div style={{ width: "200px" }}>
               <Select
-                label="Branch"
+                label={t('layout.branch')}
                 options={branchOptions}
                 value={branchId}
                 onChange={(e) => setBranchId(e.target.value)}
@@ -253,7 +253,7 @@ export default function AttendanceAdminPage() {
           )}
           <div style={{ width: "250px" }}>
             <Select
-              label="Employee"
+              label={t('table.employee')}
               options={employeeOptions}
               value={employeeUserId}
               onChange={(e) => setEmployeeUserId(e.target.value)}
@@ -261,7 +261,7 @@ export default function AttendanceAdminPage() {
           </div>
           <div style={{ width: "100px" }}>
             <Select
-              label="Page Size"
+              label={t('pages.attendance.pageSize')}
               options={[
                 { value: 10, label: "10" },
                 { value: 25, label: "25" },
@@ -553,7 +553,7 @@ export default function AttendanceAdminPage() {
           >
             <div style={{ width: "120px" }}>
               <Select
-                label="Year"
+                label={t('table.year')}
                 options={years}
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
@@ -561,7 +561,7 @@ export default function AttendanceAdminPage() {
             </div>
             <div style={{ width: "150px" }}>
               <Select
-                label="Month"
+                label={t('pages.attendance.month')}
                 options={months}
                 value={month}
                 onChange={(e) => setMonth(Number(e.target.value))}
@@ -576,7 +576,7 @@ export default function AttendanceAdminPage() {
                 color: "var(--c-muted)",
               }}
             >
-              Please select an employee to view monthly records
+              {t('pages.attendance.selectEmployeeForMonth')}
             </div>
           ) : (
             <div style={{ overflowX: "auto" }}>
