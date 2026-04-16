@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/state/authStore';
+import { useI18nStore } from '@/state/i18nStore';
 import { authRepo } from './repositories/authRepo';
 import { API_BASE_URL } from './config';
 
@@ -47,13 +48,16 @@ export async function authFetch(
   init?: RequestInit
 ): Promise<Response> {
   const authStore = useAuthStore.getState();
+  const i18nStore = useI18nStore.getState();
   const token = authStore.accessToken;
+  const language = i18nStore.language;
 
   const headers = new Headers(init?.headers);
   
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
+  headers.set('Accept-Language', language);
 
   if (!headers.has('Content-Type') && init?.body && !(init.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
@@ -110,6 +114,7 @@ export async function authFetch(
         if (newToken) {
           retryHeaders.set('Authorization', `Bearer ${newToken}`);
         }
+        retryHeaders.set('Accept-Language', language);
         if (!retryHeaders.has('Content-Type') && init?.body && !(init.body instanceof FormData)) {
           retryHeaders.set('Content-Type', 'application/json');
         }

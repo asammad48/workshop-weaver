@@ -1,6 +1,7 @@
 import { Client, PublicJobCardReceiptResponseApiResponse } from "@/api/generated/apiClient";
 import { getBaseUrl } from "../clientFactory";
 import { normalizeError } from "./_errors";
+import { useI18nStore } from "@/state/i18nStore";
 
 // Create a client instance for public access (no auth headers in getFetch)
 // However, the standard createClient uses getFetch() which has auth.
@@ -8,7 +9,14 @@ import { normalizeError } from "./_errors";
 
 const getPublicFetch = () => {
     return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-        const response = await fetch(input, init);
+        const language = useI18nStore.getState().language;
+        const headers = new Headers(init?.headers);
+        headers.set("Accept-Language", language);
+
+        const response = await fetch(input, {
+            ...init,
+            headers,
+        });
         if (!response.ok) {
             throw response;
         }

@@ -1,0 +1,158 @@
+{
+  "common": {
+    "actions": {
+      "cancel": "Cancelar"
+    }
+  },
+  "layout": {
+    "brand": {
+      "title": "Gestión del Taller"
+    },
+    "branch": "Sucursal",
+    "actions": {
+      "logout": "Cerrar sesión"
+    },
+    "sidebar": {
+      "expand": "Expandir barra lateral",
+      "collapse": "Contraer barra lateral"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "viewAll": "Ver todas",
+      "empty": "No hay notificaciones",
+      "newJobCard": "Nueva notificación de orden de trabajo"
+    },
+    "confirm": {
+      "logoutTitle": "Cerrar sesión",
+      "logoutMessage": "¿Seguro que deseas cerrar sesión?"
+    },
+    "toast": {
+      "loggedOut": "Sesión cerrada correctamente"
+    },
+    "language": {
+      "label": "Idioma",
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+  "nav": {
+    "groups": {
+      "main": "Principal",
+      "operations": "Operaciones",
+      "inventory": "Inventario",
+      "purchasing": "Compras",
+      "transfers": "Traslados",
+      "finance": "Finanzas",
+      "reports": "Reportes",
+      "attendance": "Asistencia",
+      "admin": "Administración",
+      "profile": "Perfil"
+    },
+    "items": {
+      "dashboard": "Panel",
+      "customers": "Clientes",
+      "drivers": "Conductores",
+      "vehicles": "Vehículos",
+      "jobCards": "Órdenes de trabajo",
+      "inventory": "Inventario",
+      "purchaseOrders": "Órdenes de compra",
+      "transfers": "Traslados",
+      "finance": "Finanzas",
+      "reports": "Reportes",
+      "myAttendance": "Mi asistencia",
+      "attendance": "Asistencia",
+      "branches": "Sucursales",
+      "users": "Usuarios",
+      "workstations": "Estaciones de trabajo",
+      "audit": "Auditoría",
+      "profile": "Perfil",
+      "theme": "Tema"
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Inicia sesión en tu cuenta",
+      "emailLabel": "Correo electrónico",
+      "passwordLabel": "Contraseña",
+      "signIn": "Iniciar sesión",
+      "signingIn": "Iniciando sesión...",
+      "toast": {
+        "success": "¡Inicio de sesión exitoso!",
+        "demoMode": "Sesión iniciada (modo demo)"
+      }
+    }
+  },
+  "theme": {
+    "title": "Configuración de tema",
+    "subtitle": "Personaliza los colores de la aplicación",
+    "fields": {
+      "primary": "Color primario",
+      "secondary": "Color secundario",
+      "accent": "Color de acento"
+    },
+    "preview": {
+      "title": "Vista previa",
+      "primary": "Primario",
+      "secondary": "Secundario",
+      "accent": "Acento"
+    },
+    "actions": {
+      "reset": "Restablecer",
+      "resetDefaults": "Restablecer valores por defecto",
+      "save": "Guardar tema"
+    },
+    "confirm": {
+      "resetTitle": "Restablecer tema",
+      "resetMessage": "¿Seguro que deseas restablecer los colores por defecto?"
+    },
+    "toast": {
+      "saved": "¡Tema guardado correctamente!",
+      "reset": "Tema restablecido a valores por defecto"
+    }
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "La página que buscas no existe o fue movida.",
+    "backToDashboard": "Ir al panel"
+  },
+  "publicReceipt": {
+    "notFoundTitle": "Recibo no encontrado",
+    "notFoundMessage": "No se pudo encontrar el recibo que buscas o el enlace expiró.",
+    "actions": {
+      "printPdf": "Imprimir recibo PDF"
+    },
+    "labels": {
+      "branchFallback": "Nombre de sucursal",
+      "plate": "Matrícula",
+      "customer": "Cliente",
+      "driver": "Conductor"
+    },
+    "summary": {
+      "entryAt": "Entrada",
+      "exitAt": "Salida",
+      "total": "Total",
+      "paid": "Pagado",
+      "due": "Pendiente",
+      "requestedEta": "ETA solicitada",
+      "estimatedEta": "ETA estimada"
+    },
+    "invoice": {
+      "title": "Detalle de factura",
+      "description": "Descripción",
+      "qty": "Cant.",
+      "unitPrice": "Precio unitario",
+      "amount": "Importe",
+      "subtotal": "Subtotal",
+      "discount": "Descuento",
+      "tax": "Impuesto"
+    },
+    "payments": {
+      "title": "Pagos",
+      "empty": "No hay pagos registrados."
+    },
+    "serviceLog": {
+      "title": "Registro de servicio",
+      "empty": "No hay actividad registrada."
+    }
+  }
+}

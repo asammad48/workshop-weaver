@@ -1,0 +1,158 @@
+{
+  "common": {
+    "actions": {
+      "cancel": "Cancel"
+    }
+  },
+  "layout": {
+    "brand": {
+      "title": "Workshop Management"
+    },
+    "branch": "Branch",
+    "actions": {
+      "logout": "Logout"
+    },
+    "sidebar": {
+      "expand": "Expand sidebar",
+      "collapse": "Collapse sidebar"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "viewAll": "View all",
+      "empty": "No notifications",
+      "newJobCard": "New job card notification"
+    },
+    "confirm": {
+      "logoutTitle": "Logout",
+      "logoutMessage": "Are you sure you want to logout?"
+    },
+    "toast": {
+      "loggedOut": "Logged out successfully"
+    },
+    "language": {
+      "label": "Language",
+      "english": "English",
+      "spanish": "Español"
+    }
+  },
+  "nav": {
+    "groups": {
+      "main": "Main",
+      "operations": "Operations",
+      "inventory": "Inventory",
+      "purchasing": "Purchasing",
+      "transfers": "Transfers",
+      "finance": "Finance",
+      "reports": "Reports",
+      "attendance": "Attendance",
+      "admin": "Admin",
+      "profile": "Profile"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "customers": "Customers",
+      "drivers": "Drivers",
+      "vehicles": "Vehicles",
+      "jobCards": "Job Cards",
+      "inventory": "Inventory",
+      "purchaseOrders": "Purchase Orders",
+      "transfers": "Transfers",
+      "finance": "Finance",
+      "reports": "Reports",
+      "myAttendance": "My Attendance",
+      "attendance": "Attendance",
+      "branches": "Branches",
+      "users": "Users",
+      "workstations": "Workstations",
+      "audit": "Audit",
+      "profile": "Profile",
+      "theme": "Theme"
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Sign in to your account",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "signIn": "Sign In",
+      "signingIn": "Signing in...",
+      "toast": {
+        "success": "Login successful!",
+        "demoMode": "Logged in (demo mode)"
+      }
+    }
+  },
+  "theme": {
+    "title": "Theme Settings",
+    "subtitle": "Customize the application colors",
+    "fields": {
+      "primary": "Primary Color",
+      "secondary": "Secondary Color",
+      "accent": "Accent Color"
+    },
+    "preview": {
+      "title": "Preview",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent"
+    },
+    "actions": {
+      "reset": "Reset",
+      "resetDefaults": "Reset to Defaults",
+      "save": "Save Theme"
+    },
+    "confirm": {
+      "resetTitle": "Reset Theme",
+      "resetMessage": "Are you sure you want to reset to default colors?"
+    },
+    "toast": {
+      "saved": "Theme saved successfully!",
+      "reset": "Theme reset to defaults"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "backToDashboard": "Go to Dashboard"
+  },
+  "publicReceipt": {
+    "notFoundTitle": "Receipt Not Found",
+    "notFoundMessage": "The receipt you are looking for could not be found or the link has expired.",
+    "actions": {
+      "printPdf": "Print Receipt PDF"
+    },
+    "labels": {
+      "branchFallback": "Branch Name",
+      "plate": "Plate",
+      "customer": "Customer",
+      "driver": "Driver"
+    },
+    "summary": {
+      "entryAt": "Entry At",
+      "exitAt": "Exit At",
+      "total": "Total",
+      "paid": "Paid",
+      "due": "Due",
+      "requestedEta": "Requested ETA",
+      "estimatedEta": "Estimated ETA"
+    },
+    "invoice": {
+      "title": "Invoice Details",
+      "description": "Description",
+      "qty": "Qty",
+      "unitPrice": "Unit Price",
+      "amount": "Amount",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "tax": "Tax"
+    },
+    "payments": {
+      "title": "Payments",
+      "empty": "No payments recorded."
+    },
+    "serviceLog": {
+      "title": "Service Log",
+      "empty": "No activity logged."
+    }
+  }
+}

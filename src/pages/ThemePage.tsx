@@ -6,9 +6,11 @@ import { toast } from '@/components/ui/Toast';
 import { confirm } from '@/components/ui/ConfirmDialog';
 import { useThemeStore } from '@/state/themeStore';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { useI18n } from '@/i18n';
 import '@/styles/global.css';
 
 export default function ThemePage() {
+  const { t } = useI18n();
   const { primary, secondary, accent, setTheme, resetTheme } = useThemeStore();
 
   const [localPrimary, setLocalPrimary] = useState(primary);
@@ -21,15 +23,15 @@ export default function ThemePage() {
       secondary: localSecondary,
       accent: localAccent,
     });
-    toast.success('Theme saved successfully!');
+    toast.success(t('theme.toast.saved'));
   };
 
   const handleReset = async () => {
     const confirmed = await confirm({
-      title: 'Reset Theme',
-      message: 'Are you sure you want to reset to default colors?',
-      confirmText: 'Reset',
-      cancelText: 'Cancel',
+      title: t('theme.confirm.resetTitle'),
+      message: t('theme.confirm.resetMessage'),
+      confirmText: t('theme.actions.reset'),
+      cancelText: t('common.actions.cancel'),
     });
 
     if (confirmed) {
@@ -37,7 +39,7 @@ export default function ThemePage() {
       setLocalPrimary('#F4C20D');
       setLocalSecondary('#C68642');
       setLocalAccent('#2F2F2F');
-      toast.info('Theme reset to defaults');
+      toast.info(t('theme.toast.reset'));
     }
   };
 
@@ -45,9 +47,9 @@ export default function ThemePage() {
     <div className="stack" style={{ maxWidth: 600 }}>
       <Card>
         <CardHeader>
-          <h2 style={{ margin: 0 }}>Theme Settings</h2>
+          <h2 style={{ margin: 0 }}>{t('theme.title')}</h2>
           <p className="muted" style={{ margin: '4px 0 0 0' }}>
-            Customize the application colors
+            {t('theme.subtitle')}
           </p>
         </CardHeader>
         <CardBody>
@@ -56,7 +58,7 @@ export default function ThemePage() {
             <div className="row" style={{ alignItems: 'flex-end' }}>
               <div style={{ flex: 1 }}>
                 <Input
-                  label="Primary Color"
+                  label={t('theme.fields.primary')}
                   type="text"
                   value={localPrimary}
                   onChange={(e) => setLocalPrimary(e.target.value)}
@@ -82,7 +84,7 @@ export default function ThemePage() {
             <div className="row" style={{ alignItems: 'flex-end' }}>
               <div style={{ flex: 1 }}>
                 <Input
-                  label="Secondary Color"
+                  label={t('theme.fields.secondary')}
                   type="text"
                   value={localSecondary}
                   onChange={(e) => setLocalSecondary(e.target.value)}
@@ -108,7 +110,7 @@ export default function ThemePage() {
             <div className="row" style={{ alignItems: 'flex-end' }}>
               <div style={{ flex: 1 }}>
                 <Input
-                  label="Accent Color"
+                  label={t('theme.fields.accent')}
                   type="text"
                   value={localAccent}
                   onChange={(e) => setLocalAccent(e.target.value)}
@@ -132,7 +134,7 @@ export default function ThemePage() {
 
             {/* Preview */}
             <div style={{ marginTop: 16 }}>
-              <p className="muted" style={{ marginBottom: 8, fontSize: 12 }}>Preview</p>
+              <p className="muted" style={{ marginBottom: 8, fontSize: 12 }}>{t('theme.preview.title')}</p>
               <div className="row">
                 <div
                   style={{
@@ -147,7 +149,7 @@ export default function ThemePage() {
                     fontSize: 11,
                   }}
                 >
-                  Primary
+                  {t('theme.preview.primary')}
                 </div>
                 <div
                   style={{
@@ -162,7 +164,7 @@ export default function ThemePage() {
                     fontSize: 11,
                   }}
                 >
-                  Secondary
+                  {t('theme.preview.secondary')}
                 </div>
                 <div
                   style={{
@@ -177,7 +179,7 @@ export default function ThemePage() {
                     fontSize: 11,
                   }}
                 >
-                  Accent
+                  {t('theme.preview.accent')}
                 </div>
               </div>
             </div>
@@ -186,10 +188,10 @@ export default function ThemePage() {
         <CardFooter>
           <div className="row spaceBetween" style={{ width: '100%' }}>
             <Button variant="secondary" onClick={handleReset}>
-              Reset to Defaults
+              {t('theme.actions.resetDefaults')}
             </Button>
             <Button onClick={handleSave}>
-              Save Theme
+              {t('theme.actions.save')}
             </Button>
           </div>
         </CardFooter>

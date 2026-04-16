@@ -23,12 +23,14 @@ import {
 export interface NavItem {
     path: string;
     label: string;
+    labelKey?: string;
     icon: LucideIcon;
     readOnly?: boolean;
 }
 
 export interface NavGroup {
     label: string;
+    labelKey?: string;
     items: NavItem[];
 }
 
@@ -44,70 +46,82 @@ type UserRole =
 const allNavGroups: NavGroup[] = [
     {
         label: "Main",
-        items: [{ path: "/", label: "Dashboard", icon: LayoutDashboard }],
+        labelKey: "nav.groups.main",
+        items: [{ path: "/", label: "Dashboard", labelKey: "nav.items.dashboard", icon: LayoutDashboard }],
     },
     {
         label: "Operations",
+        labelKey: "nav.groups.operations",
         items: [
-            { path: "/customers", label: "Customers", icon: Users },
-            { path: "/customers/drivers", label: "Drivers", icon: IdCard },
-            { path: "/vehicles", label: "Vehicles", icon: Car },
-            { path: "/jobcards", label: "Job Cards", icon: Wrench },
+            { path: "/customers", label: "Customers", labelKey: "nav.items.customers", icon: Users },
+            { path: "/customers/drivers", label: "Drivers", labelKey: "nav.items.drivers", icon: IdCard },
+            { path: "/vehicles", label: "Vehicles", labelKey: "nav.items.vehicles", icon: Car },
+            { path: "/jobcards", label: "Job Cards", labelKey: "nav.items.jobCards", icon: Wrench },
         ],
     },
     {
         label: "Inventory",
-        items: [{ path: "/inventory", label: "Inventory", icon: Package }],
+        labelKey: "nav.groups.inventory",
+        items: [{ path: "/inventory", label: "Inventory", labelKey: "nav.items.inventory", icon: Package }],
     },
     {
         label: "Purchasing",
+        labelKey: "nav.groups.purchasing",
         items: [
             {
                 path: "/inventory/purchase-orders",
                 label: "Purchase Orders",
+                labelKey: "nav.items.purchaseOrders",
                 icon: ShoppingCart,
             },
         ],
     },
     {
         label: "Transfers",
+        labelKey: "nav.groups.transfers",
         items: [
             {
                 path: "/inventory/transfers",
                 label: "Transfers",
+                labelKey: "nav.items.transfers",
                 icon: ArrowLeftRight,
             },
         ],
     },
     {
         label: "Finance",
-        items: [{ path: "/finance", label: "Finance", icon: DollarSign }],
+        labelKey: "nav.groups.finance",
+        items: [{ path: "/finance", label: "Finance", labelKey: "nav.items.finance", icon: DollarSign }],
     },
     {
         label: "Reports",
-        items: [{ path: "/reports", label: "Reports", icon: BarChart3 }],
+        labelKey: "nav.groups.reports",
+        items: [{ path: "/reports", label: "Reports", labelKey: "nav.items.reports", icon: BarChart3 }],
     },
     {
         label: "Attendance",
+        labelKey: "nav.groups.attendance",
         items: [
-            { path: "/attendance/me", label: "My Attendance", icon: Clock },
-            { path: "/attendance", label: "Attendance", icon: CalendarCheck },
+            { path: "/attendance/me", label: "My Attendance", labelKey: "nav.items.myAttendance", icon: Clock },
+            { path: "/attendance", label: "Attendance", labelKey: "nav.items.attendance", icon: CalendarCheck },
         ],
     },
     {
         label: "Admin",
+        labelKey: "nav.groups.admin",
         items: [
-            { path: "/admin/branches", label: "Branches", icon: Building2 },
-            { path: "/admin/users", label: "Users", icon: UserCog },
-            { path: "/admin/workstations", label: "Workstations", icon: Monitor },
-            { path: "/admin/audit", label: "Audit", icon: FileText },
+            { path: "/admin/branches", label: "Branches", labelKey: "nav.items.branches", icon: Building2 },
+            { path: "/admin/users", label: "Users", labelKey: "nav.items.users", icon: UserCog },
+            { path: "/admin/workstations", label: "Workstations", labelKey: "nav.items.workstations", icon: Monitor },
+            { path: "/admin/audit", label: "Audit", labelKey: "nav.items.audit", icon: FileText },
         ],
     },
     {
         label: "Profile",
+        labelKey: "nav.groups.profile",
         items: [
-            { path: "/me", label: "Profile", icon: User },
-            { path: "/theme", label: "Theme", icon: Palette },
+            { path: "/me", label: "Profile", labelKey: "nav.items.profile", icon: User },
+            { path: "/theme", label: "Theme", labelKey: "nav.items.theme", icon: Palette },
         ],
     },
 ];

@@ -8,6 +8,7 @@ import { toast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/Button';
 import { notificationsRepo } from '@/api/repositories/notificationsRepo';
 import { NotificationResponse } from '@/api/generated/apiClient';
+import { useI18n } from '@/i18n';
 
 interface AppLayoutProps {
     children: ReactNode;
@@ -19,6 +20,7 @@ const SIDEBAR_KEY = 'ui.sidebarCollapsed';
  * Application layout with collapsible sidebar navigation and topbar
  */
 export function AppLayout({ children }: AppLayoutProps) {
+    const { t, language, setLanguage } = useI18n();
     const location = useLocation();
     const navigate = useNavigate();
     const { user, logout } = useAuthStore();
@@ -155,7 +157,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     };
 
     const showJobCardToast = (notification: NotificationResponse) => {
-        const message = notification.message || notification.title || 'New job card notification';
+        const message = notification.message || notification.title || t('layout.notifications.newJobCard');
         let handled = false;
         const resolveNotification = async () => {
             if (handled) return;
@@ -209,15 +211,15 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     const handleLogout = async () => {
         const confirmed = await confirm({
-            title: 'Logout',
-            message: 'Are you sure you want to logout?',
-            confirmText: 'Logout',
+            title: t('layout.confirm.logoutTitle'),
+            message: t('layout.confirm.logoutMessage'),
+            confirmText: t('layout.actions.logout'),
             danger: true,
         });
 
         if (confirmed) {
             logout();
-            toast.info('Logged out successfully');
+            toast.info(t('layout.toast.loggedOut'));
             navigate('/login');
         }
     };
@@ -285,7 +287,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                             color: 'var(--c-muted)',
                             borderRadius: '4px',
                         }}
-                        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        title={collapsed ? t('layout.sidebar.expand') : t('layout.sidebar.collapse')}
                     >
                         {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
                     </button>
@@ -306,7 +308,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                         letterSpacing: '0.5px',
                                     }}
                                 >
-                                    {group.label}
+                                    {group.labelKey ? t(group.labelKey) : group.label}
                                 </div>
                             )}
                             {group.items.map((item) => {
@@ -316,7 +318,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        title={collapsed ? item.label : undefined}
+                                        title={collapsed ? (item.labelKey ? t(item.labelKey) : item.label) : undefined}
                                         style={{
                                             display: 'flex',
                                             alignItems: 'center',
@@ -336,7 +338,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                         <Icon size={18} style={{ flexShrink: 0 }} />
                                         {!collapsed && (
                                             <span style={{ whiteSpace: 'nowrap' }}>
-                                                {item.label}
+                                                {item.labelKey ? t(item.labelKey) : item.label}
                                             </span>
                                         )}
                                     </Link>
@@ -364,7 +366,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <img src="/images/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
-                        <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--c-text)' }}>Workshop Management</span>
+                        <span style={{ fontWeight: 700, fontSize: '18px', color: 'var(--c-text)' }}>{t('layout.brand.title')}</span>
                         {user?.branchId && (
                             <span
                                 style={{
@@ -377,12 +379,29 @@ export function AppLayout({ children }: AppLayoutProps) {
                                     textTransform: 'uppercase',
                                 }}
                             >
-                                Branch: {user.branchId}
+                                {t('layout.branch')}: {user.branchId}
                             </span>
                         )}
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <select
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value as 'en' | 'es')}
+                            aria-label={t('layout.language.label')}
+                            style={{
+                                border: '1px solid var(--c-border)',
+                                backgroundColor: 'var(--c-card)',
+                                color: 'var(--c-text)',
+                                borderRadius: '6px',
+                                padding: '6px 10px',
+                                fontSize: '13px',
+                                height: '34px',
+                            }}
+                        >
+                            <option value="en">{t('layout.language.english')}</option>
+                            <option value="es">{t('layout.language.spanish')}</option>
+                        </select>
                         {/* Notifications Bell */}
                         <div style={{ position: 'relative' }} ref={notificationRef}>
                             <button
@@ -441,13 +460,13 @@ export function AppLayout({ children }: AppLayoutProps) {
                                     overflow: 'hidden'
                                 }}>
                                     <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--c-border)', fontWeight: 600, fontSize: '14px', display: 'flex', justifyContent: 'space-between' }}>
-                                        <span>Notifications</span>
-                                        <Link to="/notifications" style={{ fontSize: '12px', color: 'var(--c-primary)', textDecoration: 'none' }} onClick={() => setShowNotifications(false)}>View all</Link>
+                                        <span>{t('layout.notifications.title')}</span>
+                                        <Link to="/notifications" style={{ fontSize: '12px', color: 'var(--c-primary)', textDecoration: 'none' }} onClick={() => setShowNotifications(false)}>{t('layout.notifications.viewAll')}</Link>
                                     </div>
                                     <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                         {notifications.length === 0 ? (
                                             <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-muted)', fontSize: '13px' }}>
-                                                No notifications
+                                                {t('layout.notifications.empty')}
                                             </div>
                                         ) : (
                                             notifications.map(n => (
@@ -496,7 +515,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                         </div>
                         <Button variant="ghost" size="sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--c-danger)' }}>
                             <LogOut size={16} />
-                            <span>Logout</span>
+                            <span>{t('layout.actions.logout')}</span>
                         </Button>
                     </div>
                 </header>
