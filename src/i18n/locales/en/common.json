@@ -189,6 +189,30 @@
     "jobCard": "Job Card",
     "fromDate": "From Date",
     "toDate": "To Date"
+    ,"code": "Code"
+    ,"name": "Name"
+    ,"address": "Address"
+    ,"sku": "SKU"
+    ,"brand": "Brand"
+    ,"unit": "Unit"
+    ,"orderNo": "Order No"
+    ,"supplier": "Supplier"
+    ,"createdAt": "Created At"
+    ,"submitted": "Submitted"
+    ,"part": "Part"
+    ,"qty": "Qty"
+    ,"cost": "Cost"
+    ,"total": "Total"
+    ,"category": "Category"
+    ,"amount": "Amount"
+    ,"notes": "Notes"
+    ,"staffBranch": "Staff / Branch"
+    ,"paidAt": "Paid At"
+    ,"period": "Period"
+    ,"description": "Description"
+    ,"daysOpen": "Days Open"
+    ,"station": "Station"
+    ,"days": "Days"
   },
   "pages": {
     "dashboard": {
@@ -230,6 +254,47 @@
       "title": "Job Cards",
       "create": "Create Job Card",
       "searchPlaceholder": "Search plate or customer..."
+    },
+    "workstations": {
+      "title": "Workstations",
+      "create": "Create Workstation",
+      "searchPlaceholder": "Search workstations...",
+      "empty": "No workstations found"
+    },
+    "inventory": {
+      "title": "Inventory Management",
+      "noSuppliers": "No suppliers found",
+      "noParts": "No parts found",
+      "noLocations": "No locations found"
+    },
+    "purchaseOrders": {
+      "title": "Purchase Orders",
+      "empty": "No purchase orders found"
+    },
+    "finance": {
+      "title": "Finance"
+    },
+    "reports": {
+      "title": "Reports",
+      "generate": "Generate Report",
+      "roadblockerAging": "Roadblocker Aging",
+      "stuckVehicles": "Stuck Vehicles"
+    },
+    "attendance": {
+      "myTitle": "My Attendance",
+      "today": "Today's Attendance",
+      "managementTitle": "Attendance Management",
+      "noTodayRecords": "No attendance records found for today",
+      "noRecords": "No records found for this period"
+    },
+    "profile": {
+      "title": "My Profile",
+      "personalInfo": "Personal Information",
+      "yourAccess": "Your Access",
+      "accessiblePages": "Accessible Pages",
+      "quickLinks": "Quick Links",
+      "detailedAccess": "Detailed Access List",
+      "copyAccessSummary": "Copy Access Summary"
     }
   }
 }

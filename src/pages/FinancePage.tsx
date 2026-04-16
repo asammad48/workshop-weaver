@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { getBranchesOnce } from '@/api/lookups/branchesLookup';
 import { getUsersOnce } from '@/api/lookups/usersLookup';
+import { useI18n } from '@/i18n';
 
 type Tab = 'expenses' | 'wages';
 
@@ -118,12 +119,13 @@ const CATEGORY_LABELS: Record<number, string> = {
 };
 
 export default function FinancePage() {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<Tab>('expenses');
 
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Finance</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>{t('pages.finance.title')}</h1>
       </div>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', borderBottom: '1px solid var(--c-border)' }}>
@@ -165,6 +167,7 @@ export default function FinancePage() {
 }
 
 function ExpensesTab() {
+  const { t } = useI18n();
   const [items, setItems] = useState<ExpenseResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -289,10 +292,10 @@ function ExpensesTab() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Date</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Category</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Amount</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Notes</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.date')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.category')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.amount')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.notes')}</th>
               </tr>
             </thead>
             <tbody>
@@ -334,7 +337,7 @@ function ExpensesTab() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {page} of {totalPages}
+            {t('table.page')} {page} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
@@ -351,6 +354,7 @@ function ExpensesTab() {
 }
 
 function WagesTab() {
+  const { t } = useI18n();
   const [items, setItems] = useState<WagePayResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -492,11 +496,11 @@ function WagesTab() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Staff / Branch</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Amount</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Paid At</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Period</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Notes</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.staffBranch')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.amount')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.paidAt')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.period')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.notes')}</th>
               </tr>
             </thead>
             <tbody>
@@ -542,7 +546,7 @@ function WagesTab() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {page} of {totalPages}
+            {t('table.page')} {page} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>

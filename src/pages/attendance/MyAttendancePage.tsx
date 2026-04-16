@@ -12,8 +12,10 @@ import {
   AttendanceCheckOutRequest,
 } from "@/api/generated/apiClient";
 import { ATTENDANCE_STATUS_LABELS } from "@/constants/enums";
+import { useI18n } from "@/i18n";
 
 export default function MyAttendancePage() {
+  const { t } = useI18n();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [note, setNote] = useState("");
@@ -112,7 +114,7 @@ export default function MyAttendancePage() {
         <h1
           style={{ fontSize: "24px", fontWeight: 600, color: "var(--c-text)" }}
         >
-          My Attendance
+          {t('pages.attendance.myTitle')}
         </h1>
       </div>
 
@@ -141,7 +143,7 @@ export default function MyAttendancePage() {
               color: "var(--c-text)",
             }}
           >
-            Today's Attendance
+            {t('pages.attendance.today')}
           </h2>
         </div>
         <div
@@ -332,7 +334,7 @@ export default function MyAttendancePage() {
                       color: "var(--c-muted)",
                     }}
                   >
-                    No records found for this period
+                    {t('pages.attendance.noRecords')}
                   </td>
                 </tr>
               ) : (

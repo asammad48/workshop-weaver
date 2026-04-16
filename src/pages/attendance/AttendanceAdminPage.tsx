@@ -19,8 +19,10 @@ import {
   AttendanceUpsertStatusRequest,
   AttendanceStatus,
 } from "@/api/generated/apiClient";
+import { useI18n } from "@/i18n";
 
 export default function AttendanceAdminPage() {
+  const { t } = useI18n();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"today" | "month">("today");
@@ -226,7 +228,7 @@ export default function AttendanceAdminPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <h1 style={{ fontSize: "24px", fontWeight: 600, color: "var(--c-text)" }}>
-        Attendance Management
+        {t('pages.attendance.managementTitle')}
       </h1>
 
       <Card>
@@ -431,7 +433,7 @@ export default function AttendanceAdminPage() {
                         color: "var(--c-muted)",
                       }}
                     >
-                      No attendance records found for today
+                      {t('pages.attendance.noTodayRecords')}
                     </td>
                   </tr>
                 ) : (
@@ -514,7 +516,7 @@ export default function AttendanceAdminPage() {
             }}
           >
             <span style={{ fontSize: "14px", color: "var(--c-muted)" }}>
-              Page {page} of {todayTotalPages}
+              {t('table.page')} {page} {t('table.of')} {todayTotalPages}
             </span>
             <div style={{ display: "flex", gap: "8px" }}>
               <Button
@@ -676,7 +678,7 @@ export default function AttendanceAdminPage() {
                           color: "var(--c-muted)",
                         }}
                       >
-                        No records found for this period
+                        {t('pages.attendance.noRecords')}
                       </td>
                     </tr>
                   ) : (

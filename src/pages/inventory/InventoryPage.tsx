@@ -18,10 +18,12 @@ import {
 import { StockTab } from './StockTab';
 import { LedgerTab } from './LedgerTab';
 import { StockAdjustModal } from './StockAdjustModal';
+import { useI18n } from '@/i18n';
 
 type Tab = 'suppliers' | 'parts' | 'locations' | 'stock' | 'ledger';
 
 export default function InventoryPage() {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<Tab>('suppliers');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -59,7 +61,7 @@ export default function InventoryPage() {
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Inventory Management</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>{t('pages.inventory.title')}</h1>
         {activeTab !== 'ledger' && (
           <Button onClick={handleCreate}>
             {activeTab === 'stock' ? <Settings2 size={18} style={{ marginRight: '8px' }} /> : <Plus size={18} style={{ marginRight: '8px' }} />}
@@ -115,6 +117,7 @@ export default function InventoryPage() {
 }
 
 function SuppliersTable({ search, page, setPage }: any) {
+  const { t } = useI18n();
   const { data, isLoading, error } = useQuery({
     queryKey: ['suppliers', page, search],
     queryFn: () => inventoryRepo.getSuppliers(page, 10, search)
@@ -132,10 +135,10 @@ function SuppliersTable({ search, page, setPage }: any) {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Name</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Phone</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Email</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Address</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.name')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.phone')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.email')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.address')}</th>
           </tr>
         </thead>
         <tbody>
@@ -159,6 +162,7 @@ function SuppliersTable({ search, page, setPage }: any) {
 }
 
 function PartsTable({ search, page, setPage }: any) {
+  const { t } = useI18n();
   const { data, isLoading, error } = useQuery({
     queryKey: ['parts', page, search],
     queryFn: () => inventoryRepo.getParts(page, 10, search)
@@ -176,10 +180,10 @@ function PartsTable({ search, page, setPage }: any) {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>SKU</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Name</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Brand</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Unit</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.sku')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.name')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.brand')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.unit')}</th>
           </tr>
         </thead>
         <tbody>
@@ -208,6 +212,7 @@ function PartsTable({ search, page, setPage }: any) {
 }
 
 function LocationsTable({ search, page, setPage }: any) {
+  const { t } = useI18n();
   const { data, isLoading, error } = useQuery({
     queryKey: ['locations', page, search],
     queryFn: () => inventoryRepo.getLocations(page, 10, search)
@@ -225,9 +230,9 @@ function LocationsTable({ search, page, setPage }: any) {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Code</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Name</th>
-            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.code')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.name')}</th>
+            <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.status')}</th>
           </tr>
         </thead>
         <tbody>
@@ -261,10 +266,11 @@ function LocationsTable({ search, page, setPage }: any) {
 }
 
 function Pagination({ page, setPage, totalPages }: any) {
+  const { t } = useI18n();
   return (
     <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-        Page {page} of {totalPages}
+        {t('table.page')} {page} {t('table.of')} {totalPages}
       </span>
       <div style={{ display: 'flex', gap: '8px' }}>
         <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage((p: any) => p - 1)}>

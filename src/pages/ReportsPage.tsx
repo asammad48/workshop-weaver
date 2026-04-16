@@ -21,11 +21,13 @@ import { roadblockersRepo } from '@/api/repositories/roadblockersRepo';
 import { reportsRepo } from '@/api/repositories/reportsRepo';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useI18n } from '@/i18n';
 
 const STORAGE_KEY_FROM = 'reports.from';
 const STORAGE_KEY_TO = 'reports.to';
 
 export default function ReportsPage() {
+  const { t } = useI18n();
   const [fromDate, setFromDate] = useState<string>(() => {
     return localStorage.getItem(STORAGE_KEY_FROM) || 
       new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0];
@@ -105,7 +107,7 @@ export default function ReportsPage() {
   return (
     <div style={{ padding: '24px' }}>
       <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '24px', color: 'var(--c-text)' }}>
-        Reports
+        {t('pages.reports.title')}
       </h1>
 
       <div style={{ marginBottom: '24px' }}>
@@ -113,7 +115,7 @@ export default function ReportsPage() {
           <div style={{ padding: '16px', display: 'flex', gap: '16px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Input
-                label="From Date"
+                label={t('table.fromDate')}
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
@@ -121,7 +123,7 @@ export default function ReportsPage() {
             </div>
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Input
-                label="To Date"
+                label={t('table.toDate')}
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
@@ -129,7 +131,7 @@ export default function ReportsPage() {
             </div>
             <Button onClick={() => refetchSummary()} style={{ marginBottom: '4px' }}>
               <Search size={18} style={{ marginRight: '8px' }} />
-              Generate Report
+              {t('pages.reports.generate')}
             </Button>
           </div>
         </Card>
@@ -193,17 +195,17 @@ export default function ReportsPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '24px' }}>
           <Card>
             <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>Roadblocker Aging</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>{t('pages.reports.roadblockerAging')}</h2>
             </div>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Type</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Description</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Created</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days Open</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Job Card</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.type')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.description')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.createdAt')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.daysOpen')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.jobCard')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -226,7 +228,7 @@ export default function ReportsPage() {
               </table>
             </div>
             <div style={{ padding: '12px 16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>Page {agingPage} of {totalAgingPages}</span>
+              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.page')} {agingPage} {t('table.of')} {totalAgingPages}</span>
               <div style={{ display: 'flex', gap: '4px' }}>
                 <Button variant="secondary" size="sm" disabled={agingPage <= 1} onClick={() => setAgingPage(p => p - 1)}><ChevronLeft size={14} /></Button>
                 <Button variant="secondary" size="sm" disabled={agingPage >= totalAgingPages} onClick={() => setAgingPage(p => p + 1)}><ChevronRight size={14} /></Button>
@@ -236,18 +238,18 @@ export default function ReportsPage() {
 
           <Card>
             <div style={{ padding: '16px', borderBottom: '1px solid var(--c-border)' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>Stuck Vehicles</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: 600, margin: 0, color: 'var(--c-text)' }}>{t('pages.reports.stuckVehicles')}</h2>
             </div>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Plate</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Customer</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Status</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Entry At</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Station</th>
-                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>Days</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.plate')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.customer')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.status')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.entryAt')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.station')}</th>
+                    <th style={{ padding: '12px 16px', color: 'var(--c-muted)', fontSize: '12px' }}>{t('table.days')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -275,7 +277,7 @@ export default function ReportsPage() {
               </table>
             </div>
             <div style={{ padding: '12px 16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>Page {stuckPage} of {totalStuckPages}</span>
+              <span style={{ fontSize: '12px', color: 'var(--c-muted)' }}>{t('table.page')} {stuckPage} {t('table.of')} {totalStuckPages}</span>
               <div style={{ display: 'flex', gap: '4px' }}>
                 <Button variant="secondary" size="sm" disabled={stuckPage <= 1} onClick={() => setStuckPage(p => p - 1)}><ChevronLeft size={14} /></Button>
                 <Button variant="secondary" size="sm" disabled={stuckPage >= totalStuckPages} onClick={() => setStuckPage(p => p + 1)}><ChevronRight size={14} /></Button>

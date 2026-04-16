@@ -18,8 +18,10 @@ import {
   CheckCircle2,
   XCircle
 } from 'lucide-react';
+import { useI18n } from '@/i18n';
 
 export default function WorkstationsPage() {
+  const { t } = useI18n();
   const [workstations, setWorkstations] = useState<WorkStationResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -104,10 +106,10 @@ export default function WorkstationsPage() {
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Workstations</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>{t('pages.workstations.title')}</h1>
         <Button onClick={handleCreateWorkstation}>
           <Plus size={18} style={{ marginRight: '8px' }} />
-          Create Workstation
+          {t('pages.workstations.create')}
         </Button>
       </div>
 
@@ -116,7 +118,7 @@ export default function WorkstationsPage() {
           <div style={{ position: 'relative', flex: 1 }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--c-muted)' }} />
             <Input 
-              placeholder="Search workstations..." 
+              placeholder={t('pages.workstations.searchPlaceholder')} 
               style={{ paddingLeft: '40px' }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -130,10 +132,10 @@ export default function WorkstationsPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Code</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Name</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
-                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.code')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.name')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.status')}</th>
+                <th style={{ padding: '16px', textAlign: 'right', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -152,7 +154,7 @@ export default function WorkstationsPage() {
               ) : workstations.length === 0 ? (
                 <tr>
                   <td colSpan={4} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>
-                    No workstations found
+                    {t('pages.workstations.empty')}
                   </td>
                 </tr>
               ) : (
@@ -210,7 +212,7 @@ export default function WorkstationsPage() {
 
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>
-            Page {page} of {totalPages}
+            {t('table.page')} {page} {t('table.of')} {totalPages}
           </span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>

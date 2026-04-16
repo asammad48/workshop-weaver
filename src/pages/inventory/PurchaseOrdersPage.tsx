@@ -19,8 +19,10 @@ import {
   ReceiveItem,
   PurchaseOrderResponse
 } from '@/api/generated/apiClient';
+import { useI18n } from '@/i18n';
 
 export default function PurchaseOrdersPage() {
+  const { t } = useI18n();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
@@ -78,7 +80,7 @@ export default function PurchaseOrdersPage() {
   return (
     <div style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>Purchase Orders</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--c-text)' }}>{t('pages.purchaseOrders.title')}</h1>
         {canManage && (
           <Button onClick={handleCreate}>
             <Plus size={18} style={{ marginRight: '8px' }} />
@@ -102,18 +104,18 @@ export default function PurchaseOrdersPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--c-border)', textAlign: 'left' }}>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Order No</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Supplier</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Status</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Created At</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Submitted</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>Received</th>
-                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500, textAlign: 'right' }}>Actions</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.orderNo')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.supplier')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.status')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.createdAt')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.submitted')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500 }}>{t('table.received')}</th>
+                <th style={{ padding: '16px', color: 'var(--c-muted)', fontSize: '14px', fontWeight: 500, textAlign: 'right' }}>{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {items.length === 0 ? (
-                <tr><td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>No purchase orders found</td></tr>
+                <tr><td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: 'var(--c-muted)' }}>{t('pages.purchaseOrders.empty')}</td></tr>
               ) : (
                 items.map((po: PurchaseOrderResponse) => (
                   <tr key={po.id} style={{ borderBottom: '1px solid var(--c-border)' }}>
@@ -158,7 +160,7 @@ export default function PurchaseOrdersPage() {
           </table>
         </div>
         <div style={{ padding: '16px', borderTop: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>Page {page} of {totalPages}</span>
+          <span style={{ fontSize: '14px', color: 'var(--c-muted)' }}>{t('table.page')} {page} {t('table.of')} {totalPages}</span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>Prev</Button>
             <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Next</Button>
@@ -315,6 +317,7 @@ function ReceivePOModal({ id, onSuccess }: { id: string, onSuccess: () => void }
 }
 
 function PODetails({ id }: { id: string }) {
+  const { t } = useI18n();
   const { data, isLoading } = useQuery({ queryKey: ['purchase-orders', id], queryFn: () => purchaseOrdersRepo.getPurchaseOrder(id) });
 
   if (isLoading) return <div style={{ padding: '24px', textAlign: 'center' }}><Loader2 size={18} className="animate-spin" /></div>;
@@ -346,10 +349,10 @@ function PODetails({ id }: { id: string }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
           <thead style={{ background: 'var(--c-bg-alt)' }}>
             <tr style={{ textAlign: 'left' }}>
-              <th style={{ padding: '8px 12px' }}>Part</th>
-              <th style={{ padding: '8px 12px' }}>Qty</th>
-              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Cost</th>
-              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Total</th>
+              <th style={{ padding: '8px 12px' }}>{t('table.part')}</th>
+              <th style={{ padding: '8px 12px' }}>{t('table.qty')}</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>{t('table.cost')}</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>{t('table.total')}</th>
             </tr>
           </thead>
           <tbody>

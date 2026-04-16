@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/Button';
 import { toast } from '@/components/ui/Toast';
 import { getNav } from '@/app/nav';
 import { flattenNav } from '@/features/profile/accessSummary/navAccess';
+import { useI18n } from '@/i18n';
 import '@/styles/global.css';
 
 /**
  * Enhanced User profile page
  */
 export default function MePage() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const navGroups = getNav(user?.role);
   const allowedNodes = flattenNav(navGroups);
@@ -43,13 +45,13 @@ ${allowedNodes.map(n => `- ${n.label} (${n.path})`).join('\n')}
   return (
     <div className="page" style={{ paddingBottom: '40px' }}>
       <div className="stack" style={{ maxWidth: '1000px', margin: '0 auto' }}>
-        <h1 style={{ marginBottom: '24px' }}>My Profile</h1>
+        <h1 style={{ marginBottom: '24px' }}>{t('pages.profile.title')}</h1>
 
         <div className="row" style={{ alignItems: 'flex-start', gap: '24px' }}>
           {/* Section A: Profile Card */}
           <Card style={{ flex: 1 }}>
             <CardHeader>
-              <h3 style={{ margin: 0 }}>Personal Information</h3>
+              <h3 style={{ margin: 0 }}>{t('pages.profile.personalInfo')}</h3>
             </CardHeader>
             <CardBody>
               <div className="stack" style={{ gap: '16px' }}>
@@ -76,13 +78,13 @@ ${allowedNodes.map(n => `- ${n.label} (${n.path})`).join('\n')}
           {/* Section B: Your Access Overview */}
           <Card style={{ flex: 1 }}>
             <CardHeader>
-              <h3 style={{ margin: 0 }}>Your Access</h3>
+              <h3 style={{ margin: 0 }}>{t('pages.profile.yourAccess')}</h3>
             </CardHeader>
             <CardBody>
               <div className="row" style={{ gap: '12px', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: '120px', padding: '12px', backgroundColor: 'var(--c-bg)', borderRadius: '8px', textAlign: 'center' }}>
                   <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--c-primary)' }}>{stats.pages}</div>
-                  <div className="muted" style={{ fontSize: '11px', textTransform: 'uppercase' }}>Accessible Pages</div>
+                  <div className="muted" style={{ fontSize: '11px', textTransform: 'uppercase' }}>{t('pages.profile.accessiblePages')}</div>
                 </div>
                 <div style={{ flex: 1, minWidth: '120px', padding: '12px', backgroundColor: 'var(--c-bg)', borderRadius: '8px', textAlign: 'center' }}>
                   <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--c-primary)' }}>{stats.groups}</div>
@@ -99,7 +101,7 @@ ${allowedNodes.map(n => `- ${n.label} (${n.path})`).join('\n')}
 
         {/* Section D: Quick Links */}
         <div style={{ marginTop: '24px' }}>
-          <h4 style={{ marginBottom: '12px' }}>Quick Links</h4>
+          <h4 style={{ marginBottom: '12px' }}>{t('pages.profile.quickLinks')}</h4>
           <div className="row" style={{ gap: '8px', flexWrap: 'wrap' }}>
             {quickLinks.map(link => (
               <Button key={link.path} variant="outline" size="sm" onClick={() => window.location.href = link.path}>
@@ -112,8 +114,8 @@ ${allowedNodes.map(n => `- ${n.label} (${n.path})`).join('\n')}
         {/* Section C: Accessible Pages & Tabs */}
         <div style={{ marginTop: '32px' }}>
           <div className="row spaceBetween" style={{ marginBottom: '16px' }}>
-            <h4 style={{ margin: 0 }}>Detailed Access List</h4>
-            <Button size="sm" onClick={copyAccessSummary}>Copy Access Summary</Button>
+            <h4 style={{ margin: 0 }}>{t('pages.profile.detailedAccess')}</h4>
+            <Button size="sm" onClick={copyAccessSummary}>{t('pages.profile.copyAccessSummary')}</Button>
           </div>
           <Accordion>
             {navGroups.map(group => (

@@ -18,7 +18,7 @@ import { downloadJobCardsPdf } from '@/features/dashboard/jobCardReportPdf';
 import { useI18n } from '@/i18n';
 
 export default function DashboardPage() {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const { user } = useAuth();
   const [data, setData] = useState<DashboardOverviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +81,7 @@ export default function DashboardPage() {
 
       const items = res.data.items ?? [];
       setReportPreview(items.slice(0, 8));
-      downloadJobCardsPdf(items, reportFrom, reportTo);
+      downloadJobCardsPdf(items, reportFrom, reportTo, language);
       toast.success(`Report downloaded with ${items.length} records`);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to download report';

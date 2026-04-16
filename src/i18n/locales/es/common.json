@@ -189,6 +189,30 @@
     "jobCard": "Orden de trabajo",
     "fromDate": "Desde fecha",
     "toDate": "Hasta fecha"
+    ,"code": "Código"
+    ,"name": "Nombre"
+    ,"address": "Dirección"
+    ,"sku": "SKU"
+    ,"brand": "Marca"
+    ,"unit": "Unidad"
+    ,"orderNo": "N.º de orden"
+    ,"supplier": "Proveedor"
+    ,"createdAt": "Creado el"
+    ,"submitted": "Enviado"
+    ,"part": "Parte"
+    ,"qty": "Cant."
+    ,"cost": "Costo"
+    ,"total": "Total"
+    ,"category": "Categoría"
+    ,"amount": "Monto"
+    ,"notes": "Notas"
+    ,"staffBranch": "Empleado / Sucursal"
+    ,"paidAt": "Pagado el"
+    ,"period": "Período"
+    ,"description": "Descripción"
+    ,"daysOpen": "Días abiertos"
+    ,"station": "Estación"
+    ,"days": "Días"
   },
   "pages": {
     "dashboard": {
@@ -230,6 +254,47 @@
       "title": "Órdenes de trabajo",
       "create": "Crear orden de trabajo",
       "searchPlaceholder": "Buscar matrícula o cliente..."
+    },
+    "workstations": {
+      "title": "Estaciones de trabajo",
+      "create": "Crear estación de trabajo",
+      "searchPlaceholder": "Buscar estaciones de trabajo...",
+      "empty": "No se encontraron estaciones de trabajo"
+    },
+    "inventory": {
+      "title": "Gestión de inventario",
+      "noSuppliers": "No se encontraron proveedores",
+      "noParts": "No se encontraron partes",
+      "noLocations": "No se encontraron ubicaciones"
+    },
+    "purchaseOrders": {
+      "title": "Órdenes de compra",
+      "empty": "No se encontraron órdenes de compra"
+    },
+    "finance": {
+      "title": "Finanzas"
+    },
+    "reports": {
+      "title": "Reportes",
+      "generate": "Generar reporte",
+      "roadblockerAging": "Antigüedad de bloqueadores",
+      "stuckVehicles": "Vehículos atascados"
+    },
+    "attendance": {
+      "myTitle": "Mi asistencia",
+      "today": "Asistencia de hoy",
+      "managementTitle": "Gestión de asistencia",
+      "noTodayRecords": "No se encontraron registros de asistencia para hoy",
+      "noRecords": "No se encontraron registros para este período"
+    },
+    "profile": {
+      "title": "Mi perfil",
+      "personalInfo": "Información personal",
+      "yourAccess": "Tu acceso",
+      "accessiblePages": "Páginas accesibles",
+      "quickLinks": "Enlaces rápidos",
+      "detailedAccess": "Lista detallada de accesos",
+      "copyAccessSummary": "Copiar resumen de acceso"
     }
   }
 }
