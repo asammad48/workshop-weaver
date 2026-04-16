@@ -81,7 +81,7 @@ export default function DashboardPage() {
 
       const items = res.data.items ?? [];
       setReportPreview(items.slice(0, 8));
-      downloadJobCardsPdf(items, reportFrom, reportTo, language);
+      await downloadJobCardsPdf(items, reportFrom, reportTo, language);
       toast.success(`Report downloaded with ${items.length} records`);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to download report';

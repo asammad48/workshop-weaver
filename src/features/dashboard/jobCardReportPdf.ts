@@ -7,176 +7,278 @@ interface ReportRow {
   vehiclePlate?: string;
 }
 
-type SupportedLanguage = 'en' | 'es';
+type SupportedLanguage = "en" | "es";
 
 interface Labels {
   title: string;
   generatedAt: string;
   totalRecords: string;
+  department: string;
   no: string;
-  card: string;
+  id: string;
   date: string;
   status: string;
-  plate: string;
-  customer: string;
+  unit: string;
+  technician: string;
   type: string;
-  disclaimerTitle: string;
-  disclaimerText: string;
+  footerBrand: string;
+  confidential: string;
+  page: string;
+  of: string;
 }
 
 const LABELS: Record<SupportedLanguage, Labels> = {
   en: {
-    title: 'Job Cards Report',
-    generatedAt: 'Generated at',
-    totalRecords: 'Total records',
-    no: 'No',
-    card: 'Card',
-    date: 'Date',
-    status: 'Status',
-    plate: 'Plate',
-    customer: 'Customer',
-    type: 'Type',
-    disclaimerTitle: 'Disclaimer',
-    disclaimerText: 'This report is system-generated for operational use only. Verify key values against source records before external sharing.',
+    title: "Work Orders Report",
+    generatedAt: "Generated",
+    totalRecords: "Total Records",
+    department: "Department",
+    no: "#",
+    id: "ID",
+    date: "Date",
+    status: "Status",
+    unit: "Unit",
+    technician: "Technician",
+    type: "Type",
+    footerBrand: "Workshop Management",
+    confidential: "Confidential",
+    page: "Page",
+    of: "of",
   },
   es: {
-    title: 'Reporte de Órdenes de Trabajo',
-    generatedAt: 'Generado el',
-    totalRecords: 'Total de registros',
-    no: 'N°',
-    card: 'Tarjeta',
-    date: 'Fecha',
-    status: 'Estado',
-    plate: 'Matrícula',
-    customer: 'Cliente',
-    type: 'Tipo',
-    disclaimerTitle: 'Descargo de responsabilidad',
-    disclaimerText: 'Este reporte es generado por el sistema para uso operativo. Verifique los datos clave con los registros fuente antes de compartirlo externamente.',
+    title: "Reporte de Órdenes de Trabajo",
+    generatedAt: "Generado",
+    totalRecords: "Total de registros",
+    department: "Departamento",
+    no: "#",
+    id: "ID",
+    date: "Fecha",
+    status: "Estado",
+    unit: "Unidad",
+    technician: "Técnico",
+    type: "Tipo",
+    footerBrand: "Workshop Management",
+    confidential: "Confidencial",
+    page: "Página",
+    of: "de",
   },
 };
 
+type Rgb = [number, number, number];
+
+interface PdfPalette {
+  primary: Rgb;
+  primaryDark: Rgb;
+  ink: Rgb;
+  muted: Rgb;
+  soft: Rgb;
+  border: Rgb;
+}
+
+function parseCssColor(value: string | null, fallback: Rgb): Rgb {
+  if (!value) return fallback;
+  const clean = value.trim();
+  if (clean.startsWith("#")) {
+    const hex = clean.slice(1);
+    const full = hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex;
+    if (full.length === 6) {
+      return [
+        parseInt(full.slice(0, 2), 16),
+        parseInt(full.slice(2, 4), 16),
+        parseInt(full.slice(4, 6), 16),
+      ];
+    }
+  }
+  const rgbMatch = clean.match(/rgba?\(([^)]+)\)/i);
+  if (rgbMatch) {
+    const [r, g, b] = rgbMatch[1].split(",").slice(0, 3).map((v) => Number(v.trim()));
+    if ([r, g, b].every(Number.isFinite)) return [r, g, b];
+  }
+  return fallback;
+}
+
+function getThemePalette(): PdfPalette {
+  const fallback: PdfPalette = {
+    primary: [245, 158, 11],
+    primaryDark: [180, 83, 9],
+    ink: [23, 23, 23],
+    muted: [115, 115, 115],
+    soft: [250, 250, 249],
+    border: [231, 229, 228],
+  };
+  if (typeof window === "undefined") return fallback;
+  const style = getComputedStyle(document.documentElement);
+  const primary = parseCssColor(style.getPropertyValue("--c-primary"), fallback.primary);
+  const ink = parseCssColor(style.getPropertyValue("--c-text"), fallback.ink);
+  const muted = parseCssColor(style.getPropertyValue("--c-muted"), fallback.muted);
+  const border = parseCssColor(style.getPropertyValue("--c-border"), fallback.border);
+  const soft = parseCssColor(style.getPropertyValue("--c-bg"), fallback.soft);
+  return {
+    primary,
+    primaryDark: [Math.floor(primary[0] * 0.72), Math.floor(primary[1] * 0.72), Math.floor(primary[2] * 0.72)],
+    ink,
+    muted,
+    border,
+    soft,
+  };
+}
+
+function rgbFill([r, g, b]: Rgb): string {
+  return `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)} rg`;
+}
+
+function rgbStroke([r, g, b]: Rgb): string {
+  return `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)} RG`;
+}
+
 function escapePdfText(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
 function text(x: number, y: number, size: number, content: string): string {
   return `BT /F1 ${size} Tf ${x} ${y} Td (${escapePdfText(content)}) Tj ET`;
 }
 
+function truncate(value: string, max: number): string {
+  return value.length <= max ? value : `${value.slice(0, max - 1)}…`;
+}
+
+function statusColor(status: string, palette: PdfPalette): Rgb {
+  const s = status.toLowerCase();
+  if (s.includes("complet") || s.includes("paid") || s.includes("pagad")) return [22, 101, 52];
+  if (s.includes("progreso") || s.includes("progress")) return palette.primaryDark;
+  if (s.includes("cancel")) return [153, 27, 27];
+  return [30, 64, 175];
+}
+
 function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string | undefined, language: SupportedLanguage): string {
   const l = LABELS[language];
+  const palette = getThemePalette();
   const now = new Date();
-  const generatedAt = `${l.generatedAt}: ${now.toLocaleString(language)}`;
-  const dateRange = from || to ? ` (${from || '-'} - ${to || '-'})` : '';
+  const generatedAt = `${l.generatedAt}: ${now.toLocaleString(language === "es" ? "es-ES" : "en-US")}`;
+  const dateRange = from || to ? `${from || "-"} — ${to || "-"}` : "—";
 
+  const pageW = 595;
+  const pageH = 842;
+  const margin = 40;
   const commands: string[] = [];
 
-  // Header background
-  commands.push('0.95 0.72 0.16 rg');
-  commands.push('30 760 535 60 re f');
+  commands.push(rgbFill(palette.primary));
+  commands.push("0 730 595 110 re f");
+  commands.push(rgbFill(palette.primaryDark));
+  commands.push("0 726 595 4 re f");
 
-  // Logo badge
-  commands.push('0.20 0.20 0.20 rg');
-  commands.push('40 775 34 34 re f');
-  commands.push('1 1 1 rg');
-  commands.push(text(48, 789, 14, 'W'));
+  // Theme-aligned logo badge + brand text (matching website branding text)
+  commands.push(rgbFill(palette.ink));
+  commands.push("40 753 56 56 re f");
+  commands.push("1 1 1 rg");
+  commands.push(text(59, 782, 26, "W"));
 
-  // Brand + title
-  commands.push('0.18 0.18 0.18 rg');
-  commands.push(text(86, 801, 12, 'Workshop Management'));
-  commands.push(text(86, 783, 16, `${l.title}${dateRange}`));
+  commands.push(rgbFill(palette.ink));
+  commands.push(text(108, 798, 10, "WORKSHOP MANAGEMENT"));
+  commands.push(text(108, 776, 20, l.title));
+  commands.push(text(108, 758, 11, dateRange));
 
-  // Meta
-  commands.push(text(40, 745, 10, generatedAt));
-  commands.push(text(40, 730, 10, `${l.totalRecords}: ${rows.length}`));
+  const metaY = 742;
+  commands.push(rgbFill(palette.muted));
+  commands.push(text(40, metaY, 9, l.generatedAt.toUpperCase()));
+  commands.push(text(240, metaY, 9, l.totalRecords.toUpperCase()));
+  commands.push(text(420, metaY, 9, l.department.toUpperCase()));
 
-  // Table header row
-  const startY = 700;
-  commands.push('0.20 0.20 0.20 rg');
-  commands.push('40 682 515 18 re f');
-  commands.push('1 1 1 rg');
-  commands.push(text(45, 688, 9, l.no));
-  commands.push(text(70, 688, 9, l.card));
-  commands.push(text(125, 688, 9, l.date));
-  commands.push(text(185, 688, 9, l.status));
-  commands.push(text(265, 688, 9, l.plate));
-  commands.push(text(330, 688, 9, l.customer));
-  commands.push(text(470, 688, 9, l.type));
+  commands.push(rgbFill(palette.ink));
+  commands.push(text(40, metaY - 16, 11, generatedAt));
+  commands.push(text(240, metaY - 16, 11, String(rows.length)));
+  commands.push(text(420, metaY - 16, 11, "Fleet & Maintenance"));
 
-  // Table rows
+  commands.push(rgbStroke(palette.border));
+  commands.push("0.7 w");
+  commands.push(`40 ${metaY - 30} m ${pageW - margin} ${metaY - 30} l S`);
+
+  const startY = 690;
+  const rowHeight = 22;
+
+  commands.push(rgbFill(palette.ink));
+  commands.push("40 664 515 20 re f");
+  commands.push(rgbFill(palette.primary));
+  commands.push(text(46, 670, 9, l.no));
+  commands.push(text(70, 670, 9, l.id));
+  commands.push(text(125, 670, 9, l.date));
+  commands.push(text(188, 670, 9, l.status));
+  commands.push(text(262, 670, 9, l.unit));
+  commands.push(text(332, 670, 9, l.technician));
+  commands.push(text(470, 670, 9, l.type));
+
   const visibleRows = rows.slice(0, 24);
   visibleRows.forEach((item, idx) => {
-    const rowY = startY - idx * 22;
-
+    const rowY = startY - idx * rowHeight;
     if (idx % 2 === 0) {
-      commands.push('0.97 0.97 0.97 rg');
+      commands.push(rgbFill(palette.soft));
       commands.push(`40 ${rowY - 16} 515 20 re f`);
     }
 
-    commands.push('0.15 0.15 0.15 rg');
-    const createdDate = item.createdAt ? new Date(item.createdAt).toLocaleDateString(language) : '-';
-    const cardNo = item.jobCardId?.slice(-8) || '-';
-    const status = item.status || '-';
-    const plate = item.vehiclePlate || '-';
-    const customer = item.customerName || '-';
-    const type = item.customerType || '-';
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString(language) : "-";
+    const status = item.status || "-";
 
-    commands.push(text(45, rowY - 3, 9, `${idx + 1}`));
-    commands.push(text(70, rowY - 3, 9, cardNo));
-    commands.push(text(125, rowY - 3, 9, createdDate));
-    commands.push(text(185, rowY - 3, 9, status.slice(0, 14)));
-    commands.push(text(265, rowY - 3, 9, plate.slice(0, 12)));
-    commands.push(text(330, rowY - 3, 9, customer.slice(0, 26)));
-    commands.push(text(470, rowY - 3, 9, type.slice(0, 12)));
+    commands.push(rgbFill(palette.ink));
+    commands.push(text(46, rowY - 3, 9, String(idx + 1).padStart(2, "0")));
+    commands.push(text(70, rowY - 3, 9, truncate(item.jobCardId?.slice(-8) || "-", 10)));
+    commands.push(text(125, rowY - 3, 9, truncate(date, 12)));
+
+    commands.push(rgbFill(statusColor(status, palette)));
+    commands.push(text(188, rowY - 3, 9, truncate(status, 14)));
+
+    commands.push(rgbFill(palette.ink));
+    commands.push(text(262, rowY - 3, 9, truncate(item.vehiclePlate || "-", 12)));
+    commands.push(text(332, rowY - 3, 9, truncate(item.customerName || "-", 28)));
+    commands.push(text(470, rowY - 3, 9, truncate(item.customerType || "-", 12)));
+
+    commands.push(rgbStroke(palette.border));
+    commands.push("0.3 w");
+    commands.push(`40 ${rowY - 18} m 555 ${rowY - 18} l S`);
   });
 
-  // Disclaimer block
-  commands.push('0.98 0.98 0.98 rg');
-  commands.push('40 80 515 70 re f');
-  commands.push('0.20 0.20 0.20 rg');
-  commands.push(text(48, 132, 10, l.disclaimerTitle));
-  commands.push(text(48, 116, 9, l.disclaimerText.slice(0, 108)));
-  commands.push(text(48, 104, 9, l.disclaimerText.slice(108, 216)));
+  commands.push(rgbFill(palette.soft));
+  commands.push("40 80 515 58 re f");
+  commands.push(rgbStroke(palette.border));
+  commands.push("0.5 w");
+  commands.push("40 80 m 555 80 l S");
+  commands.push(rgbFill(palette.muted));
+  commands.push(text(40, 24, 8, `${l.footerBrand} · ${l.confidential}`));
+  commands.push(text(500, 24, 8, `${l.page} 1 ${l.of} 1`));
 
-  const stream = commands.join('\n');
-
+  const stream = commands.join("\n");
   const objects = [
-    '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
-    '2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj',
-    '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj',
-    '4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj',
+    "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
+    "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
+    "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj",
+    "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj",
     `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj`,
   ];
 
-  let content = '%PDF-1.4\n';
+  let content = "%PDF-1.4\n";
   const offsets = [0];
-
   for (const obj of objects) {
     offsets.push(content.length);
     content += `${obj}\n`;
   }
-
   const xrefStart = content.length;
   content += `xref\n0 ${objects.length + 1}\n`;
-  content += '0000000000 65535 f \n';
-
+  content += "0000000000 65535 f \n";
   for (let i = 1; i < offsets.length; i += 1) {
-    content += `${String(offsets[i]).padStart(10, '0')} 00000 n \n`;
+    content += `${String(offsets[i]).padStart(10, "0")} 00000 n \n`;
   }
-
   content += `trailer << /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefStart}\n%%EOF`;
   return content;
 }
 
-export function downloadJobCardsPdf(rows: ReportRow[], from?: string, to?: string, language: SupportedLanguage = 'en'): void {
+export function downloadJobCardsPdf(rows: ReportRow[], from?: string, to?: string, language: SupportedLanguage = "en"): void {
   const pdf = buildStyledPdf(rows, from, to, language);
-  const blob = new Blob([pdf], { type: 'application/pdf' });
+  const blob = new Blob([pdf], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
 
-  const anchor = document.createElement('a');
+  const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `job-cards-report-${new Date().toISOString().slice(0, 10)}.pdf`;
+  anchor.download = `work-orders-report-${new Date().toISOString().slice(0, 10)}.pdf`;
   anchor.click();
-
   URL.revokeObjectURL(url);
 }
