@@ -38,16 +38,24 @@ export function AppLayout({ children }: AppLayoutProps) {
     const navGroups = getNav(user?.role);
 
     const setGoogleTranslateCookie = (language: string) => {
-        const googTransValue = `/auto/${language}`;
-        document.cookie = `googtrans=${googTransValue}; path=/`;
-        document.cookie = `googtrans=${googTransValue}; domain=${window.location.hostname}; path=/`;
+        const safeLanguage = language || 'en';
+        const googTransValue = `/en/${safeLanguage}`;
+        document.cookie = `googtrans=${googTransValue}; path=/; max-age=31536000`;
+        document.cookie = `googtrans=${googTransValue}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
     };
 
-    const applyLanguageToGoogleTranslate = (language: string) => {
+    const applyLanguageToGoogleTranslate = (language: string, retries = 8) => {
         const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
-        if (combo) {
+        if (!combo) {
+            if (retries > 0) {
+                window.setTimeout(() => applyLanguageToGoogleTranslate(language, retries - 1), 300);
+            }
+            return;
+        }
+
+        if (combo.value !== language) {
             combo.value = language;
-            combo.dispatchEvent(new Event('change'));
+            combo.dispatchEvent(new Event('change', { bubbles: true }));
         }
     };
 
@@ -59,13 +67,13 @@ export function AppLayout({ children }: AppLayoutProps) {
     useEffect(() => {
         localStorage.setItem(APP_LANGUAGE_KEY, selectedLanguage);
         setGoogleTranslateCookie(selectedLanguage);
-        applyLanguageToGoogleTranslate(selectedLanguage);
+        applyLanguageToGoogleTranslate(selectedLanguage, 10);
     }, [selectedLanguage]);
 
     useEffect(() => {
         // Re-apply selected language when route content changes in SPA.
         const timer = setTimeout(() => {
-            applyLanguageToGoogleTranslate(selectedLanguage);
+            applyLanguageToGoogleTranslate(selectedLanguage, 6);
         }, 150);
         return () => clearTimeout(timer);
     }, [location.pathname, selectedLanguage]);
@@ -87,7 +95,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 'google_translate_element'
             );
 
-            setTimeout(() => applyLanguageToGoogleTranslate(selected), 250);
+            setTimeout(() => applyLanguageToGoogleTranslate(selected, 10), 250);
         };
 
         if (!existingScript) {
@@ -97,7 +105,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             script.async = true;
             document.body.appendChild(script);
         } else {
-            setTimeout(() => applyLanguageToGoogleTranslate(selected), 250);
+            setTimeout(() => applyLanguageToGoogleTranslate(selected, 10), 250);
         }
     }, []);
 
@@ -444,7 +452,17 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div id="google_translate_element" style={{ display: 'none' }} />
+                        <div
+                            id="google_translate_element"
+                            style={{
+                                position: 'absolute',
+                                left: '-9999px',
+                                top: 'auto',
+                                width: '1px',
+                                height: '1px',
+                                overflow: 'hidden',
+                            }}
+                        />
                         <select
                             value={selectedLanguage}
                             onChange={(e) => setSelectedLanguage(e.target.value)}
