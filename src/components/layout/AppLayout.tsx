@@ -14,7 +14,6 @@ interface AppLayoutProps {
 }
 
 const SIDEBAR_KEY = 'ui.sidebarCollapsed';
-const APP_LANGUAGE_KEY = 'ui.appLanguage';
 
 /**
  * Application layout with collapsible sidebar navigation and topbar
@@ -29,7 +28,6 @@ export function AppLayout({ children }: AppLayoutProps) {
     const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState(() => localStorage.getItem(APP_LANGUAGE_KEY) || 'en');
     const notificationRef = useRef<HTMLDivElement>(null);
     const notifiedIdsRef = useRef<Set<string>>(new Set());
     const hasBootstrappedNotificationsRef = useRef(false);
@@ -37,77 +35,10 @@ export function AppLayout({ children }: AppLayoutProps) {
 
     const navGroups = getNav(user?.role);
 
-    const setGoogleTranslateCookie = (language: string) => {
-        const safeLanguage = language || 'en';
-        const googTransValue = `/en/${safeLanguage}`;
-        document.cookie = `googtrans=${googTransValue}; path=/; max-age=31536000`;
-        document.cookie = `googtrans=${googTransValue}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
-    };
-
-    const applyLanguageToGoogleTranslate = (language: string, retries = 8) => {
-        const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
-        if (!combo) {
-            if (retries > 0) {
-                window.setTimeout(() => applyLanguageToGoogleTranslate(language, retries - 1), 300);
-            }
-            return;
-        }
-
-        if (combo.value !== language) {
-            combo.value = language;
-            combo.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    };
-
     // Persist collapsed state
     useEffect(() => {
         localStorage.setItem(SIDEBAR_KEY, String(collapsed));
     }, [collapsed]);
-
-    useEffect(() => {
-        localStorage.setItem(APP_LANGUAGE_KEY, selectedLanguage);
-        setGoogleTranslateCookie(selectedLanguage);
-        applyLanguageToGoogleTranslate(selectedLanguage, 10);
-    }, [selectedLanguage]);
-
-    useEffect(() => {
-        // Re-apply selected language when route content changes in SPA.
-        const timer = setTimeout(() => {
-            applyLanguageToGoogleTranslate(selectedLanguage, 6);
-        }, 150);
-        return () => clearTimeout(timer);
-    }, [location.pathname, selectedLanguage]);
-
-    useEffect(() => {
-        const existingScript = document.getElementById('google-translate-script');
-        const selected = localStorage.getItem(APP_LANGUAGE_KEY) || 'en';
-        setGoogleTranslateCookie(selected);
-
-        (window as any).googleTranslateElementInit = () => {
-            if (!(window as any).google?.translate?.TranslateElement) return;
-            new (window as any).google.translate.TranslateElement(
-                {
-                    pageLanguage: 'en',
-                    includedLanguages: 'en,es',
-                    autoDisplay: false,
-                    layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
-                },
-                'google_translate_element'
-            );
-
-            setTimeout(() => applyLanguageToGoogleTranslate(selected, 10), 250);
-        };
-
-        if (!existingScript) {
-            const script = document.createElement('script');
-            script.id = 'google-translate-script';
-            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.body.appendChild(script);
-        } else {
-            setTimeout(() => applyLanguageToGoogleTranslate(selected, 10), 250);
-        }
-    }, []);
 
     const fetchNotifications = async () => {
         try {
@@ -452,34 +383,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div
-                            id="google_translate_element"
-                            style={{
-                                position: 'absolute',
-                                left: '-9999px',
-                                top: 'auto',
-                                width: '1px',
-                                height: '1px',
-                                overflow: 'hidden',
-                            }}
-                        />
-                        <select
-                            value={selectedLanguage}
-                            onChange={(e) => setSelectedLanguage(e.target.value)}
-                            style={{
-                                border: '1px solid var(--c-border)',
-                                borderRadius: '6px',
-                                backgroundColor: 'var(--c-bg)',
-                                color: 'var(--c-text)',
-                                padding: '6px 10px',
-                                fontSize: '13px',
-                                cursor: 'pointer',
-                            }}
-                            title="Select language"
-                        >
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                        </select>
                         {/* Notifications Bell */}
                         <div style={{ position: 'relative' }} ref={notificationRef}>
                             <button
