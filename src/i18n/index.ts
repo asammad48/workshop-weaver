@@ -34,13 +34,12 @@ export function t(key: string, language: SupportedLanguage): string {
 }
 
 export function initializeI18n() {
-  const current = useI18nStore.getState().language;
-  if (current) {
-    document.documentElement.lang = current;
-    return;
-  }
+  const stored = localStorage.getItem('ui.language');
+  const language =
+    stored === 'en' || stored === 'es'
+      ? stored
+      : pickInitialLanguage();
 
-  const language = pickInitialLanguage();
   useI18nStore.setState({ language });
   localStorage.setItem('ui.language', language);
   document.documentElement.lang = language;

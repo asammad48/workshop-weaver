@@ -1,5 +1,6 @@
 import { customersRepo } from '../repositories/customersRepo';
 import { lookupsCache } from './lookupsCache';
+import { isFleetCustomerType } from '@/constants/customerType';
 
 /**
  * Loads customers into memory cache if not already loaded.
@@ -40,7 +41,7 @@ export function getCustomerMap() {
  * (via cache updates) are reflected without forcing a reload.
  */
 export async function getFleetCustomersOnce() {
-  const cachedFleet = lookupsCache.customers.filter(c => c.customerType === 2 || c.customerType === 'Fleet');
+  const cachedFleet = lookupsCache.customers.filter(c => isFleetCustomerType(c.customerType));
   if (cachedFleet.length > 0) {
     return cachedFleet;
   }

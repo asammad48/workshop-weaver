@@ -2,6 +2,7 @@ import { Client, PublicJobCardReceiptResponseApiResponse } from "@/api/generated
 import { getBaseUrl } from "../clientFactory";
 import { normalizeError } from "./_errors";
 import { useI18nStore } from "@/state/i18nStore";
+import { normalizeApiLanguage } from "../language";
 
 // Create a client instance for public access (no auth headers in getFetch)
 // However, the standard createClient uses getFetch() which has auth.
@@ -9,7 +10,7 @@ import { useI18nStore } from "@/state/i18nStore";
 
 const getPublicFetch = () => {
     return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-        const language = useI18nStore.getState().language;
+        const language = normalizeApiLanguage(useI18nStore.getState().language);
         const headers = new Headers(init?.headers);
         headers.set("Accept-Language", language);
 
@@ -35,11 +36,28 @@ export const publicReceiptRepo = {
     }
   },
 
-  openPrint(jobCardId: string, token?: string): void {
+  async openPrint(jobCardId: string, token?: string): Promise<void> {
     let url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
     if (token) {
         url += `?t=${encodeURIComponent(token)}`;
     }
-    window.open(url, "_blank");
+    const language = normalizeApiLanguage(useI18nStore.getState().language);
+    const response = await fetch(url, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+
+    if (!response.ok) {
+      throw normalizeError(response);
+    }
+
+    const pdfBlob = await response.blob();
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl, "_blank");
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 60_000);
   },
 };

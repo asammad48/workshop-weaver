@@ -2,6 +2,7 @@ import { useAuthStore } from '@/state/authStore';
 import { useI18nStore } from '@/state/i18nStore';
 import { authRepo } from './repositories/authRepo';
 import { API_BASE_URL } from './config';
+import { normalizeApiLanguage } from './language';
 
 // Standard API Error structure
 export interface ApiError {
@@ -50,7 +51,7 @@ export async function authFetch(
   const authStore = useAuthStore.getState();
   const i18nStore = useI18nStore.getState();
   const token = authStore.accessToken;
-  const language = i18nStore.language;
+  const language = normalizeApiLanguage(i18nStore.language);
 
   const headers = new Headers(init?.headers);
   

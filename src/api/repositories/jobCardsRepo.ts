@@ -9,6 +9,8 @@ import {
 import { createClient } from "./_repoBase";
 import { normalizeError } from "./_errors";
 import { getBaseUrl } from "../clientFactory";
+import { useI18nStore } from "@/state/i18nStore";
+import { normalizeApiLanguage } from "../language";
 
 const client = createClient(Client);
 
@@ -101,8 +103,25 @@ export const jobCardsRepo = {
     }
   },
 
-  openPrint(jobCardId: string): void {
+  async openPrint(jobCardId: string): Promise<void> {
     const url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
-    window.open(url, "_blank");
+    const language = normalizeApiLanguage(useI18nStore.getState().language);
+    const response = await fetch(url, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+
+    if (!response.ok) {
+      throw normalizeError(response);
+    }
+
+    const pdfBlob = await response.blob();
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl, "_blank");
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 60_000);
   },
 };

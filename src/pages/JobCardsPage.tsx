@@ -31,6 +31,7 @@ import { JobCardHeader } from "@/features/jobcards/components/JobCardHeader";
 import { JobCardDetails } from "@/features/jobcards/components/JobCardDetails";
 import { driversRepo } from "@/api/repositories/driversRepo";
 import { useI18n } from "@/i18n";
+import { isFleetCustomerType } from "@/constants/customerType";
 
 interface JobCardFormProps {
   customers: any[];
@@ -68,11 +69,7 @@ const CreateJobCardForm = ({
   const selectedCustomer = (customers || []).find(
     (c: any) => c.id === formState.customerId
   );
-  const isFleetCustomer = selectedCustomer
-    ? selectedCustomer.customerType === 2 ||
-      selectedCustomer.customerType === "2" ||
-      `${selectedCustomer.customerType}`.toLowerCase() === "fleet"
-    : false;
+  const isFleetCustomer = isFleetCustomerType(selectedCustomer?.customerType);
 
   const { data: driversData } = useQuery({
     queryKey: ["driversLookup", formState.customerId],
@@ -304,7 +301,9 @@ const JobCardsPage = () => {
   };
 
   const handlePrint = (item: any) => {
-    jobCardsRepo.openPrint(item.id);
+    jobCardsRepo.openPrint(item.id).catch((error: any) => {
+      toast.error(error?.message || "Failed to open print preview");
+    });
   };
 
   const canManage =

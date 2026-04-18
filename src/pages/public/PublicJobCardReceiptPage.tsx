@@ -14,7 +14,7 @@ const PublicJobCardReceiptPage: React.FC = () => {
     const token = searchParams.get("t") || undefined;
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ["publicReceipt", jobCardId, token],
+        queryKey: ["publicReceipt", jobCardId, token, language],
         queryFn: () => publicReceiptRepo.get(jobCardId!, token),
         enabled: !!jobCardId,
     });
@@ -32,7 +32,9 @@ const PublicJobCardReceiptPage: React.FC = () => {
 
     const handlePrint = () => {
         if (jobCardId) {
-            publicReceiptRepo.openPrint(jobCardId, token);
+            publicReceiptRepo.openPrint(jobCardId, token).catch(() => {
+                // Keep this page silent on popup/print failures; user can retry.
+            });
         }
     };
 
