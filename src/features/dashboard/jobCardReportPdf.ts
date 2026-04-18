@@ -173,6 +173,9 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   const margin = 40;
   const commands: string[] = [];
 
+  commands.push(rgbFill([244, 244, 245]));
+  commands.push(`0 0 ${pageW} ${pageH} re f`);
+
   commands.push(rgbFill(palette.primary));
   commands.push("0 730 595 110 re f");
   commands.push(rgbFill(palette.primaryDark));
@@ -188,7 +191,7 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push(text(108, 776, 20, l.title));
   commands.push(text(108, 758, 11, dateRange));
 
-  const metaY = 702;
+  const metaY = 696;
   commands.push(rgbFill(palette.muted));
   commands.push(text(40, metaY, 9, l.generatedAt.toUpperCase()));
   commands.push(text(240, metaY, 9, l.totalRecords.toUpperCase()));
@@ -203,11 +206,18 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push("0.7 w");
   commands.push(`40 ${metaY - 30} m ${pageW - margin} ${metaY - 30} l S`);
 
-  const headerY = metaY - 56;
-  const rowHeight = 52;
+  const headerY = metaY - 58;
+  const rowHeight = 50;
+  const tableX = 40;
+  const tableW = 515;
+  const colBounds = [40, 74, 140, 204, 286, 360, 476, 555];
+
+  commands.push(rgbStroke(palette.border));
+  commands.push("0.5 w");
+  commands.push(`${tableX} ${headerY - 32 - rowHeight * Math.min(rows.length, 10)} ${tableW} ${32 + rowHeight * Math.min(rows.length, 10)} re S`);
 
   commands.push(rgbFill(palette.ink));
-  commands.push(`40 ${headerY} 515 32 re f`);
+  commands.push(`${tableX} ${headerY} ${tableW} 32 re f`);
   commands.push(rgbFill(palette.primary));
   commands.push(text(50, headerY + 12, 10, l.no));
   commands.push(text(78, headerY + 12, 10, l.id));
@@ -216,6 +226,12 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push(text(288, headerY + 12, 10, l.unit));
   commands.push(text(360, headerY + 12, 10, l.technician));
   commands.push(text(492, headerY + 12, 10, l.type));
+
+  commands.push(rgbStroke([214, 211, 209]));
+  commands.push("0.5 w");
+  colBounds.forEach((x) => {
+    commands.push(`${x} ${headerY - 32 - rowHeight * Math.min(rows.length, 10)} m ${x} ${headerY + 32} l S`);
+  });
 
   const visibleRows = rows.slice(0, 10);
   visibleRows.forEach((item, idx) => {
