@@ -40,7 +40,7 @@ const LABELS: Record<SupportedLanguage, Labels> = {
     unit: "Unit",
     technician: "Technician",
     type: "Type",
-    footerBrand: "Workshop Management",
+    footerBrand: "Motori Workshop Management System",
     confidential: "Confidential",
     page: "Page",
     of: "of",
@@ -57,7 +57,7 @@ const LABELS: Record<SupportedLanguage, Labels> = {
     unit: "Unidad",
     technician: "Tecnico",
     type: "Tipo",
-    footerBrand: "Workshop Management",
+    footerBrand: "Motori Workshop Management System",
     confidential: "Confidencial",
     page: "Pagina",
     of: "de",
@@ -184,10 +184,11 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push(rgbFill(palette.ink));
   commands.push("40 753 56 56 re f");
   commands.push("1 1 1 rg");
-  commands.push(text(59, 782, 26, "W"));
+  commands.push(text(54, 782, 24, "M"));
+  commands.push(text(72, 782, 12, "otori"));
 
   commands.push(rgbFill(palette.ink));
-  commands.push(text(108, 798, 10, "WORKSHOP MANAGEMENT"));
+  commands.push(text(108, 798, 10, "MOTORI WORKSHOP MANAGEMENT SYSTEM"));
   commands.push(text(108, 776, 20, l.title));
   commands.push(text(108, 758, 11, dateRange));
 
