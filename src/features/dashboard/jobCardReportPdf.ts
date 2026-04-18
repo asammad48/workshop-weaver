@@ -46,7 +46,7 @@ const LABELS: Record<SupportedLanguage, Labels> = {
     of: "of",
   },
   es: {
-    title: "Reporte de Órdenes de Trabajo",
+    title: "Reporte de Ordenes de Trabajo",
     generatedAt: "Generado",
     totalRecords: "Total de registros",
     department: "Departamento",
@@ -55,11 +55,11 @@ const LABELS: Record<SupportedLanguage, Labels> = {
     date: "Fecha",
     status: "Estado",
     unit: "Unidad",
-    technician: "Técnico",
+    technician: "Tecnico",
     type: "Tipo",
     footerBrand: "Workshop Management",
     confidential: "Confidencial",
-    page: "Página",
+    page: "Pagina",
     of: "de",
   },
 };
@@ -131,8 +131,18 @@ function rgbStroke([r, g, b]: Rgb): string {
   return `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)} RG`;
 }
 
+function sanitizePdfText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/—/g, "-")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[^\x20-\x7E]/g, "?");
+}
+
 function escapePdfText(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  return sanitizePdfText(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
 function text(x: number, y: number, size: number, content: string): string {
@@ -140,7 +150,7 @@ function text(x: number, y: number, size: number, content: string): string {
 }
 
 function truncate(value: string, max: number): string {
-  return value.length <= max ? value : `${value.slice(0, max - 1)}…`;
+  return value.length <= max ? value : `${value.slice(0, max - 1)}...`;
 }
 
 function statusColor(status: string, palette: PdfPalette): Rgb {
@@ -156,7 +166,7 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   const palette = getThemePalette();
   const now = new Date();
   const generatedAt = `${l.generatedAt}: ${now.toLocaleString(language === "es" ? "es-ES" : "en-US")}`;
-  const dateRange = from || to ? `${from || "-"} — ${to || "-"}` : "—";
+  const dateRange = from || to ? `${from || "-"} - ${to || "-"}` : "-";
 
   const pageW = 595;
   const pageH = 842;
@@ -168,7 +178,6 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push(rgbFill(palette.primaryDark));
   commands.push("0 726 595 4 re f");
 
-  // Theme-aligned logo badge + brand text (matching website branding text)
   commands.push(rgbFill(palette.ink));
   commands.push("40 753 56 56 re f");
   commands.push("1 1 1 rg");
@@ -179,7 +188,7 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push(text(108, 776, 20, l.title));
   commands.push(text(108, 758, 11, dateRange));
 
-  const metaY = 742;
+  const metaY = 702;
   commands.push(rgbFill(palette.muted));
   commands.push(text(40, metaY, 9, l.generatedAt.toUpperCase()));
   commands.push(text(240, metaY, 9, l.totalRecords.toUpperCase()));
@@ -194,74 +203,76 @@ function buildStyledPdf(rows: ReportRow[], from: string | undefined, to: string 
   commands.push("0.7 w");
   commands.push(`40 ${metaY - 30} m ${pageW - margin} ${metaY - 30} l S`);
 
-  const startY = 690;
-  const rowHeight = 22;
+  const headerY = metaY - 56;
+  const rowHeight = 52;
 
   commands.push(rgbFill(palette.ink));
-  commands.push("40 664 515 20 re f");
+  commands.push(`40 ${headerY} 515 32 re f`);
   commands.push(rgbFill(palette.primary));
-  commands.push(text(46, 670, 9, l.no));
-  commands.push(text(70, 670, 9, l.id));
-  commands.push(text(125, 670, 9, l.date));
-  commands.push(text(188, 670, 9, l.status));
-  commands.push(text(262, 670, 9, l.unit));
-  commands.push(text(332, 670, 9, l.technician));
-  commands.push(text(470, 670, 9, l.type));
+  commands.push(text(50, headerY + 12, 10, l.no));
+  commands.push(text(78, headerY + 12, 10, l.id));
+  commands.push(text(140, headerY + 12, 10, l.date));
+  commands.push(text(205, headerY + 12, 10, l.status));
+  commands.push(text(288, headerY + 12, 10, l.unit));
+  commands.push(text(360, headerY + 12, 10, l.technician));
+  commands.push(text(492, headerY + 12, 10, l.type));
 
-  const visibleRows = rows.slice(0, 24);
+  const visibleRows = rows.slice(0, 10);
   visibleRows.forEach((item, idx) => {
-    const rowY = startY - idx * rowHeight;
+    const topY = headerY - 1 - idx * rowHeight;
+
     if (idx % 2 === 0) {
       commands.push(rgbFill(palette.soft));
-      commands.push(`40 ${rowY - 16} 515 20 re f`);
+      commands.push(`40 ${topY - rowHeight} 515 ${rowHeight} re f`);
     }
 
-    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString(language) : "-";
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString(language === "es" ? "es-ES" : "en-US") : "-";
     const status = item.status || "-";
 
+    commands.push(rgbFill(palette.muted));
+    commands.push(text(50, topY - 28, 10, String(idx + 1).padStart(2, "0")));
+
     commands.push(rgbFill(palette.ink));
-    commands.push(text(46, rowY - 3, 9, String(idx + 1).padStart(2, "0")));
-    commands.push(text(70, rowY - 3, 9, truncate(item.jobCardId?.slice(-8) || "-", 10)));
-    commands.push(text(125, rowY - 3, 9, truncate(date, 12)));
+    commands.push(text(78, topY - 28, 10, truncate(item.jobCardId?.slice(-8) || "-", 10)));
+    commands.push(text(140, topY - 28, 10, truncate(date, 12)));
 
     commands.push(rgbFill(statusColor(status, palette)));
-    commands.push(text(188, rowY - 3, 9, truncate(status, 14)));
+    commands.push(text(205, topY - 28, 10, truncate(status, 16)));
 
     commands.push(rgbFill(palette.ink));
-    commands.push(text(262, rowY - 3, 9, truncate(item.vehiclePlate || "-", 12)));
-    commands.push(text(332, rowY - 3, 9, truncate(item.customerName || "-", 28)));
-    commands.push(text(470, rowY - 3, 9, truncate(item.customerType || "-", 12)));
+    commands.push(text(288, topY - 28, 10, truncate(item.vehiclePlate || "-", 12)));
+    commands.push(text(360, topY - 28, 10, truncate(item.customerName || "-", 22)));
+    commands.push(text(492, topY - 28, 10, truncate(item.customerType || "-", 12)));
 
     commands.push(rgbStroke(palette.border));
-    commands.push("0.3 w");
-    commands.push(`40 ${rowY - 18} m 555 ${rowY - 18} l S`);
+    commands.push("0.5 w");
+    commands.push(`40 ${topY - rowHeight} m 555 ${topY - rowHeight} l S`);
   });
 
-  commands.push(rgbFill(palette.soft));
-  commands.push("40 80 515 58 re f");
   commands.push(rgbStroke(palette.border));
   commands.push("0.5 w");
-  commands.push("40 80 m 555 80 l S");
+  commands.push(`40 40 m 555 40 l S`);
   commands.push(rgbFill(palette.muted));
-  commands.push(text(40, 24, 8, `${l.footerBrand} · ${l.confidential}`));
+  commands.push(text(40, 24, 8, `${l.footerBrand} - ${l.confidential}`));
   commands.push(text(500, 24, 8, `${l.page} 1 ${l.of} 1`));
 
   const stream = commands.join("\n");
+  const streamBytes = new TextEncoder().encode(stream).length;
   const objects = [
     "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
     "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
     "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj",
     "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj",
-    `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj`,
+    `5 0 obj << /Length ${streamBytes} >> stream\n${stream}\nendstream endobj`,
   ];
 
   let content = "%PDF-1.4\n";
   const offsets = [0];
   for (const obj of objects) {
-    offsets.push(content.length);
+    offsets.push(new TextEncoder().encode(content).length);
     content += `${obj}\n`;
   }
-  const xrefStart = content.length;
+  const xrefStart = new TextEncoder().encode(content).length;
   content += `xref\n0 ${objects.length + 1}\n`;
   content += "0000000000 65535 f \n";
   for (let i = 1; i < offsets.length; i += 1) {
