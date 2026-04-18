@@ -24,11 +24,6 @@ export default function DriversPage() {
     queryFn: () => driversRepo.list(pageNumber, pageSize, search),
   });
 
-  const { data: fleetCustomersData } = useQuery({
-    queryKey: ['fleetCustomersLookup'],
-    queryFn: () => getFleetCustomersOnce(),
-  });
-
   const createMutation = useMutation({
     mutationFn: (body: DriverCreateRequest) => driversRepo.create(body),
     onSuccess: (res) => {
@@ -50,15 +45,18 @@ export default function DriversPage() {
   const totalItems = data?.data?.totalCount ?? 0;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
 
-  const fleetCustomers = fleetCustomersData ?? [];
-  const customerOptions = fleetCustomers
-    .filter((customer) => customer.id)
-    .map((customer) => ({
-      value: customer.id!,
-      label: customer.fullName || '-',
-    }));
+  const handleAddDriver = async () => {
+    const fleetCustomers = await queryClient.fetchQuery({
+      queryKey: ['fleetCustomersLookup'],
+      queryFn: () => getFleetCustomersOnce(),
+    });
+    const customerOptions = (fleetCustomers ?? [])
+      .filter((customer) => customer.id)
+      .map((customer) => ({
+        value: customer.id!,
+        label: customer.fullName || '-',
+      }));
 
-  const handleAddDriver = () => {
     const formData = {
       customerId: '',
       fullName: '',

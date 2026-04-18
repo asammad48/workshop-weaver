@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Printer, Loader2, AlertCircle, Receipt } from "lucide-react";
 import { useI18n } from "@/i18n";
+import { toast } from "@/components/ui/Toast";
 
 const PublicJobCardReceiptPage: React.FC = () => {
     const { t, language } = useI18n();
@@ -30,9 +31,14 @@ const PublicJobCardReceiptPage: React.FC = () => {
     const fmtDateTime = (value?: string | null) => (value ? new Date(value).toLocaleString(language) : "-");
     const fmtMoney = (value?: number | null) => `EUR ${Number(value || 0).toLocaleString(language, { minimumFractionDigits: 2 })}`;
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
         if (jobCardId) {
-            publicReceiptRepo.openPrint(jobCardId, token);
+            try {
+                await publicReceiptRepo.openPrint(jobCardId, token);
+            } catch (err) {
+                const message = err instanceof Error ? err.message : t("publicReceipt.notFoundMessage");
+                toast.error(message);
+            }
         }
     };
 
