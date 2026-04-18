@@ -231,8 +231,12 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     );
   };
 
-  const handlePrint = () => {
-    jobCardsRepo.openPrint(jobCard.id);
+  const handlePrint = async () => {
+    try {
+      await jobCardsRepo.openPrint(jobCard.id);
+    } catch (err: any) {
+      toast.error(err?.message || t("jobCards.header.toasts.genericError"));
+    }
   };
 
   const handleViewPublic = () => {

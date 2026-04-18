@@ -35,11 +35,25 @@ export const publicReceiptRepo = {
     }
   },
 
-  openPrint(jobCardId: string, token?: string): void {
+  async openPrint(jobCardId: string, token?: string): Promise<void> {
     let url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
     if (token) {
         url += `?t=${encodeURIComponent(token)}`;
     }
-    window.open(url, "_blank");
+    const language = useI18nStore.getState().language === "es" ? "es" : "en";
+
+    const response = await fetch(url, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+
+    if (!response.ok) {
+      throw normalizeError(response);
+    }
+
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, "_blank");
   },
 };

@@ -130,7 +130,7 @@ const CreateJobCardForm = ({
             }))
           }
         />
-        {isFleetCustomer && (
+        {isFleetCustomer && driverOptions.length > 0 && (
           <Select
             label="Driver"
             value={formState.driverId}
@@ -303,8 +303,12 @@ const JobCardsPage = () => {
     setSelectedJobCard(item);
   };
 
-  const handlePrint = (item: any) => {
-    jobCardsRepo.openPrint(item.id);
+  const handlePrint = async (item: any) => {
+    try {
+      await jobCardsRepo.openPrint(item.id);
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to print job card");
+    }
   };
 
   const canManage =

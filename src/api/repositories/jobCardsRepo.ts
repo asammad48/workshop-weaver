@@ -9,6 +9,7 @@ import {
 import { createClient } from "./_repoBase";
 import { normalizeError } from "./_errors";
 import { getBaseUrl } from "../clientFactory";
+import { useI18nStore } from "@/state/i18nStore";
 
 const client = createClient(Client);
 
@@ -101,8 +102,22 @@ export const jobCardsRepo = {
     }
   },
 
-  openPrint(jobCardId: string): void {
+  async openPrint(jobCardId: string): Promise<void> {
     const url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
-    window.open(url, "_blank");
+    const language = useI18nStore.getState().language === "es" ? "es" : "en";
+
+    const response = await fetch(url, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+
+    if (!response.ok) {
+      throw normalizeError(response);
+    }
+
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, "_blank");
   },
 };
