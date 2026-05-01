@@ -308,6 +308,7 @@ const JobCardsPage = () => {
 
   const canManage =
     user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER";
+  const canCreateJobCard = user?.role === "BRANCH_MANAGER";
 
 
   if (selectedJobCard) {
@@ -341,23 +342,25 @@ const JobCardsPage = () => {
         >
           {t("pages.jobCards.title")}
         </h1>
-        <Button
-          onClick={() =>
-            openModal(
-              t("pages.jobCards.create"),
-              <CreateJobCardForm
-                customers={customers || []}
-                vehicles={vehicles || []}
-                onCancel={closeModal}
-                onSubmit={(data) => createMutation.mutate(data)}
-                isPending={createMutation.isPending}
-              />
-            )
-          }
-        >
-          <Plus size={18} style={{ marginRight: "8px" }} />
-          {t("pages.jobCards.create")}
-        </Button>
+        {canCreateJobCard && (
+          <Button
+            onClick={() =>
+              openModal(
+                t("pages.jobCards.create"),
+                <CreateJobCardForm
+                  customers={customers || []}
+                  vehicles={vehicles || []}
+                  onCancel={closeModal}
+                  onSubmit={(data) => createMutation.mutate(data)}
+                  isPending={createMutation.isPending}
+                />
+              )
+            }
+          >
+            <Plus size={18} style={{ marginRight: "8px" }} />
+            {t("pages.jobCards.create")}
+          </Button>
+        )}
       </div>
 
       <Card style={{ marginBottom: "24px" }}>
@@ -566,7 +569,8 @@ const JobCardsPage = () => {
                 items.map((item: any) => (
                   <tr
                     key={item.id}
-                    style={{ borderBottom: "1px solid var(--c-border)" }}
+                    onClick={() => handleView(item)}
+                    style={{ borderBottom: "1px solid var(--c-border)", cursor: "pointer" }}
                   >
                     <td style={{ padding: "16px", color: "var(--c-text)" }}>
                       {item.vehiclePlate || "-"}
@@ -629,7 +633,10 @@ const JobCardsPage = () => {
                           variant="secondary"
                           size="sm"
                           title="View Details"
-                          onClick={() => handleView(item)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleView(item);
+                          }}
                         >
                           <Eye size={16} />
                         </Button>
@@ -638,7 +645,10 @@ const JobCardsPage = () => {
                             variant="secondary"
                             size="sm"
                             title="Print JobCard"
-                            onClick={() => handlePrint(item)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handlePrint(item);
+                            }}
                           >
                             <Printer size={16} />
                           </Button>
@@ -648,7 +658,10 @@ const JobCardsPage = () => {
                             variant="secondary"
                             size="sm"
                             title="Check-in"
-                            onClick={() => handleAction(item.id, "checkIn")}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleAction(item.id, "checkIn");
+                            }}
                           >
                             <LogIn size={16} />
                           </Button>
@@ -658,7 +671,10 @@ const JobCardsPage = () => {
                             variant="secondary"
                             size="sm"
                             title="Check-out"
-                            onClick={() => handleAction(item.id, "checkOut")}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleAction(item.id, "checkOut");
+                            }}
                           >
                             <LogOut size={16} />
                           </Button>
