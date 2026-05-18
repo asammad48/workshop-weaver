@@ -103,6 +103,27 @@ export const jobCardsRepo = {
     }
   },
 
+  async openFullReport(jobCardId: string): Promise<void> {
+    const url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/full-report`;
+    const language = normalizeApiLanguage(useI18nStore.getState().language);
+    const response = await fetch(url, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+
+    if (!response.ok) {
+      throw normalizeError(response);
+    }
+
+    const pdfBlob = await response.blob();
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl, "_blank");
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 60_000);
+  },
   async openPrint(jobCardId: string): Promise<void> {
     const url = `${getBaseUrl()}/public/receipt/jobcards/${jobCardId}/print`;
     const language = normalizeApiLanguage(useI18nStore.getState().language);
