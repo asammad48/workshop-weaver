@@ -92,7 +92,6 @@ export default function DriversPage() {
             label="Fleet Customer *"
             options={customerOptions}
             placeholder="Select fleet customer"
-            value={formData.customerId}
             onChange={(e) => {
               formData.customerId = e.target.value;
             }}
