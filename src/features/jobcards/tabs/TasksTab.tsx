@@ -20,6 +20,7 @@ import { ModalContent } from "@/components/ui/Modal";
 import { openModal, closeModal, toast } from "@/state/uiStore";
 import { Select } from "@/components/forms/Select";
 import { useI18n } from "@/i18n";
+import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 
 interface TasksTabProps {
     jobCardId: string;
@@ -326,6 +327,7 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
     taskId,
     jobCardId,
 }) => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [technicians, setTechnicians] = useState<any[]>([]);
     const [selectedTechId, setSelectedTechId] = useState<string>("");
@@ -391,6 +393,16 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
                 <div
                     style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
                 >
+                    <Button
+                        variant="secondary"
+                        onClick={() =>
+                            jobCardsRepo.openPrint(jobCardId).catch((err: any) =>
+                                toast.error(err?.message || "Failed to open print preview"),
+                            )
+                        }
+                    >
+                        {t("jobCards.invoiceTab.printInvoice")}
+                    </Button>
                     <Button variant="secondary" onClick={closeModal}>
                         Close
                     </Button>
