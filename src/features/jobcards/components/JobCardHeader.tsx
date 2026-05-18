@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope, Wrench, Printer, ExternalLink } from "lucide-react";
+import { ClipboardList, Stethoscope, Wrench, ExternalLink } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { jobCardDiagnosisRepo } from "@/api/repositories/jobCardDiagnosisRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
@@ -231,8 +231,8 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     );
   };
 
-  const handlePrint = () => {
-    jobCardsRepo.openPrint(jobCard.id);
+  const handleViewWorkshopReceipt = () => {
+    jobCardsRepo.openFullReport(jobCard.id);
   };
 
   const handleViewPublic = () => {
@@ -262,9 +262,9 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
             <ExternalLink size={18} style={{ marginRight: "8px" }} />
             {t("jobCards.header.actions.viewPublicReceipt")}
           </Button>
-          <Button variant="secondary" onClick={handlePrint}>
-            <Printer size={18} style={{ marginRight: "8px" }} />
-            {t("jobCards.header.actions.printJobCard")}
+          <Button variant="secondary" onClick={handleViewWorkshopReceipt}>
+            <ExternalLink size={18} style={{ marginRight: "8px" }} />
+            {t("jobCards.header.actions.viewWorkshopReceipt")}
           </Button>
         </>
       )}
