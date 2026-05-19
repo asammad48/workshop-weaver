@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, Stethoscope, Wrench, ExternalLink } from "lucide-react";
+import { ClipboardList, Stethoscope, Wrench, ExternalLink, Printer } from "lucide-react";
 import { jobCardsRepo } from "@/api/repositories/jobCardsRepo";
 import { jobCardDiagnosisRepo } from "@/api/repositories/jobCardDiagnosisRepo";
 import { partRequestsRepo } from "@/api/repositories/partRequestsRepo";
@@ -240,6 +240,12 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
     window.open(url, "_blank");
   };
 
+  const handlePrintReceipt = () => {
+    jobCardsRepo.openPrint(jobCard.id).catch((err: any) => {
+      toast.error(err?.message || "Failed to open print preview");
+    });
+  };
+
   const canManage =
     user?.role === "HQ_ADMIN" || user?.role === "BRANCH_MANAGER";
 
@@ -265,6 +271,10 @@ export const JobCardHeader: React.FC<JobCardHeaderProps> = ({
           <Button variant="secondary" onClick={handleViewWorkshopReceipt}>
             <ExternalLink size={18} style={{ marginRight: "8px" }} />
             {t("jobCards.header.actions.viewWorkshopReceipt")}
+          </Button>
+          <Button variant="secondary" onClick={handlePrintReceipt}>
+            <Printer size={18} style={{ marginRight: "8px" }} />
+            {t("jobCards.invoiceTab.printInvoice")}
           </Button>
         </>
       )}

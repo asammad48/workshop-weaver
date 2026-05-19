@@ -326,6 +326,7 @@ const TimelogsModal: React.FC<{ taskId: string; jobCardId: string }> = ({
     taskId,
     jobCardId,
 }) => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [technicians, setTechnicians] = useState<any[]>([]);
     const [selectedTechId, setSelectedTechId] = useState<string>("");
